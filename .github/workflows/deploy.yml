@@ -1,0 +1,20 @@
+name: Build and deploy Hugo project to GitHub pages
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+ 12   build:
+ 11     name: Deploy
+ 10     runs-on: ubuntu-latest
+  9     steps:
+  8       - name: Checkout master
+  7         uses: actions/checkout@v1
+  6
+  5       - name: Deploy the site
+  4         uses: joohoi/hugo-deploy@master
+  3         env:
+  2           DEPLOY_REPO: who1s/who1s.github.io
+  1           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_TOKEN }}
+20            DEPLOY_USER: who1s
