@@ -1,4 +1,4 @@
-baseURL = "https://who1s.github.io"
+baseURL = "https://blog.dfir.fi"
 title   = "DFIR"
 languageCode = "en-us"
 theme = "hello-friend-ng"
