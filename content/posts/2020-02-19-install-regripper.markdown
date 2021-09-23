@@ -8,8 +8,8 @@ categories: [tools]
 
 > RegRipper is a tool made by H. Carvey (keydet89) for Windows registry analysis. The tool is perl script that is made to run on Windows. The tool can be installed on Linux distros but I haven't yet found good instructions how to do it to share so I decided to make my own. I use the tool on the forensic courses I teach. Kudos to keydet89 for making this awesome tool.
 
-If you are lazy, [here's](https://github.com/who1s/install_regripper) an installation script for Ubuntu/Debian.
-
+~~If you are lazy, [here's](https://github.com/who1s/install_regripper) an installation script for Ubuntu/Debian.~~
+**Update 2021**: This blog post is obsolete, please refer official documentation: https://github.com/keydet89/RegRipper3.0
 
 First install dependencies we need in running this tool. For some reason at the time I am writing this blogpost, tests fail after building the Win32Registry module. For this reason, we need to use more force in installation. If you don't want to install the module to the default location, you may want to use -l parameter to give an it another location (f.e. /usr/share/regripper/perlmodules/).
 
