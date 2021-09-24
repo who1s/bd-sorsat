@@ -180,5 +180,13 @@ disableHugoGeneratorInject = false
     url        = "about/"
   [[menu.main]]
     identifier = "posts"
-    name       = "Posts"
+    name       = "Blog"
     url        = "posts/"
+  [[menu.main]]
+    identifier = "soc"
+    name       = "SOC"
+    url        = "https://csoc.fi"
+  [[menu.main]]
+    identifier = "dfir"
+    name       = "DFIR"
+    url        = "https://dfir.fi"
