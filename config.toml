@@ -1,5 +1,5 @@
 baseURL = "https://blog.dfir.fi"
-title   = "DFIR"
+title   = "DFIR ≫ Blog by whois"
 languageCode = "en-us"
 theme = "hello-friend-ng"
 
