@@ -11,7 +11,7 @@ rssLimit  = 10  # Maximum number of items in the RSS feed.
 copyright = "It's all about forensics" # This message is only used by the RSS template.
 
 googleAnalytics = "UA-138581360-1"
-disqusShortname = "dfir-blog"
+disqusShortname = ""
 
 archetypeDir = "archetypes"
 contentDir   = "content"
