@@ -15,7 +15,7 @@ The full configuration is on [Github](https://github.com/who1s/modlishka-config)
 
 ## Demo
 
-{% include vimeoPlayer.html id=page.vimeoId %}
+{{< vimeo 440640362 >}}
 
 ## Put it to the container
 
